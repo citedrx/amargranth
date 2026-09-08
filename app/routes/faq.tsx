@@ -20,23 +20,23 @@ type FaqSection = {
   items: FaqItem[];
 };
 
-// NOTE: These answers are placeholders and have not been confirmed by ASM.
-// Swap in real shipping/return/payment policy details before this page goes live.
+// NOTE: Shipping, returns, and payment answers below are confirmed by ASM.
+// The "recommended age range" answer is still a placeholder — confirm before go-live.
 const FAQ_SECTIONS: FaqSection[] = [
   {
     title: 'Shipping',
     items: [
       {
         question: 'Where do you ship?',
-        answer: 'We currently ship across India. [Placeholder — confirm coverage and any exceptions.]',
+        answer: 'We ship across India.',
       },
       {
         question: 'How long does delivery take?',
-        answer: '[Placeholder — confirm typical delivery window, e.g. 5–7 business days.]',
+        answer: 'Orders are usually shipped within 24–48 hours of being placed.',
       },
       {
         question: 'How much does shipping cost?',
-        answer: '[Placeholder — confirm shipping rates and any free-shipping threshold.]',
+        answer: 'Shipping is free across India, with no extra cost added at checkout.',
       },
     ],
   },
@@ -45,11 +45,11 @@ const FAQ_SECTIONS: FaqSection[] = [
     items: [
       {
         question: 'Can I return or exchange a book?',
-        answer: '[Placeholder — confirm return window and condition requirements.]',
+        answer: 'We accept returns for books that arrive damaged. Report it to us by email within 24 hours of delivery and we’ll take it from there.',
       },
       {
         question: 'What if my book arrives damaged?',
-        answer: '[Placeholder — confirm damaged/defective item process, e.g. contact us within X days with photos.]',
+        answer: 'Email us at contact@amargranth.com within 24 hours of delivery to report it.',
       },
     ],
   },
@@ -58,7 +58,7 @@ const FAQ_SECTIONS: FaqSection[] = [
     items: [
       {
         question: 'What payment methods do you accept?',
-        answer: '[Placeholder — confirm accepted methods: cards, UPI, net banking, COD, etc.]',
+        answer: 'We accept all major payment methods available at checkout.',
       },
     ],
   },
@@ -94,10 +94,9 @@ export default function Faq() {
 
         <div className="bg-tint-blush border border-border rounded-card px-5 py-4 mb-10">
           <p className="text-ink-soft text-xs leading-relaxed">
-            <strong className="text-ink">Draft content:</strong> the answers
-            below marked with brackets are placeholders and haven&rsquo;t
-            been confirmed yet. Please replace them with real shipping,
-            returns, and payment policy details before this page goes live.
+            <strong className="text-ink">One answer still needs input:</strong>{' '}
+            the recommended age range below is marked with brackets as a
+            placeholder — please confirm it before this page goes live.
           </p>
         </div>
 
