@@ -5,7 +5,7 @@ import {CartForm} from '@shopify/hydrogen';
 import {CartMain} from '~/components/CartMain';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: `Hydrogen | Cart`}];
+  return [{title: 'Cart | Amar Granth'}];
 };
 
 export const headers: HeadersFunction = ({actionHeaders}) => actionHeaders;
@@ -105,8 +105,10 @@ export default function Cart() {
   const cart = useLoaderData<typeof loader>();
 
   return (
-    <div className="cart">
-      <h1>Cart</h1>
+    <div className="bg-base">
+      <h1 className="font-display text-2xl md:text-4xl text-ink px-6 md:px-16 pt-8 md:pt-14 max-w-3xl mx-auto">
+        Your cart
+      </h1>
       <CartMain layout="page" cart={cart} />
     </div>
   );

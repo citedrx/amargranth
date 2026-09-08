@@ -61,14 +61,23 @@ export function Aside({
       aria-labelledby={id}
     >
       <button className="close-outside" onClick={close} />
-      <aside>
-        <header>
-          <h3 id={id}>{heading}</h3>
-          <button className="close reset" onClick={close} aria-label="Close">
+      <aside className="bg-base flex flex-col">
+        <header className="border-border">
+          <h3
+            id={id}
+            className="font-display text-lg text-ink normal-case tracking-normal"
+          >
+            {heading}
+          </h3>
+          <button
+            className="close reset text-ink-soft hover:text-ink transition-colors text-xl leading-none"
+            onClick={close}
+            aria-label="Close"
+          >
             &times;
           </button>
         </header>
-        <main>{children}</main>
+        <main className="flex-1 overflow-y-auto">{children}</main>
       </aside>
     </div>
   );

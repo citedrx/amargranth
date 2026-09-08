@@ -51,16 +51,16 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
 
   return (
     <section
-      className={className}
+      className={`${className} flex flex-col h-full ${layout === 'page' ? 'px-6 md:px-16 pt-6 pb-14 max-w-3xl mx-auto' : 'px-5 py-4'}`}
       aria-label={layout === 'page' ? 'Cart page' : 'Cart drawer'}
     >
       <CartEmpty hidden={linesCount} layout={layout} />
-      <div className="cart-details">
+      <div className="cart-details flex flex-col flex-1">
         <p id="cart-lines" className="sr-only">
           Line items
         </p>
         <div>
-          <ul aria-labelledby="cart-lines">
+          <ul aria-labelledby="cart-lines" className="divide-y divide-border">
             {(cart?.lines?.nodes ?? []).map((line) => {
               // we do not render non-parent lines at the root of the cart
               if (
@@ -94,14 +94,17 @@ function CartEmpty({
 }) {
   const {close} = useAside();
   return (
-    <div hidden={hidden}>
-      <br />
-      <p>
+    <div hidden={hidden} className="py-10 text-center">
+      <p className="text-ink-soft text-sm mb-4">
         Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
         started!
       </p>
-      <br />
-      <Link to="/collections" onClick={close} prefetch="viewport">
+      <Link
+        to="/collections"
+        onClick={close}
+        prefetch="viewport"
+        className="inline-block bg-accent hover:bg-accent-hover text-white font-semibold text-sm px-6 py-2.5 rounded-pill transition-colors"
+      >
         Continue shopping →
       </Link>
     </div>
