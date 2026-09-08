@@ -31,10 +31,15 @@
   --radius-pill: 999px;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   background-color: var(--color-base);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  overflow-x: hidden;
 }
 
 h1,
