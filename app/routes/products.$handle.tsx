@@ -113,7 +113,7 @@ export default function Product() {
         <div className="grid md:grid-cols-2 gap-10 md:gap-14 mt-6">
           <ProductImage image={selectedVariant?.image} />
           <div>
-            <h1 className="font-display text-2xl md:text-4xl text-ink mb-3 leading-tight">
+            <h1 className="font-display text-ink mb-3">
               {title}
             </h1>
             {seo.description ? (
@@ -133,7 +133,7 @@ export default function Product() {
             />
             {descriptionHtml ? (
               <div className="mt-10 pt-8 border-t border-border">
-                <h2 className="font-display text-lg text-ink mb-3">
+                <h2 className="font-display text-ink mb-3">
                   What&rsquo;s inside
                 </h2>
                 <div

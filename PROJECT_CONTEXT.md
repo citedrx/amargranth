@@ -64,10 +64,14 @@ This is an established, ASM-approved direction — do not deviate from the palet
 | `--color-border` | `#ECE7DB` | Card/input borders |
 | `--color-tint-sand` / `-powder` / `-sage` / `-blush` | `#F3E6D8` / `#E4EEF6` / `#EAF1E4` / `#F6E6EC` | Pastel backgrounds for collection tiles/cards, cycled per item |
 
-**Typography:**
-- Display/headings: `Fraunces` (soft serif) — loaded via Google Fonts `@import` in `tailwind.css`, applied via `--font-display` / `.font-display` / `h1,h2,h3`. Briefly swapped to `Libre Caslon Text` for a "premium" direction, then reverted back to `Fraunces` per ASM the same week — the premium/less-curvy direction didn't feel like the "playful storybook theme" they actually wanted. Treat `Fraunces` as the settled choice unless told otherwise again.
-- Body/UI: `Nunito Sans` — applied via `--font-sans`, set as default on `body`. Same revert as above (was briefly `Work Sans`).
-- Base font size bumped from the browser default 16px to 18px via `html { font-size: 112.5% }` in `tailwind.css` — scales every rem-based Tailwind text utility site-wide. Per ASM: "the fonts need to be larger."
+**Typography — 3rd and (so far) final pivot, September 2026:**
+- No webfont at all anymore. `--font-display` and `--font-sans` are both the **native system font stack**: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif` — resolves to San Francisco on Mac/iOS, Segoe UI on Windows, Roboto on Android. No Google Fonts `@import` anymore (removed for load speed). This superseded two earlier attempts in the same week: `Fraunces`+`Nunito Sans` (original) → `Libre Caslon Text`+`Work Sans` ("premium," rejected) → briefly reverted to `Fraunces`+`Nunito Sans` ("playful," also superseded) → **this system-font spec**, given by ASM with exact `clamp()` values. Don't re-introduce a webfont pairing without an explicit new request.
+- Type scale is **fluid via `clamp()`**, applied as global defaults on bare `h1`/`h2`/`h3`/`h4` elements in `tailwind.css` (not per-component Tailwind size classes) — `--text-hero: clamp(2rem, 4.5vw, 3.1rem)` (h1, line-height 1.12, letter-spacing -0.02em, weight 800), `--text-section: clamp(1.5rem, 3vw, 2.1rem)` (h2, letter-spacing -0.01em, weight 700), `--text-card-heading: 1.075rem` (h3/h4, weight 700). Because these are global element-level rules, every route's headings had their old explicit `text-3xl md:text-5xl`-style Tailwind classes **stripped** (those classes have higher CSS specificity than an element selector and would otherwise silently override the global default) — if you add a new heading, don't add a size class to it, the global rule already handles it responsively with no `md:` breakpoint needed.
+- `--text-hero-lede: 1.15rem` for hero subtext, `--text-card-body: 0.92rem` for card price/date/meta text — applied via arbitrary-value Tailwind classes (`text-[1.15rem]` etc.) at the few call sites that need them, not global.
+- Body line-height 1.55 (`body { line-height: 1.55 }`).
+- Logo wordmark (Header + Footer brand name): `text-[1.25rem] font-extrabold tracking-[-0.02em]`.
+- Nav links/labels: `font-semibold` (600). Body text: default weight (400).
+- The earlier "bump root font-size to 18px" hack (`html { font-size: 112.5% }`) was removed — the explicit `clamp()` scale supersedes it; re-adding both would double-scale text.
 
 **Layout principles established for this brand:**
 - Flat navigation: logo + max ~4 links, no nested menus

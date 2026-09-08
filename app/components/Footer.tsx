@@ -20,7 +20,7 @@ export function Footer({
           <footer className="bg-tint-sand mt-20">
             <div className="px-6 md:px-16 py-10 md:py-12 max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
               <div className="text-center md:text-left">
-                <p className="font-display text-lg text-ink tracking-wide mb-2">
+                <p className="font-display text-[1.25rem] font-extrabold text-ink tracking-[-0.02em] mb-2">
                   {header.shop.name}
                 </p>
                 <p className="text-ink-soft text-sm max-w-xs">
@@ -79,7 +79,7 @@ function FooterMenu({
             key={item.id}
             rel="noopener noreferrer"
             target="_blank"
-            className="text-ink-soft hover:text-ink transition-colors"
+            className="font-semibold text-ink-soft hover:text-ink transition-colors"
           >
             {item.title}
           </a>
@@ -88,7 +88,7 @@ function FooterMenu({
             end
             key={item.id}
             prefetch="intent"
-            className="text-ink-soft hover:text-ink transition-colors"
+            className="font-semibold text-ink-soft hover:text-ink transition-colors"
             to={url}
           >
             {item.title}

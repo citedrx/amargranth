@@ -67,7 +67,7 @@ export default function Blog() {
 
   return (
     <div className="bg-base px-6 md:px-16 py-8 md:py-14 max-w-7xl mx-auto">
-      <h1 className="font-display text-2xl md:text-4xl text-ink mb-8">
+      <h1 className="font-display text-ink mb-8">
         {blog.title}
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">

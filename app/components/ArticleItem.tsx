@@ -52,8 +52,8 @@ export function ArticleItem({
           </span>
         )}
       </div>
-      <h3 className="font-display text-xl text-ink mb-1">{article.title}</h3>
-      <p className="text-ink-soft text-sm">{publishedAt}</p>
+      <h3 className="font-display text-ink mb-1">{article.title}</h3>
+      <p className="text-ink-soft text-[0.92rem]">{publishedAt}</p>
     </Link>
   );
 }

@@ -30,7 +30,7 @@ export function Header({
         prefetch="intent"
         to="/"
         end
-        className="font-display text-xl text-ink tracking-wide"
+        className="font-display text-[1.25rem] font-extrabold text-ink tracking-[-0.02em]"
       >
         {shop.name}
       </NavLink>
@@ -69,7 +69,7 @@ export function HeaderMenu({
           end
           onClick={close}
           prefetch="intent"
-          className="text-sm font-medium text-ink-soft hover:text-ink"
+          className="text-sm font-semibold text-ink-soft hover:text-ink"
           to="/"
         >
           Home
@@ -87,7 +87,7 @@ export function HeaderMenu({
             : item.url;
         return (
           <NavLink
-            className="text-sm font-medium text-ink-soft hover:text-ink transition-colors"
+            className="text-sm font-semibold text-ink-soft hover:text-ink transition-colors"
             end
             key={item.id}
             onClick={close}

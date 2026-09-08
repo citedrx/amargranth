@@ -48,12 +48,12 @@ export function ProductItem({
           </span>
         )}
       </div>
-      <h4 className="font-semibold text-sm text-ink mb-1 line-clamp-2">
+      <h4 className="text-ink mb-1 line-clamp-2">
         {product.title}
       </h4>
       <Money
         data={product.priceRange.minVariantPrice}
-        className="text-accent text-sm font-semibold"
+        className="text-accent text-[0.92rem] font-semibold"
       />
     </Link>
   );

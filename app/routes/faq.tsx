@@ -86,14 +86,14 @@ export default function Faq() {
         <p className="text-accent font-semibold text-sm tracking-wide mb-3 text-center">
           Frequently Asked Questions
         </p>
-        <h1 className="font-display text-3xl md:text-5xl leading-tight text-ink mb-6 text-center">
+        <h1 className="font-display text-ink mb-6 text-center">
           Questions? We&rsquo;ve got answers
         </h1>
 
         <div className="space-y-10">
           {FAQ_SECTIONS.map((section) => (
             <div key={section.title}>
-              <h2 className="font-display text-lg text-ink mb-3">
+              <h2 className="font-display text-ink mb-3">
                 {section.title}
               </h2>
               <div className="space-y-2">

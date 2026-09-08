@@ -76,7 +76,7 @@ export default function Collection() {
       >
         ← All collections
       </Link>
-      <h1 className="font-display text-2xl md:text-4xl text-ink mt-4 mb-2">
+      <h1 className="font-display text-ink mt-4 mb-2">
         {collection.title}
       </h1>
       {collection.description ? (

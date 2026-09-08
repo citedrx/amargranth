@@ -73,10 +73,10 @@ function Hero() {
         <p className="text-accent font-semibold text-base tracking-wide mb-3">
           Stories of Shiva, Shakti &amp; Indian Culture
         </p>
-        <h1 className="font-display text-4xl md:text-6xl leading-tight text-ink mb-6">
+        <h1 className="font-display text-ink mb-6">
           Stories that carry heritage into your child&rsquo;s hands
         </h1>
-        <p className="text-ink-soft text-lg md:text-xl mb-9 max-w-md">
+        <p className="text-ink-soft text-[1.15rem] mb-9 max-w-md">
           India&rsquo;s illustrated storybooks on the 12 Jyotirlingas, 51
           Shaktipeeths, sacred rivers, and more — made for curious young
           minds.
@@ -116,7 +116,7 @@ function OurBooks({products}: {products: HomepageProductItemFragment[]}) {
   return (
     <section className="px-6 md:px-16 py-12 md:py-16 max-w-7xl mx-auto">
       <div className="flex items-end justify-between mb-8">
-        <h2 className="font-display text-2xl md:text-4xl text-ink">
+        <h2 className="font-display text-ink">
           Our Books
         </h2>
         <Link
@@ -148,7 +148,7 @@ function FromTheBlog({
   return (
     <section className="px-6 md:px-16 py-12 md:py-16 max-w-7xl mx-auto">
       <div className="flex items-end justify-between mb-8">
-        <h2 className="font-display text-2xl md:text-4xl text-ink">
+        <h2 className="font-display text-ink">
           From the Blog
         </h2>
         <Link
@@ -191,12 +191,12 @@ function MissionAndVision() {
         <p className="text-accent font-semibold text-base tracking-wide mb-3">
           The Amar Granth Mission
         </p>
-        <h2 className="font-display text-2xl md:text-4xl text-ink mb-8">
+        <h2 className="font-display text-ink mb-8">
           Heritage, told with heart
         </h2>
         <div className="grid md:grid-cols-2 gap-10 text-left">
           <div>
-            <h3 className="font-display text-xl text-ink mb-3">
+            <h3 className="font-display text-ink mb-3">
               Our mission
             </h3>
             <p className="text-ink-soft text-lg leading-relaxed">
@@ -210,7 +210,7 @@ function MissionAndVision() {
             </p>
           </div>
           <div>
-            <h3 className="font-display text-xl text-ink mb-3">
+            <h3 className="font-display text-ink mb-3">
               Our vision
             </h3>
             <p className="text-ink-soft text-lg leading-relaxed">

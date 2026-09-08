@@ -87,7 +87,7 @@ export default function Article() {
         >
           ← Back to stories
         </Link>
-        <h1 className="font-display text-2xl md:text-4xl text-ink mt-4 mb-2 leading-tight">
+        <h1 className="font-display text-ink mt-4 mb-2">
           {title}
         </h1>
         <p className="text-ink-soft text-sm mb-8">

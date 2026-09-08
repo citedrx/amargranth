@@ -106,7 +106,7 @@ export default function Cart() {
 
   return (
     <div className="bg-base">
-      <h1 className="font-display text-2xl md:text-4xl text-ink px-6 md:px-16 pt-8 md:pt-14 max-w-3xl mx-auto">
+      <h1 className="font-display text-ink px-6 md:px-16 pt-8 md:pt-14 max-w-3xl mx-auto">
         Your cart
       </h1>
       <CartMain layout="page" cart={cart} />

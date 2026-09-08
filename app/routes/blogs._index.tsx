@@ -55,7 +55,7 @@ export default function Blogs() {
 
   return (
     <div className="bg-base px-6 md:px-16 py-8 md:py-14 max-w-7xl mx-auto">
-      <h1 className="font-display text-2xl md:text-4xl text-ink mb-8">
+      <h1 className="font-display text-ink mb-8">
         Stories
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
@@ -67,7 +67,7 @@ export default function Blogs() {
               prefetch="intent"
               to={`/blogs/${blog.handle}`}
             >
-              <h2 className="font-display text-xl text-ink">{blog.title}</h2>
+              <h2 className="font-display text-ink">{blog.title}</h2>
             </Link>
           )}
         </PaginatedResourceSection>

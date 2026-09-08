@@ -4,7 +4,6 @@
  */
 
 @import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Nunito+Sans:wght@400;500;600;700;800&display=swap');
 
 /* Amar Granth — "Storybook Studio" design tokens */
 @theme {
@@ -22,9 +21,18 @@
   --color-tint-sage: #eaf1e4;
   --color-tint-blush: #f6e6ec;
 
-  /* Fonts */
-  --font-display: 'Fraunces', ui-serif, Georgia, serif;
-  --font-sans: 'Nunito Sans', ui-sans-serif, system-ui, sans-serif;
+  /* Fonts — system stack, no webfont: fast-loading, native per platform */
+  --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
+
+  /* Type scale — fluid via clamp(), no md: breakpoint variants needed */
+  --text-hero: clamp(2rem, 4.5vw, 3.1rem);
+  --text-section: clamp(1.5rem, 3vw, 2.1rem);
+  --text-card-heading: 1.075rem;
+  --text-hero-lede: 1.15rem;
+  --text-card-body: 0.92rem;
 
   /* Radius */
   --radius-card: 1rem;
@@ -33,19 +41,39 @@
 
 html {
   overflow-x: hidden;
-  font-size: 112.5%; /* 18px base instead of 16px — scales every rem-based size site-wide */
 }
 
 body {
   background-color: var(--color-base);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  line-height: 1.55;
   overflow-x: hidden;
 }
 
 h1,
 h2,
 h3,
+h4,
 .font-display {
   font-family: var(--font-display);
+}
+
+h1 {
+  font-size: var(--text-hero);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: var(--text-section);
+  letter-spacing: -0.01em;
+  font-weight: 700;
+}
+
+h3,
+h4 {
+  font-size: var(--text-card-heading);
+  font-weight: 700;
 }

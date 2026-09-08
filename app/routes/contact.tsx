@@ -19,7 +19,7 @@ export default function Contact() {
         <p className="text-accent font-semibold text-sm tracking-wide mb-3">
           Get in Touch
         </p>
-        <h1 className="font-display text-3xl md:text-5xl leading-tight text-ink mb-6">
+        <h1 className="font-display text-ink mb-6">
           We&rsquo;d love to hear from you
         </h1>
         <p className="text-ink-soft text-base md:text-lg leading-relaxed mb-10">
