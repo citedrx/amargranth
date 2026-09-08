@@ -1,4 +1,4 @@
-import {redirect, useLoaderData} from 'react-router';
+import {redirect, Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/collections.$handle';
 import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
@@ -7,7 +7,7 @@ import {ProductItem} from '~/components/ProductItem';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+  return [{title: `${data?.collection.title ?? ''} | Amar Granth`}];
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -69,17 +69,32 @@ export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
 
   return (
-    <div className="collection">
-      <h1>{collection.title}</h1>
-      <p className="collection-description">{collection.description}</p>
+    <div className="bg-base px-6 md:px-16 py-8 md:py-14 max-w-7xl mx-auto">
+      <Link
+        to="/collections"
+        className="text-sm text-ink-soft hover:text-ink transition-colors"
+      >
+        ← All collections
+      </Link>
+      <h1 className="font-display text-2xl md:text-4xl text-ink mt-4 mb-2">
+        {collection.title}
+      </h1>
+      {collection.description ? (
+        <p className="text-ink-soft text-base max-w-2xl mb-8">
+          {collection.description}
+        </p>
+      ) : (
+        <div className="mb-8" />
+      )}
       <PaginatedResourceSection<ProductItemFragment>
         connection={collection.products}
-        resourcesClassName="products-grid"
+        resourcesClassName="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6"
       >
         {({node: product, index}) => (
           <ProductItem
             key={product.id}
             product={product}
+            index={index}
             loading={index < 8 ? 'eager' : undefined}
           />
         )}

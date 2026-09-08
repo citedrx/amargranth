@@ -4,6 +4,10 @@ import {getPaginationVariables, Image} from '@shopify/hydrogen';
 import type {CollectionFragment} from 'storefrontapi.generated';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 
+export const meta: Route.MetaFunction = () => {
+  return [{title: 'Shop by Collection | Amar Granth'}];
+};
+
 export async function loader(args: Route.LoaderArgs) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
@@ -46,11 +50,13 @@ export default function Collections() {
   const {collections} = useLoaderData<typeof loader>();
 
   return (
-    <div className="collections">
-      <h1>Collections</h1>
+    <div className="bg-base px-6 md:px-16 py-8 md:py-14 max-w-7xl mx-auto">
+      <h1 className="font-display text-2xl md:text-4xl text-ink mb-8">
+        Shop by collection
+      </h1>
       <PaginatedResourceSection<CollectionFragment>
         connection={collections}
-        resourcesClassName="collections-grid"
+        resourcesClassName="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6"
       >
         {({node: collection, index}) => (
           <CollectionItem
@@ -64,6 +70,13 @@ export default function Collections() {
   );
 }
 
+const TINT_CLASSES = [
+  'bg-tint-sand',
+  'bg-tint-powder',
+  'bg-tint-sage',
+  'bg-tint-blush',
+];
+
 function CollectionItem({
   collection,
   index,
@@ -73,21 +86,30 @@ function CollectionItem({
 }) {
   return (
     <Link
-      className="collection-item"
+      className="group text-center"
       key={collection.id}
       to={`/collections/${collection.handle}`}
       prefetch="intent"
     >
-      {collection?.image && (
-        <Image
-          alt={collection.image.altText || collection.title}
-          aspectRatio="1/1"
-          data={collection.image}
-          loading={index < 3 ? 'eager' : undefined}
-          sizes="(min-width: 45em) 400px, 100vw"
-        />
-      )}
-      <h5>{collection.title}</h5>
+      <div
+        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-card aspect-square mb-3 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-[1.02]`}
+      >
+        {collection?.image ? (
+          <Image
+            alt={collection.image.altText || collection.title}
+            aspectRatio="1/1"
+            data={collection.image}
+            loading={index < 3 ? 'eager' : undefined}
+            sizes="(min-width: 45em) 400px, 100vw"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <span className="text-4xl opacity-60" role="img" aria-label="om">
+            🕉️
+          </span>
+        )}
+      </div>
+      <p className="font-semibold text-sm text-ink">{collection.title}</p>
     </Link>
   );
 }

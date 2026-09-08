@@ -7,38 +7,54 @@ import type {
 } from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 
+const TINT_CLASSES = [
+  'bg-tint-sand',
+  'bg-tint-powder',
+  'bg-tint-sage',
+  'bg-tint-blush',
+];
+
 export function ProductItem({
   product,
   loading,
+  index = 0,
 }: {
   product:
     | CollectionItemFragment
     | ProductItemFragment
     | RecommendedProductFragment;
   loading?: 'eager' | 'lazy';
+  index?: number;
 }) {
   const variantUrl = useVariantUrl(product.handle);
   const image = product.featuredImage;
   return (
-    <Link
-      className="product-item"
-      key={product.id}
-      prefetch="intent"
-      to={variantUrl}
-    >
-      {image && (
-        <Image
-          alt={image.altText || product.title}
-          aspectRatio="1/1"
-          data={image}
-          loading={loading}
-          sizes="(min-width: 45em) 400px, 100vw"
-        />
-      )}
-      <h4>{product.title}</h4>
-      <small>
-        <Money data={product.priceRange.minVariantPrice} />
-      </small>
+    <Link className="group" key={product.id} prefetch="intent" to={variantUrl}>
+      <div
+        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-card aspect-square mb-3 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-[1.02]`}
+      >
+        {image ? (
+          <Image
+            alt={image.altText || product.title}
+            aspectRatio="1/1"
+            data={image}
+            loading={loading}
+            sizes="(min-width: 45em) 400px, 100vw"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <span className="text-4xl opacity-60" role="img" aria-label="book">
+            📗
+          </span>
+        )}
+      </div>
+      <h4 className="font-semibold text-sm text-ink mb-1 line-clamp-2">
+        {product.title}
+      </h4>
+      <Money
+        data={product.priceRange.minVariantPrice}
+        className="text-accent text-sm font-semibold"
+      />
     </Link>
   );
 }

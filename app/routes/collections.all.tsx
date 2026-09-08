@@ -6,7 +6,7 @@ import {ProductItem} from '~/components/ProductItem';
 import type {CollectionItemFragment} from 'storefrontapi.generated';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: `Hydrogen | Products`}];
+  return [{title: 'All Books | Amar Granth'}];
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -51,16 +51,19 @@ export default function Collection() {
   const {products} = useLoaderData<typeof loader>();
 
   return (
-    <div className="collection">
-      <h1>Products</h1>
+    <div className="bg-base px-6 md:px-16 py-8 md:py-14 max-w-7xl mx-auto">
+      <h1 className="font-display text-2xl md:text-4xl text-ink mb-8">
+        All books
+      </h1>
       <PaginatedResourceSection<CollectionItemFragment>
         connection={products}
-        resourcesClassName="products-grid"
+        resourcesClassName="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6"
       >
         {({node: product, index}) => (
           <ProductItem
             key={product.id}
             product={product}
+            index={index}
             loading={index < 8 ? 'eager' : undefined}
           />
         )}
