@@ -80,22 +80,28 @@ This is an established, ASM-approved direction — do not deviate from the palet
 Scaffolded with `npm create @shopify/hydrogen@latest` (TypeScript, Tailwind v4, React Router 7 / Hydrogen). Standard skeleton routes are all present and untouched except where noted below.
 
 ### Done
-- `app/styles/tailwind.css` — full Storybook Studio theme tokens + Google Fonts import (see above)
-- `app/routes/_index.tsx` — homepage **fully rebuilt** from the default skeleton: hero section, motif divider, "Shop by collection" grid (live data from Storefront API, cycles through the 4 pastel tints), bestseller/recommended products spotlight, brand story section, static review quotes, email signup bar. Uses inline TS types for the collections query rather than generated types (see note below).
-- `app/components/Header.tsx` — restyled to a flat, minimal nav matching the brand (logo left, links center, account/search/cart right). Logic (menu fetching, cart badge, mobile toggle) untouched, only className/styling changed.
-- Verified: `npx tsc --noEmit` passes clean, `npm run build` succeeds.
+Every route and shared component is now built and styled in the Storybook Studio theme:
+- `app/routes/_index.tsx` — homepage: hero, motif divider, "Shop by collection" grid, bestseller spotlight, brand story, reviews, email signup bar.
+- `app/components/Header.tsx` / `Footer.tsx` — flat nav header; footer with brand blurb, policy/page links, copyright.
+- `app/routes/products.$handle.tsx` + `ProductImage`/`ProductPrice`/`ProductForm`/`AddToCartButton` — pastel image tile, price + real `seo.description` hook, pill variant chips, styled "What's inside" from the real migrated description.
+- `app/routes/collections._index.tsx`, `collections.$handle.tsx`, `collections.all.tsx` + `ProductItem` — pastel tile grids matching the homepage.
+- `app/routes/blogs._index.tsx`, `blogs.$blogHandle._index.tsx`, `blogs.$blogHandle.$articleHandle.tsx` — article grid + single-post styling over the 66 already-migrated posts.
+- Cart drawer/aside (`Aside.tsx`, `CartMain.tsx`, `CartLineItem.tsx`, `CartSummary.tsx`) and the standalone `/cart` page.
+- **Static pages** `about.tsx`, `contact.tsx`, `faq.tsx` — real, ASM-confirmed content (not placeholders): free shipping across India (24–48hr dispatch), damaged-book returns via email within 24hrs, all major payment methods, age 3+/read-along positioning. `contact@amargranth.com` is the only contact channel listed (no phone/address exist yet).
+- **All 7 products are ACTIVE** in Shopify (flipped from DRAFT on ASM's confirmation — see business context above, this was previously intentionally held back).
+- **Typography**: swapped from the original Fraunces + Nunito Sans to **Libre Caslon Text + Work Sans** per ASM's explicit request (Fraunces read as "too curvy" for the premium-but-kid-friendly direction they want). Tokens live in `app/styles/tailwind.css` (`--font-display`, `--font-sans`) — nothing else should need touching if this changes again.
+- **Meta Pixel** (`app/components/MetaPixel.tsx`, wired into `root.tsx`): storefront-side tracking (PageView, ViewContent, Search, AddToCart, InitiateCheckout) using pixel ID `620588632962566`, stored as `PUBLIC_META_PIXEL_ID` in `.env` (not committed). CSP in `entry.server.tsx` extended to allow `connect.facebook.net`/`www.facebook.com` alongside Hydrogen's defaults. **Purchase/checkout-completion tracking is NOT covered by this** — that requires ASM connecting Shopify's own Facebook & Instagram sales channel in Admin with their Meta Business account (self-serve, needs their login, can't be done via API).
+- Mobile responsiveness pass — most pages were already mobile-first; fixed touch-target sizing (cart stepper, close buttons, header icons) and text-wrap issues (FAQ accordion).
+- Verified throughout: `npx tsc --noEmit`, `eslint`, and `npm run build` all pass clean.
 
-### Explicitly NOT done yet (next priorities, roughly in this order)
-1. **Link the project to the real store** — run `npx shopify hydrogen link` (needs interactive browser login, hasn't been done — this environment couldn't complete OAuth). This populates `PUBLIC_STOREFRONT_API_TOKEN` in `.env`. `PUBLIC_STORE_DOMAIN` is already set correctly to `fd3ruf-f7.myshopify.com`.
-2. **Run codegen** (`npm run codegen`) once linked — the homepage currently uses a hand-written inline type (`FeaturedCollectionNode`) instead of a generated Storefront API type for the collections query, specifically because codegen requires a live store connection this environment didn't have. Once linked, consider swapping to a proper generated type for consistency with the rest of the codebase.
-3. **Product detail page** (`app/routes/products.$handle.tsx` or similar) — needs Storybook Studio styling. Per earlier design spec: one large product image on a pastel/neutral background (not white seamless product shots), price + one-line emotional hook above the fold, "what's inside" as 3–4 short bullets not a wall of text, ownership badge logic for Combo Set buyers (see business rule above) if/when customer accounts + purchase history are wired up.
-4. **Collection listing page** — needs styling to match homepage tile treatment.
-5. **Blog listing + individual post pages** — needs styling. Remember all 66 posts already exist in Shopify with matching slugs; this is purely a front-end templating task, no content work needed.
-6. **Cart drawer/aside** — currently default Hydrogen styling, needs brand treatment.
-7. **Footer** — not touched yet.
-8. **Static pages** (About, Contact, etc.) — content doesn't exist yet anywhere (wasn't migrated from Wix, see above). Will need actual copy written before this can be built, not just styling.
+### Explicitly NOT done yet
+1. **Razorpay** — needs ASM to add it themselves in Shopify Admin → Settings → Payments (requires their own merchant account + KYC; no Hydrogen code involved at all, since checkout is Shopify-hosted).
+2. **Facebook & Instagram sales channel** — needs ASM to connect it in Shopify Admin with their Meta Business account, to get Purchase-event tracking (see Meta Pixel note above).
+3. **Meta Conversions API (CAPI)** — optional, more reliable server-side tracking. Not set up; would need a CAPI access token from Meta Events Manager if ASM wants it.
+4. **Real browser/device verification** — nothing has been visually confirmed rendering correctly in an actual browser yet. This sandbox's network egress blocks every Shopify host (including the public `mock.shop` demo), so `npm run dev` cannot reach the live store from here. A static HTML mockup (design tokens + real catalog data, not live rendering) was built as a stopgap. Whoever picks this up should run `npm run dev` somewhere with normal internet access — the store is already linked (`.env` has `PUBLIC_STOREFRONT_API_TOKEN`) — and do a real pass, especially on mobile devices.
+5. **DNS / go-live** — see below. Still blocked pending explicit ASM sign-off and the real-browser check above.
 
 ### Notes / gotchas for whoever picks this up
-- Products are **DRAFT** in Shopify — they won't appear in Storefront API queries by default until published, or you'll need to query them with the right status/access. Don't be surprised if product/collection queries return empty until ASM decides to flip them live — check with them before publishing anything, since the whole point of the DRAFT status was to avoid a half-finished site going public.
-- Do **not** touch DNS or suggest connecting the `amargranth.com` domain to this Shopify store until the storefront is genuinely feature-complete and ASM has explicitly signed off. This was a repeated, explicit instruction across the migration project.
+- Do **not** touch DNS or suggest connecting the `amargranth.com` domain to this Shopify store until ASM has explicitly signed off in this exact conversation — this was asked about directly and deliberately held back pending readiness (products were DRAFT and FAQ was placeholder at the time; both are now fixed, but the explicit go-ahead and a real browser check are still outstanding).
+- Product descriptions contain time-sensitive promo copy migrated from Wix (e.g. "Ganpati Festive Sale... Valid till 30th September 2026") — worth knowing it's baked into the description HTML, not something this codebase added.
 - Full redirect map (66 blog + 7 product) is already live in Shopify's URL redirect system — nothing needed there, it'll just work once the domain is repointed.
