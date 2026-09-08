@@ -103,6 +103,33 @@ const FALLBACK_FOOTER_MENU = {
   id: 'gid://shopify/Menu/199655620664',
   items: [
     {
+      id: 'about-page',
+      resourceId: null,
+      tags: [],
+      title: 'About',
+      type: 'HTTP',
+      url: '/about',
+      items: [],
+    },
+    {
+      id: 'contact-page',
+      resourceId: null,
+      tags: [],
+      title: 'Contact',
+      type: 'HTTP',
+      url: '/contact',
+      items: [],
+    },
+    {
+      id: 'faq-page',
+      resourceId: null,
+      tags: [],
+      title: 'FAQ',
+      type: 'HTTP',
+      url: '/faq',
+      items: [],
+    },
+    {
       id: 'gid://shopify/MenuItem/461633060920',
       resourceId: 'gid://shopify/ShopPolicy/23358046264',
       tags: [],
