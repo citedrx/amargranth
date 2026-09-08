@@ -17,14 +17,31 @@ export function Footer({
     <Suspense>
       <Await resolve={footerPromise}>
         {(footer) => (
-          <footer className="footer">
-            {footer?.menu && header.shop.primaryDomain?.url && (
-              <FooterMenu
-                menu={footer.menu}
-                primaryDomainUrl={header.shop.primaryDomain.url}
-                publicStoreDomain={publicStoreDomain}
-              />
-            )}
+          <footer className="bg-tint-sand mt-20">
+            <div className="px-6 md:px-16 py-10 md:py-12 max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
+              <div className="text-center md:text-left">
+                <p className="font-display text-lg text-ink lowercase tracking-wide mb-2">
+                  {header.shop.name}
+                </p>
+                <p className="text-ink-soft text-sm max-w-xs">
+                  Illustrated storybooks bringing Indian mythology and
+                  heritage to young readers.
+                </p>
+              </div>
+              {footer?.menu && header.shop.primaryDomain?.url && (
+                <FooterMenu
+                  menu={footer.menu}
+                  primaryDomainUrl={header.shop.primaryDomain.url}
+                  publicStoreDomain={publicStoreDomain}
+                />
+              )}
+            </div>
+            <div className="border-t border-border px-6 md:px-16 py-5 max-w-7xl mx-auto text-center md:text-left">
+              <p className="text-ink-soft text-xs">
+                &copy; {new Date().getFullYear()} {header.shop.name}. All
+                rights reserved.
+              </p>
+            </div>
           </footer>
         )}
       </Await>
@@ -42,7 +59,10 @@ function FooterMenu({
   publicStoreDomain: string;
 }) {
   return (
-    <nav className="footer-menu" role="navigation">
+    <nav
+      className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm"
+      role="navigation"
+    >
       {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
         if (!item.url) return null;
         // if the url is internal, we strip the domain
@@ -54,7 +74,13 @@ function FooterMenu({
             : item.url;
         const isExternal = !url.startsWith('/');
         return isExternal ? (
-          <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
+          <a
+            href={url}
+            key={item.id}
+            rel="noopener noreferrer"
+            target="_blank"
+            className="text-ink-soft hover:text-ink transition-colors"
+          >
             {item.title}
           </a>
         ) : (
@@ -62,7 +88,7 @@ function FooterMenu({
             end
             key={item.id}
             prefetch="intent"
-            style={activeLinkStyle}
+            className="text-ink-soft hover:text-ink transition-colors"
             to={url}
           >
             {item.title}
@@ -114,16 +140,3 @@ const FALLBACK_FOOTER_MENU = {
     },
   ],
 };
-
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'white',
-  };
-}
