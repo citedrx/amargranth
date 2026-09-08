@@ -12,9 +12,9 @@ export function ProductPrice({
 }) {
   const priceClassName =
     size === 'large'
-      ? 'text-2xl md:text-3xl font-semibold text-accent'
-      : 'text-sm font-semibold text-accent';
-  const compareClassName = size === 'large' ? 'text-base' : 'text-xs';
+      ? 'text-h2 font-semibold text-accent'
+      : 'text-body font-semibold text-accent';
+  const compareClassName = size === 'large' ? 'text-body' : 'text-small';
 
   return (
     <div aria-label="Price" className="flex items-baseline gap-3" role="group">

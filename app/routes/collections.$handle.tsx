@@ -1,35 +1,34 @@
-import {redirect, Link, useLoaderData} from 'react-router';
+import {redirect, Link, useLoaderData, useNavigate, useSearchParams} from 'react-router';
 import type {Route} from './+types/collections.$handle';
-import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
-import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {Analytics} from '@shopify/hydrogen';
+import type {
+  ProductCollectionSortKeys,
+} from '@shopify/hydrogen/storefront-api-types';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductItem} from '~/components/ProductItem';
-import type {ProductItemFragment} from 'storefrontapi.generated';
 
 export const meta: Route.MetaFunction = ({data}) => {
   return [{title: `${data?.collection.title ?? ''} | Amar Granth`}];
 };
 
-export async function loader(args: Route.LoaderArgs) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
+const SORT_OPTIONS: Record<
+  string,
+  {sortKey: ProductCollectionSortKeys; reverse: boolean}
+> = {
+  featured: {sortKey: 'COLLECTION_DEFAULT', reverse: false},
+  'price-asc': {sortKey: 'PRICE', reverse: false},
+  'price-desc': {sortKey: 'PRICE', reverse: true},
+  newest: {sortKey: 'CREATED', reverse: true},
+};
 
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
-
-  return {...deferredData, ...criticalData};
-}
-
-/**
- * Load data necessary for rendering content above the fold. This is the critical data
- * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
- */
-async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
+export async function loader({context, params, request}: Route.LoaderArgs) {
   const {handle} = params;
   const {storefront} = context;
-  const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
-  });
+  const url = new URL(request.url);
+  const sort = SORT_OPTIONS[url.searchParams.get('sort') ?? 'featured']
+    ? (url.searchParams.get('sort') ?? 'featured')
+    : 'featured';
+  const {sortKey, reverse} = SORT_OPTIONS[sort];
 
   if (!handle) {
     throw redirect('/collections');
@@ -37,8 +36,7 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
 
   const [{collection}] = await Promise.all([
     storefront.query(COLLECTION_QUERY, {
-      variables: {handle, ...paginationVariables},
-      // Add other queries here, so that they are loaded in parallel
+      variables: {handle, first: 24, sortKey, reverse},
     }),
   ]);
 
@@ -48,57 +46,57 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
     });
   }
 
-  // The API handle might be localized, so redirect to the localized handle
   redirectIfHandleIsLocalized(request, {handle, data: collection});
 
-  return {
-    collection,
-  };
-}
-
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- */
-function loadDeferredData({context}: Route.LoaderArgs) {
-  return {};
+  return {collection, sort};
 }
 
 export default function Collection() {
-  const {collection} = useLoaderData<typeof loader>();
+  const {collection, sort} = useLoaderData<typeof loader>();
+  const products = collection.products.nodes;
 
   return (
-    <div className="bg-base px-6 md:px-16 py-8 md:py-14 max-w-7xl mx-auto">
-      <Link
-        to="/collections"
-        className="text-sm text-ink-soft hover:text-ink transition-colors"
-      >
-        ← All collections
-      </Link>
-      <h1 className="font-display text-ink mt-4 mb-2">
-        {collection.title}
-      </h1>
-      {collection.description ? (
-        <p className="text-ink-soft text-base max-w-2xl mb-8">
-          {collection.description}
-        </p>
+    <div className="bg-base px-5 md:px-12 lg:px-16 py-6 md:py-10 max-w-[1280px] mx-auto">
+      <nav aria-label="Breadcrumb" className="text-small text-ink-soft mb-4">
+        <Link to="/" className="hover:text-ink transition-colors">
+          Home
+        </Link>{' '}
+        /{' '}
+        <Link to="/collections" className="hover:text-ink transition-colors">
+          Collections
+        </Link>{' '}
+        / <span className="text-ink">{collection.title}</span>
+      </nav>
+
+      <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-ink mb-1">{collection.title}</h1>
+          {collection.description ? (
+            <p className="text-ink-soft text-body max-w-2xl">
+              {collection.description}
+            </p>
+          ) : null}
+        </div>
+        {products.length >= 4 ? <SortControl currentSort={sort} /> : null}
+      </div>
+
+      {products.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
+          {products.map((product, index) => (
+            <ProductItem
+              key={product.id}
+              product={product}
+              index={index}
+              loading={index < 8 ? 'eager' : undefined}
+            />
+          ))}
+        </div>
       ) : (
-        <div className="mb-8" />
+        <p className="text-ink-soft text-body">
+          No books in this collection yet.
+        </p>
       )}
-      <PaginatedResourceSection<ProductItemFragment>
-        connection={collection.products}
-        resourcesClassName="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6"
-      >
-        {({node: product, index}) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            index={index}
-            loading={index < 8 ? 'eager' : undefined}
-          />
-        )}
-      </PaginatedResourceSection>
+
       <Analytics.CollectionView
         data={{
           collection: {
@@ -108,6 +106,31 @@ export default function Collection() {
         }}
       />
     </div>
+  );
+}
+
+function SortControl({currentSort}: {currentSort: string}) {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  return (
+    <label className="text-small text-ink-soft flex items-center gap-2">
+      Sort by
+      <select
+        value={currentSort}
+        onChange={(e) => {
+          const params = new URLSearchParams(searchParams);
+          params.set('sort', e.target.value);
+          void navigate(`?${params.toString()}`, {preventScrollReset: true});
+        }}
+        className="rounded-pill border border-border bg-white px-4 py-2 text-small text-ink focus:outline-none focus:ring-2 focus:ring-accent"
+      >
+        <option value="featured">Featured</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="newest">Newest</option>
+      </select>
+    </label>
   );
 }
 
@@ -135,6 +158,11 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
         ...MoneyProductItem
       }
     }
+    compareAtPriceRange {
+      minVariantPrice {
+        ...MoneyProductItem
+      }
+    }
   }
 ` as const;
 
@@ -146,29 +174,17 @@ const COLLECTION_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
     $first: Int
-    $last: Int
-    $startCursor: String
-    $endCursor: String
+    $sortKey: ProductCollectionSortKeys
+    $reverse: Boolean
   ) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       id
       handle
       title
       description
-      products(
-        first: $first,
-        last: $last,
-        before: $startCursor,
-        after: $endCursor
-      ) {
+      products(first: $first, sortKey: $sortKey, reverse: $reverse) {
         nodes {
           ...ProductItem
-        }
-        pageInfo {
-          hasPreviousPage
-          hasNextPage
-          endCursor
-          startCursor
         }
       }
     }

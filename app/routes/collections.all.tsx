@@ -1,74 +1,92 @@
 import type {Route} from './+types/collections.all';
-import {useLoaderData} from 'react-router';
-import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
-import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {Link, useLoaderData, useNavigate, useSearchParams} from 'react-router';
+import type {ProductSortKeys} from '@shopify/hydrogen/storefront-api-types';
 import {ProductItem} from '~/components/ProductItem';
-import type {CollectionItemFragment} from 'storefrontapi.generated';
 
 export const meta: Route.MetaFunction = () => {
   return [{title: 'All Books | Amar Granth'}];
 };
 
-export async function loader(args: Route.LoaderArgs) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
+const SORT_OPTIONS: Record<
+  string,
+  {sortKey: ProductSortKeys; reverse: boolean}
+> = {
+  featured: {sortKey: 'BEST_SELLING', reverse: false},
+  'price-asc': {sortKey: 'PRICE', reverse: false},
+  'price-desc': {sortKey: 'PRICE', reverse: true},
+  newest: {sortKey: 'CREATED_AT', reverse: true},
+};
 
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
-
-  return {...deferredData, ...criticalData};
-}
-
-/**
- * Load data necessary for rendering content above the fold. This is the critical data
- * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
- */
-async function loadCriticalData({context, request}: Route.LoaderArgs) {
+export async function loader({context, request}: Route.LoaderArgs) {
   const {storefront} = context;
-  const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
-  });
+  const url = new URL(request.url);
+  const sort = SORT_OPTIONS[url.searchParams.get('sort') ?? 'featured']
+    ? (url.searchParams.get('sort') ?? 'featured')
+    : 'featured';
+  const {sortKey, reverse} = SORT_OPTIONS[sort];
 
   const [{products}] = await Promise.all([
     storefront.query(CATALOG_QUERY, {
-      variables: {...paginationVariables},
+      variables: {first: 24, sortKey, reverse},
     }),
-    // Add other queries here, so that they are loaded in parallel
   ]);
-  return {products};
-}
-
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- */
-function loadDeferredData({context}: Route.LoaderArgs) {
-  return {};
+  return {products, sort};
 }
 
 export default function Collection() {
-  const {products} = useLoaderData<typeof loader>();
+  const {products, sort} = useLoaderData<typeof loader>();
+  const nodes = products.nodes;
 
   return (
-    <div className="bg-base px-6 md:px-16 py-8 md:py-14 max-w-7xl mx-auto">
-      <h1 className="font-display text-ink mb-8">
-        All books
-      </h1>
-      <PaginatedResourceSection<CollectionItemFragment>
-        connection={products}
-        resourcesClassName="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6"
-      >
-        {({node: product, index}) => (
+    <div className="bg-base px-5 md:px-12 lg:px-16 py-6 md:py-10 max-w-[1280px] mx-auto">
+      <nav aria-label="Breadcrumb" className="text-small text-ink-soft mb-4">
+        <Link to="/" className="hover:text-ink transition-colors">
+          Home
+        </Link>{' '}
+        / <span className="text-ink">All books</span>
+      </nav>
+
+      <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
+        <h1 className="text-ink">All books</h1>
+        <SortControl currentSort={sort} />
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
+        {nodes.map((product, index) => (
           <ProductItem
             key={product.id}
             product={product}
             index={index}
             loading={index < 8 ? 'eager' : undefined}
           />
-        )}
-      </PaginatedResourceSection>
+        ))}
+      </div>
     </div>
+  );
+}
+
+function SortControl({currentSort}: {currentSort: string}) {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  return (
+    <label className="text-small text-ink-soft flex items-center gap-2">
+      Sort by
+      <select
+        value={currentSort}
+        onChange={(e) => {
+          const params = new URLSearchParams(searchParams);
+          params.set('sort', e.target.value);
+          void navigate(`?${params.toString()}`, {preventScrollReset: true});
+        }}
+        className="rounded-pill border border-border bg-white px-4 py-2 text-small text-ink focus:outline-none focus:ring-2 focus:ring-accent"
+      >
+        <option value="featured">Featured</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="newest">Newest</option>
+      </select>
+    </label>
   );
 }
 
@@ -96,6 +114,11 @@ const COLLECTION_ITEM_FRAGMENT = `#graphql
         ...MoneyCollectionItem
       }
     }
+    compareAtPriceRange {
+      minVariantPrice {
+        ...MoneyCollectionItem
+      }
+    }
   }
 ` as const;
 
@@ -105,19 +128,12 @@ const CATALOG_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
     $first: Int
-    $last: Int
-    $startCursor: String
-    $endCursor: String
+    $sortKey: ProductSortKeys
+    $reverse: Boolean
   ) @inContext(country: $country, language: $language) {
-    products(first: $first, last: $last, before: $startCursor, after: $endCursor) {
+    products(first: $first, sortKey: $sortKey, reverse: $reverse) {
       nodes {
         ...CollectionItem
-      }
-      pageInfo {
-        hasPreviousPage
-        hasNextPage
-        startCursor
-        endCursor
       }
     }
   }

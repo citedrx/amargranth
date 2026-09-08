@@ -1,16 +1,24 @@
 import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/products.$handle';
+import {useEffect, useRef, useState} from 'react';
 import {
   getSelectedProductOptions,
   Analytics,
+  Image,
+  Money,
   useOptimisticVariant,
   getProductOptions,
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
+import type {
+  ProductVariantFragment,
+  RelatedProductItemFragment,
+} from 'storefrontapi.generated';
 import {ProductPrice} from '~/components/ProductPrice';
-import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
+import {AddToCartButton} from '~/components/AddToCartButton';
+import {useAside} from '~/components/Aside';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
@@ -49,11 +57,11 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
     throw new Error('Expected product handle to be defined');
   }
 
-  const [{product}] = await Promise.all([
+  const [{product}, {products: allProducts}] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
       variables: {handle, selectedOptions: getSelectedProductOptions(request)},
     }),
-    // Add other queries here, so that they are loaded in parallel
+    storefront.query(RELATED_PRODUCTS_QUERY),
   ]);
 
   if (!product?.id) {
@@ -65,6 +73,7 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
 
   return {
     product,
+    relatedProducts: allProducts.nodes,
   };
 }
 
@@ -74,14 +83,49 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
  * Make sure to not throw any errors here, as it will cause the page to 500.
  */
 function loadDeferredData({context, params}: Route.LoaderArgs) {
-  // Put any API calls that is not critical to be available on first page render
-  // For example: product reviews, product recommendations, social feeds.
-
   return {};
 }
 
+/**
+ * Combo Set buyers already own the standalone Jyotirlingas and Shaktipeeths
+ * titles' content — never recommend those as "related" alongside it. Driven
+ * entirely by real product tags (owns-jyotirlingas / owns-shaktipeeths on the
+ * Combo Set, Jyotirlingas / Shaktipeeths on the standalone titles), not a
+ * hardcoded product list.
+ */
+function getRelatedProducts(
+  current: {id: string; tags: readonly string[]},
+  all: RelatedProductItemFragment[],
+) {
+  const ownedCategories = current.tags
+    .filter((t) => t.toLowerCase().startsWith('owns-'))
+    .map((t) => t.toLowerCase().replace('owns-', ''));
+
+  return all
+    .filter((p) => p.id !== current.id)
+    .filter(
+      (p) => !p.tags?.some((t) => ownedCategories.includes(t.toLowerCase())),
+    )
+    .slice(0, 4);
+}
+
+function useScrolledPastEl(ref: React.RefObject<HTMLElement | null>) {
+  const [scrolledPast, setScrolledPast] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setScrolledPast(!entry.isIntersecting),
+      {rootMargin: '0px'},
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
+  return scrolledPast;
+}
+
 export default function Product() {
-  const {product} = useLoaderData<typeof loader>();
+  const {product, relatedProducts} = useLoaderData<typeof loader>();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -99,25 +143,39 @@ export default function Product() {
     selectedOrFirstAvailableVariant: selectedVariant,
   });
 
-  const {title, descriptionHtml, seo} = product;
+  const {title, descriptionHtml, seo, tags} = product;
+  const galleryImages = [
+    selectedVariant?.image,
+    ...product.images.nodes.filter((img) => img.id !== selectedVariant?.image?.id),
+  ].filter((img): img is NonNullable<typeof img> => Boolean(img));
+
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const showStickyBar = useScrolledPastEl(ctaRef);
+  const {open} = useAside();
+
+  const related = getRelatedProducts({id: product.id, tags}, relatedProducts);
 
   return (
     <div className="bg-base">
-      <div className="px-6 md:px-16 py-8 md:py-14 max-w-6xl mx-auto">
-        <Link
-          to="/collections"
-          className="text-sm text-ink-soft hover:text-ink transition-colors"
-        >
-          ← Back to collections
-        </Link>
-        <div className="grid md:grid-cols-2 gap-10 md:gap-14 mt-6">
-          <ProductImage image={selectedVariant?.image} />
+      <div className="px-5 md:px-12 lg:px-16 py-6 md:py-10 max-w-[1280px] mx-auto">
+        <nav aria-label="Breadcrumb" className="text-small text-ink-soft mb-5">
+          <Link to="/" className="hover:text-ink transition-colors">
+            Home
+          </Link>{' '}
+          /{' '}
+          <Link to="/collections/all" className="hover:text-ink transition-colors">
+            All books
+          </Link>{' '}
+          / <span className="text-ink">{title}</span>
+        </nav>
+
+        <div className="grid lg:grid-cols-[58%_1fr] gap-8 lg:gap-12">
+          <ProductGallery images={galleryImages} title={title} />
+
           <div>
-            <h1 className="font-display text-ink mb-3">
-              {title}
-            </h1>
+            <h1 className="text-ink mb-2">{title}</h1>
             {seo.description ? (
-              <p className="text-ink-soft text-base mb-5">
+              <p className="text-body-lg text-ink-soft mb-5">
                 {seo.description}
               </p>
             ) : null}
@@ -127,24 +185,99 @@ export default function Product() {
                 compareAtPrice={selectedVariant?.compareAtPrice}
               />
             </div>
-            <ProductForm
-              productOptions={productOptions}
-              selectedVariant={selectedVariant}
-            />
+
+            <div ref={ctaRef}>
+              <ProductForm
+                productOptions={productOptions}
+                selectedVariant={selectedVariant}
+              />
+            </div>
+
+            <ul className="flex flex-col gap-1.5 mt-5 text-small text-ink-soft">
+              <li>🚚 Free shipping across India · 24–48hr dispatch</li>
+              <li>↩ Damaged on arrival? Email us within 24hrs for a replacement</li>
+            </ul>
+
             {descriptionHtml ? (
-              <div className="mt-10 pt-8 border-t border-border">
-                <h2 className="font-display text-ink mb-3">
-                  What&rsquo;s inside
-                </h2>
+              <div className="mt-8 pt-6 border-t border-border">
+                <h2 className="text-ink mb-3">What&rsquo;s inside</h2>
                 <div
-                  className="text-ink-soft text-sm leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_p]:mb-3 [&_p:last-child]:mb-0"
+                  className="text-ink-soft text-body leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_p]:mb-3 [&_p:last-child]:mb-0"
                   dangerouslySetInnerHTML={{__html: descriptionHtml}}
                 />
               </div>
             ) : null}
+
+            <details className="mt-6 pt-6 border-t border-border group">
+              <summary className="cursor-pointer text-h3 text-ink list-none flex items-center justify-between">
+                Shipping &amp; returns
+                <span className="text-ink-soft group-open:rotate-180 transition-transform">
+                  ⌄
+                </span>
+              </summary>
+              <div className="text-body text-ink-soft mt-3 space-y-2">
+                <p>
+                  Free shipping across India, with 24–48hr dispatch on every
+                  order.
+                </p>
+                <p>
+                  If your book arrives damaged, email{' '}
+                  <a
+                    href="mailto:contact@amarshivmedia.com"
+                    className="text-accent hover:text-accent-hover underline"
+                  >
+                    contact@amarshivmedia.com
+                  </a>{' '}
+                  within 24 hours and we&rsquo;ll sort out a replacement.
+                </p>
+              </div>
+            </details>
           </div>
         </div>
+
+        {related.length > 0 ? (
+          <section className="mt-16 md:mt-20 pt-10 border-t border-border">
+            <h2 className="text-ink mb-6">You might also like</h2>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+              {related.map((p, index) => (
+                <RelatedProductCard key={p.id} product={p} index={index} />
+              ))}
+            </div>
+          </section>
+        ) : null}
       </div>
+
+      {/* Sticky mobile add-to-cart bar, once the primary CTA scrolls out of view */}
+      <div
+        className={`fixed bottom-0 inset-x-0 z-20 lg:hidden bg-base border-t border-border px-5 py-3 flex items-center justify-between gap-4 transition-transform duration-200 ${
+          showStickyBar ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
+        <ProductPrice
+          price={selectedVariant?.price}
+          compareAtPrice={selectedVariant?.compareAtPrice}
+          size="small"
+        />
+        <AddToCartButton
+          disabled={!selectedVariant || !selectedVariant.availableForSale}
+          onClick={() => open('cart')}
+          lines={
+            selectedVariant
+              ? [
+                  {
+                    merchandiseId: selectedVariant.id,
+                    quantity: 1,
+                    selectedVariant,
+                  },
+                ]
+              : []
+          }
+          className="shrink-0 bg-accent hover:bg-accent-hover disabled:bg-border disabled:text-ink-soft disabled:cursor-not-allowed text-white font-semibold text-small px-6 h-11 rounded-pill transition-colors"
+        >
+          {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
+        </AddToCartButton>
+      </div>
+
       <Analytics.ProductView
         data={{
           products: [
@@ -161,6 +294,99 @@ export default function Product() {
         }}
       />
     </div>
+  );
+}
+
+function ProductGallery({
+  images,
+  title,
+}: {
+  images: NonNullable<ProductVariantFragment['image']>[];
+  title: string;
+}) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const active = images[activeIndex];
+
+  return (
+    <div>
+      <div className="bg-tint-sand rounded-card aspect-square flex items-center justify-center overflow-hidden">
+        {active ? (
+          <Image
+            alt={active.altText || title}
+            aspectRatio="1/1"
+            data={active}
+            key={active.id}
+            sizes="(min-width: 1024px) 58vw, 100vw"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <span className="text-7xl opacity-60" role="img" aria-label="book">
+            📖
+          </span>
+        )}
+      </div>
+      {images.length > 1 ? (
+        <div className="flex gap-3 mt-4">
+          {images.slice(0, 4).map((img, index) => (
+            <button
+              key={img.id}
+              type="button"
+              onClick={() => setActiveIndex(index)}
+              aria-label={`Show image ${index + 1} of ${title}`}
+              aria-pressed={index === activeIndex}
+              className={`w-16 h-16 rounded-[0.5rem] overflow-hidden bg-tint-sand shrink-0 ring-2 transition-colors ${
+                index === activeIndex ? 'ring-accent' : 'ring-transparent'
+              }`}
+            >
+              <Image
+                alt={img.altText || `${title} thumbnail ${index + 1}`}
+                aspectRatio="1/1"
+                data={img}
+                sizes="64px"
+                className="w-full h-full object-cover"
+              />
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+const TINT_CLASSES = ['bg-tint-sand', 'bg-tint-powder', 'bg-tint-sage', 'bg-tint-blush'];
+
+function RelatedProductCard({
+  product,
+  index,
+}: {
+  product: RelatedProductItemFragment;
+  index: number;
+}) {
+  return (
+    <Link to={`/products/${product.handle}`} className="group" prefetch="intent">
+      <div
+        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-card aspect-square mb-3 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-[1.02]`}
+      >
+        {product.featuredImage ? (
+          <Image
+            alt={product.featuredImage.altText || product.title}
+            aspectRatio="1/1"
+            data={product.featuredImage}
+            sizes="(min-width: 1024px) 22vw, 45vw"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <span className="text-4xl opacity-60" role="img" aria-label="book">
+            📗
+          </span>
+        )}
+      </div>
+      <h3 className="text-ink mb-1 line-clamp-2">{product.title}</h3>
+      <Money
+        data={product.priceRange.minVariantPrice}
+        className="text-accent text-body font-semibold"
+      />
+    </Link>
   );
 }
 
@@ -209,8 +435,19 @@ const PRODUCT_FRAGMENT = `#graphql
     handle
     descriptionHtml
     description
+    tags
     encodedVariantExistence
     encodedVariantAvailability
+    images(first: 6) {
+      nodes {
+        __typename
+        id
+        url
+        altText
+        width
+        height
+      }
+    }
     options {
       name
       optionValues {
@@ -254,4 +491,34 @@ const PRODUCT_QUERY = `#graphql
     }
   }
   ${PRODUCT_FRAGMENT}
+` as const;
+
+const RELATED_PRODUCTS_QUERY = `#graphql
+  fragment RelatedProductItem on Product {
+    id
+    title
+    handle
+    tags
+    featuredImage {
+      id
+      altText
+      url
+      width
+      height
+    }
+    priceRange {
+      minVariantPrice {
+        amount
+        currencyCode
+      }
+    }
+  }
+  query RelatedProducts($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    products(first: 20) {
+      nodes {
+        ...RelatedProductItem
+      }
+    }
+  }
 ` as const;

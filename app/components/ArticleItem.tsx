@@ -1,6 +1,6 @@
 import {Link} from 'react-router';
 import {Image} from '@shopify/hydrogen';
-import type {ArticleItemFragment} from 'storefrontapi.generated';
+import type {HomepageArticleFragment} from 'storefrontapi.generated';
 
 const TINT_CLASSES = [
   'bg-tint-sand',
@@ -9,10 +9,7 @@ const TINT_CLASSES = [
   'bg-tint-blush',
 ];
 
-type ArticleItemData = Pick<
-  ArticleItemFragment,
-  'id' | 'handle' | 'title' | 'publishedAt' | 'image' | 'blog'
->;
+type ArticleItemData = HomepageArticleFragment;
 
 export function ArticleItem({
   article,

@@ -48,13 +48,23 @@ export function ProductItem({
           </span>
         )}
       </div>
-      <h4 className="text-ink mb-1 line-clamp-2">
-        {product.title}
-      </h4>
-      <Money
-        data={product.priceRange.minVariantPrice}
-        className="text-accent text-[0.92rem] font-semibold"
-      />
+      <h3 className="text-ink mb-1 line-clamp-2">{product.title}</h3>
+      <div className="flex items-baseline gap-2">
+        <Money
+          data={product.priceRange.minVariantPrice}
+          className="text-accent text-body font-medium"
+        />
+        {product.compareAtPriceRange &&
+        Number(product.compareAtPriceRange.minVariantPrice.amount) >
+          Number(product.priceRange.minVariantPrice.amount) ? (
+          <s>
+            <Money
+              data={product.compareAtPriceRange.minVariantPrice}
+              className="text-ink-soft text-small"
+            />
+          </s>
+        ) : null}
+      </div>
     </Link>
   );
 }

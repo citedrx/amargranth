@@ -22,8 +22,8 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
       className="mt-auto pt-5 border-t border-border"
     >
       <dl role="group" className="flex items-center justify-between mb-4">
-        <dt className="text-sm text-ink-soft">Subtotal</dt>
-        <dd className="text-lg font-semibold text-ink">
+        <dt className="text-body text-ink-soft">Subtotal</dt>
+        <dd className="text-h3 font-semibold text-ink">
           {cart?.cost?.subtotalAmount?.amount ? (
             <Money data={cart?.cost?.subtotalAmount} />
           ) : (
@@ -65,9 +65,9 @@ function CartCheckoutActions({cart}: {cart: CartSummaryProps['cart']}) {
           currency: cart?.cost?.subtotalAmount?.currencyCode || 'INR',
         });
       }}
-      className="block text-center bg-accent hover:bg-accent-hover text-white font-semibold text-sm px-6 py-3.5 rounded-pill transition-colors mt-2"
+      className="flex items-center justify-center w-full bg-accent hover:bg-accent-hover text-white font-semibold text-body h-[52px] rounded-pill transition-colors mt-2"
     >
-      Continue to checkout &rarr;
+      Checkout
     </a>
   );
 }
@@ -100,13 +100,13 @@ function CartDiscounts({
               role="group"
               aria-labelledby={discountsHeadingId}
             >
-              <code className="text-xs font-semibold text-ink">
+              <code className="text-micro font-semibold text-ink">
                 {codes?.join(', ')}
               </code>
               <button
                 type="submit"
                 aria-label="Remove discount"
-                className="text-xs text-ink-soft hover:text-ink underline"
+                className="text-micro text-ink-soft hover:text-ink underline"
               >
                 Remove
               </button>
@@ -126,12 +126,12 @@ function CartDiscounts({
             type="text"
             name="discountCode"
             placeholder="Discount code"
-            className="flex-1 min-w-0 px-4 py-2 rounded-pill border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+            className="flex-1 min-w-0 px-4 py-2 rounded-pill border border-border bg-white text-small focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button
             type="submit"
             aria-label="Apply discount code"
-            className="rounded-pill border border-border px-4 py-2 text-sm font-semibold text-ink hover:border-accent hover:text-accent transition-colors"
+            className="rounded-pill border border-border px-4 py-2 text-small font-semibold text-ink hover:border-accent hover:text-accent transition-colors"
           >
             Apply
           </button>
@@ -237,12 +237,12 @@ function CartGiftCard({
                   }
                 }}
               >
-                <code className="text-xs font-semibold text-ink">
+                <code className="text-micro font-semibold text-ink">
                   ***{giftCard.lastCharacters}
                 </code>{' '}
                 <Money
                   data={giftCard.amountUsed}
-                  className="text-xs text-ink-soft"
+                  className="text-micro text-ink-soft"
                 />
               </RemoveGiftCardForm>
             </dd>
@@ -261,13 +261,13 @@ function CartGiftCard({
             name="giftCardCode"
             placeholder="Gift card code"
             ref={giftCardCodeInput}
-            className="flex-1 min-w-0 px-4 py-2 rounded-pill border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+            className="flex-1 min-w-0 px-4 py-2 rounded-pill border border-border bg-white text-small focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button
             type="submit"
             disabled={giftCardAddFetcher.state !== 'idle'}
             aria-label="Apply gift card code"
-            className="rounded-pill border border-border px-4 py-2 text-sm font-semibold text-ink hover:border-accent hover:text-accent transition-colors disabled:opacity-50"
+            className="rounded-pill border border-border px-4 py-2 text-small font-semibold text-ink hover:border-accent hover:text-accent transition-colors disabled:opacity-50"
           >
             Apply
           </button>
@@ -323,7 +323,7 @@ function RemoveGiftCardForm({
           aria-label={`Remove gift card ending in ${lastCharacters}`}
           onClick={onRemoveClick}
           ref={buttonRef}
-          className="text-xs text-ink-soft hover:text-ink underline"
+          className="text-micro text-ink-soft hover:text-ink underline py-2 -my-2"
         >
           Remove
         </button>

@@ -43,10 +43,10 @@ export function CartLineItem({
               alt={title}
               aspectRatio="1/1"
               data={image}
-              height={80}
+              height={64}
               loading="lazy"
-              width={80}
-              className="w-20 h-20 object-cover"
+              width={64}
+              className="w-16 h-16 object-cover"
             />
           </div>
         )}
@@ -61,7 +61,7 @@ export function CartLineItem({
               }
             }}
           >
-            <p className="font-semibold text-sm text-ink mb-1">
+            <p className="font-semibold text-body text-ink mb-1">
               {product.title}
             </p>
           </Link>
@@ -69,7 +69,7 @@ export function CartLineItem({
           {selectedOptions.length ? (
             <ul className="mt-1">
               {selectedOptions.map((option) => (
-                <li key={option.name} className="text-xs text-ink-soft">
+                <li key={option.name} className="text-micro text-ink-soft">
                   {option.name}: {option.value}
                 </li>
               ))}
@@ -123,12 +123,12 @@ function CartLineQuantity({line}: {line: CartLine}) {
             disabled={quantity <= 1 || !!isOptimistic}
             name="decrease-quantity"
             value={prevQuantity}
-            className="w-9 h-9 flex items-center justify-center text-ink-soft hover:text-ink disabled:opacity-30 transition-colors"
+            className="w-11 h-11 flex items-center justify-center text-ink-soft hover:text-ink disabled:opacity-30 transition-colors"
           >
             <span>&#8722;</span>
           </button>
         </CartLineUpdateButton>
-        <span className="text-xs font-semibold text-ink w-5 text-center">
+        <span className="text-small font-semibold text-ink w-5 text-center">
           {quantity}
         </span>
         <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
@@ -137,7 +137,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
             name="increase-quantity"
             value={nextQuantity}
             disabled={!!isOptimistic}
-            className="w-9 h-9 flex items-center justify-center text-ink-soft hover:text-ink disabled:opacity-30 transition-colors"
+            className="w-11 h-11 flex items-center justify-center text-ink-soft hover:text-ink disabled:opacity-30 transition-colors"
           >
             <span>&#43;</span>
           </button>
@@ -170,7 +170,7 @@ function CartLineRemoveButton({
       <button
         disabled={disabled}
         type="submit"
-        className="text-xs text-ink-soft hover:text-ink underline transition-colors disabled:opacity-30"
+        className="text-small text-ink-soft hover:text-ink underline transition-colors disabled:opacity-30 py-2 -my-2"
       >
         Remove
       </button>

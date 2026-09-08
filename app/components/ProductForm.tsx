@@ -25,7 +25,7 @@ export function ProductForm({
 
         return (
           <div key={option.name}>
-            <h5 className="text-sm font-semibold text-ink mb-2">
+            <h5 className="text-small font-semibold text-ink mb-2">
               {option.name}
             </h5>
             <div className="flex flex-wrap gap-2">
@@ -41,7 +41,7 @@ export function ProductForm({
                   swatch,
                 } = value;
 
-                const optionClassName = `rounded-pill border px-4 py-2 text-sm font-medium transition-colors ${
+                const optionClassName = `rounded-pill border px-6 min-h-11 flex items-center text-small font-medium transition-colors ${
                   selected
                     ? 'border-accent bg-accent text-white'
                     : 'border-border bg-white text-ink hover:border-accent'
@@ -110,7 +110,7 @@ export function ProductForm({
               ]
             : []
         }
-        className="w-full md:w-auto bg-accent hover:bg-accent-hover disabled:bg-border disabled:text-ink-soft disabled:cursor-not-allowed text-white font-semibold text-sm px-8 py-3.5 rounded-pill transition-colors"
+        className="w-full bg-accent hover:bg-accent-hover disabled:bg-border disabled:text-ink-soft disabled:cursor-not-allowed text-white font-semibold text-body h-[52px] rounded-pill transition-colors"
       >
         {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
       </AddToCartButton>

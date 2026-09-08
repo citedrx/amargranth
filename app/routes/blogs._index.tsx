@@ -54,11 +54,15 @@ export default function Blogs() {
   const {blogs} = useLoaderData<typeof loader>();
 
   return (
-    <div className="bg-base px-6 md:px-16 py-8 md:py-14 max-w-7xl mx-auto">
-      <h1 className="font-display text-ink mb-8">
-        Stories
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+    <div className="bg-base px-5 md:px-12 lg:px-16 py-6 md:py-10 max-w-[1280px] mx-auto">
+      <nav aria-label="Breadcrumb" className="text-small text-ink-soft mb-4">
+        <Link to="/" className="hover:text-ink transition-colors">
+          Home
+        </Link>{' '}
+        / <span className="text-ink">Stories</span>
+      </nav>
+      <h1 className="text-ink mb-8">Stories</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <PaginatedResourceSection<BlogNode> connection={blogs}>
           {({node: blog}) => (
             <Link
@@ -67,7 +71,7 @@ export default function Blogs() {
               prefetch="intent"
               to={`/blogs/${blog.handle}`}
             >
-              <h2 className="font-display text-ink">{blog.title}</h2>
+              <h2 className="text-ink">{blog.title}</h2>
             </Link>
           )}
         </PaginatedResourceSection>

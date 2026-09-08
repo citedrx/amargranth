@@ -50,13 +50,17 @@ export default function Collections() {
   const {collections} = useLoaderData<typeof loader>();
 
   return (
-    <div className="bg-base px-6 md:px-16 py-8 md:py-14 max-w-7xl mx-auto">
-      <h1 className="font-display text-ink mb-8">
-        Shop by collection
-      </h1>
+    <div className="bg-base px-5 md:px-12 lg:px-16 py-6 md:py-10 max-w-[1280px] mx-auto">
+      <nav aria-label="Breadcrumb" className="text-small text-ink-soft mb-4">
+        <Link to="/" className="hover:text-ink transition-colors">
+          Home
+        </Link>{' '}
+        / <span className="text-ink">Collections</span>
+      </nav>
+      <h1 className="text-ink mb-8">Shop by collection</h1>
       <PaginatedResourceSection<CollectionFragment>
         connection={collections}
-        resourcesClassName="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6"
+        resourcesClassName="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5"
       >
         {({node: collection, index}) => (
           <CollectionItem
@@ -109,7 +113,7 @@ function CollectionItem({
           </span>
         )}
       </div>
-      <p className="font-semibold text-sm text-ink">{collection.title}</p>
+      <p className="font-semibold text-small text-ink">{collection.title}</p>
     </Link>
   );
 }

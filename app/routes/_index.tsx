@@ -408,6 +408,12 @@ const FEATURED_PRODUCTS_QUERY = `#graphql
         currencyCode
       }
     }
+    compareAtPriceRange {
+      minVariantPrice {
+        amount
+        currencyCode
+      }
+    }
   }
   query FeaturedProducts($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
