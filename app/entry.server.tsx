@@ -19,10 +19,23 @@ export default async function handleRequest(
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
-    // Allow the Meta Pixel script + tracking beacons alongside Hydrogen's defaults.
-    scriptSrc: ["'self'", 'https://cdn.shopify.com', 'https://connect.facebook.net'],
+    // Allow the Meta Pixel + Google Analytics scripts and tracking beacons
+    // alongside Hydrogen's defaults.
+    scriptSrc: [
+      "'self'",
+      'https://cdn.shopify.com',
+      'https://connect.facebook.net',
+      'https://www.googletagmanager.com',
+    ],
     imgSrc: ["'self'", 'https://cdn.shopify.com', 'https://www.facebook.com'],
-    connectSrc: ['https://www.facebook.com', 'https://connect.facebook.net'],
+    connectSrc: [
+      'https://www.facebook.com',
+      'https://connect.facebook.net',
+      'https://www.google-analytics.com',
+      'https://*.google-analytics.com',
+      'https://www.googletagmanager.com',
+      'https://*.analytics.google.com',
+    ],
   });
 
   const body = await renderToReadableStream(

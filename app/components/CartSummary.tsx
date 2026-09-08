@@ -60,6 +60,10 @@ function CartCheckoutActions({cart}: {cart: CartSummaryProps['cart']}) {
           currency: cart?.cost?.subtotalAmount?.currencyCode || 'INR',
           num_items: cart?.totalQuantity,
         });
+        window.gtag?.('event', 'begin_checkout', {
+          value: Number(cart?.cost?.subtotalAmount?.amount) || undefined,
+          currency: cart?.cost?.subtotalAmount?.currencyCode || 'INR',
+        });
       }}
       className="block text-center bg-accent hover:bg-accent-hover text-white font-semibold text-sm px-6 py-3.5 rounded-pill transition-colors mt-2"
     >

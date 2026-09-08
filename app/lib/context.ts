@@ -22,9 +22,11 @@ declare global {
   // that context.cart.get() and all cart mutations return the extended cart type.
   interface HydrogenCustomCartFragment extends CartApiQueryFragment {}
 
-  // Meta Pixel ID for storefront-side conversion tracking (client-exposed, not a secret).
+  // Meta Pixel ID and GA4 Measurement ID for storefront-side conversion
+  // tracking (client-exposed, not secrets).
   interface Env {
     PUBLIC_META_PIXEL_ID?: string;
+    PUBLIC_GA4_MEASUREMENT_ID?: string;
   }
 }
 

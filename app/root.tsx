@@ -18,6 +18,10 @@ import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {PageLayout} from './components/PageLayout';
 import {MetaPixelBaseScript, MetaPixelEvents} from './components/MetaPixel';
+import {
+  GoogleAnalyticsBaseScript,
+  GoogleAnalyticsEvents,
+} from './components/GoogleAnalytics';
 
 export type RootLoader = typeof loader;
 
@@ -81,6 +85,7 @@ export async function loader(args: Route.LoaderArgs) {
     ...criticalData,
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     metaPixelId: env.PUBLIC_META_PIXEL_ID,
+    ga4MeasurementId: env.PUBLIC_GA4_MEASUREMENT_ID,
     shop: getShopAnalytics({
       storefront,
       publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
@@ -159,6 +164,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <Meta />
         <Links />
         <MetaPixelBaseScript pixelId={data?.metaPixelId} />
+        <GoogleAnalyticsBaseScript measurementId={data?.ga4MeasurementId} />
       </head>
       <body>
         {children}
@@ -183,6 +189,7 @@ export default function App() {
       consent={data.consent}
     >
       <MetaPixelEvents pixelId={data.metaPixelId} />
+      <GoogleAnalyticsEvents measurementId={data.ga4MeasurementId} />
       <PageLayout {...data}>
         <Outlet />
       </PageLayout>
