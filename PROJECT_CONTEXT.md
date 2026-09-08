@@ -65,8 +65,9 @@ This is an established, ASM-approved direction — do not deviate from the palet
 | `--color-tint-sand` / `-powder` / `-sage` / `-blush` | `#F3E6D8` / `#E4EEF6` / `#EAF1E4` / `#F6E6EC` | Pastel backgrounds for collection tiles/cards, cycled per item |
 
 **Typography:**
-- Display/headings: `Libre Caslon Text` (classic serif) — loaded via Google Fonts `@import` in `tailwind.css`, applied via `--font-display` / `.font-display` / `h1,h2,h3`. Replaced the original `Fraunces` in September 2026 per ASM: Fraunces read as "too curvy" for the premium-but-kid-friendly direction they wanted.
-- Body/UI: `Work Sans` — applied via `--font-sans`, set as default on `body`. Replaced the original `Nunito Sans` in the same pass.
+- Display/headings: `Fraunces` (soft serif) — loaded via Google Fonts `@import` in `tailwind.css`, applied via `--font-display` / `.font-display` / `h1,h2,h3`. Briefly swapped to `Libre Caslon Text` for a "premium" direction, then reverted back to `Fraunces` per ASM the same week — the premium/less-curvy direction didn't feel like the "playful storybook theme" they actually wanted. Treat `Fraunces` as the settled choice unless told otherwise again.
+- Body/UI: `Nunito Sans` — applied via `--font-sans`, set as default on `body`. Same revert as above (was briefly `Work Sans`).
+- Base font size bumped from the browser default 16px to 18px via `html { font-size: 112.5% }` in `tailwind.css` — scales every rem-based Tailwind text utility site-wide. Per ASM: "the fonts need to be larger."
 
 **Layout principles established for this brand:**
 - Flat navigation: logo + max ~4 links, no nested menus
@@ -81,7 +82,7 @@ Scaffolded with `npm create @shopify/hydrogen@latest` (TypeScript, Tailwind v4, 
 
 ### Done
 Every route and shared component is now built and styled in the Storybook Studio theme:
-- `app/routes/_index.tsx` — homepage: hero, motif divider, "Shop by collection" grid, bestseller spotlight, brand story, reviews, email signup bar.
+- `app/routes/_index.tsx` — homepage, rebuilt per ASM's explicit 3-section spec (replacing the earlier shop-by-collection/bestseller/reviews/signup layout): trimmed hero + motif divider, then **Our Books** (full product catalog grid, all products), **From the Blog** (3 most recent articles, `sortKey: PUBLISHED_AT, reverse: true`), and **Mission & Vision** (real copy adapted from the live Wix site's "The Amar Granth Mission" section, tightened from its original SEO-keyword-heavy phrasing — not invented). `ArticleItem` was extracted from `blogs.$blogHandle._index.tsx` into a shared `app/components/ArticleItem.tsx` since the homepage needed the same tile. Brand name now displays properly cased ("Amar Granth") in Header/Footer — was previously forced lowercase via a `lowercase` Tailwind class.
 - `app/components/Header.tsx` / `Footer.tsx` — flat nav header; footer with brand blurb, policy/page links, copyright.
 - `app/routes/products.$handle.tsx` + `ProductImage`/`ProductPrice`/`ProductForm`/`AddToCartButton` — pastel image tile, price + real `seo.description` hook, pill variant chips, styled "What's inside" from the real migrated description.
 - `app/routes/collections._index.tsx`, `collections.$handle.tsx`, `collections.all.tsx` + `ProductItem` — pastel tile grids matching the homepage.

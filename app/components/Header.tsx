@@ -30,7 +30,7 @@ export function Header({
         prefetch="intent"
         to="/"
         end
-        className="font-display text-lg text-ink lowercase tracking-wide"
+        className="font-display text-xl text-ink tracking-wide"
       >
         {shop.name}
       </NavLink>

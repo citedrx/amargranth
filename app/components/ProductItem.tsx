@@ -3,7 +3,7 @@ import {Image, Money} from '@shopify/hydrogen';
 import type {
   ProductItemFragment,
   CollectionItemFragment,
-  RecommendedProductFragment,
+  HomepageProductItemFragment,
 } from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 
@@ -22,7 +22,7 @@ export function ProductItem({
   product:
     | CollectionItemFragment
     | ProductItemFragment
-    | RecommendedProductFragment;
+    | HomepageProductItemFragment;
   loading?: 'eager' | 'lazy';
   index?: number;
 }) {
