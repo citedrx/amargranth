@@ -47,7 +47,7 @@ const FAQ_SECTIONS: FaqSection[] = [
       },
       {
         question: 'What if my book arrives damaged?',
-        answer: 'Email us at contact@amargranth.com within 24 hours of delivery to report it.',
+        answer: 'Email us at contact@amarshivmedia.com within 24 hours of delivery to report it.',
       },
     ],
   },

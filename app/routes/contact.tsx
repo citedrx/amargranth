@@ -10,7 +10,7 @@ export const meta: Route.MetaFunction = () => {
   ];
 };
 
-const CONTACT_EMAIL = 'contact@amargranth.com';
+const CONTACT_EMAIL = 'contact@amarshivmedia.com';
 
 export default function Contact() {
   return (
