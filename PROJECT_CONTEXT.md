@@ -58,9 +58,9 @@ This is an established, ASM-approved direction — do not deviate from the palet
 | `--color-base` | `#FEFCF7` | Page background (warm off-white, not pure white) |
 | `--color-ink` | `#2B2B28` | Primary text |
 | `--color-ink-soft` | `#5F5E5A` | Secondary/muted text |
-| `--color-accent` | `#3E7CA6` | Primary CTA color (soft sky blue) — the only color used for clickable/actionable things |
-| `--color-accent-hover` | `#336A8F` | Accent hover state |
-| `--color-amber` | `#D9A441` | Decorative only (motif icons) — never used for CTAs or links |
+| `--color-accent` | `#D9761F` | Primary CTA color ("Burnt Saffron") — the only color used for clickable/actionable things. Replaced the original soft-blue (`#3E7CA6`) in September 2026 per ASM, who wanted to leverage the saffron/orange from their old Wix site's theme, refined for the premium direction. |
+| `--color-accent-hover` | `#B8611A` | Accent hover state |
+| `--color-amber` | `#E8B23D` | Decorative only (motif icons) — never used for CTAs or links. Refreshed to a richer gold alongside the saffron accent change. |
 | `--color-border` | `#ECE7DB` | Card/input borders |
 | `--color-tint-sand` / `-powder` / `-sage` / `-blush` | `#F3E6D8` / `#E4EEF6` / `#EAF1E4` / `#F6E6EC` | Pastel backgrounds for collection tiles/cards, cycled per item |
 
@@ -70,7 +70,7 @@ This is an established, ASM-approved direction — do not deviate from the palet
 
 **Layout principles established for this brand:**
 - Flat navigation: logo + max ~4 links, no nested menus
-- One accent color does all the "clickability" signaling (blue); amber is decorative-only (small motif icons like 🪔🪷🪶, never full-bleed patterns)
+- One accent color does all the "clickability" signaling (burnt saffron); amber is decorative-only (small motif icons like 🪔🪷🪶, never full-bleed patterns)
 - Pastel-tinted tiles/cards instead of busy photography backgrounds — keeps things feeling calm and minimal
 - Short, punchy copy over long paragraphs (this is a kids' brand — keep microcopy light and warm, not corporate)
 - Rounded corners throughout (`--radius-card: 1rem`, `--radius-pill: 999px` for buttons/inputs)
