@@ -3,9 +3,10 @@
  * https://tailwindcss.com/docs/v4-beta#css-first-configuration
  */
 
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 
-/* Amar Granth — "Storybook Studio" design tokens */
+/* Amar Granth — Design System (see DESIGN_SYSTEM.md) */
 @theme {
   /* Colors */
   --color-base: #fefcf7;
@@ -21,18 +22,20 @@
   --color-tint-sage: #eaf1e4;
   --color-tint-blush: #f6e6ec;
 
-  /* Fonts — system stack, no webfont: fast-loading, native per platform */
-  --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Helvetica, Arial, sans-serif;
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Helvetica, Arial, sans-serif;
+  /* Fonts — Instrument Serif (display, headings only) + Inter (everything else) */
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, sans-serif;
 
-  /* Type scale — fluid via clamp(), no md: breakpoint variants needed */
-  --text-hero: clamp(2rem, 4.5vw, 3.1rem);
-  --text-section: clamp(1.5rem, 3vw, 2.1rem);
-  --text-card-heading: 1.075rem;
-  --text-hero-lede: 1.15rem;
-  --text-card-body: 0.92rem;
+  /* Type scale — mobile (base) values; desktop overrides are in the
+     @media block below since these are discrete steps, not fluid. */
+  --text-display: 2.125rem; /* 34px mobile -> 56px desktop */
+  --text-h1: 1.75rem; /* 28px mobile -> 40px desktop */
+  --text-h2: 1.375rem; /* 22px mobile -> 28px desktop */
+  --text-h3: 1.125rem; /* 18px mobile -> 20px desktop */
+  --text-body-lg: 1rem; /* 16px mobile -> 18px desktop */
+  --text-body: 0.9375rem; /* 15px mobile -> 16px desktop */
+  --text-small: 0.8125rem; /* 13px mobile -> 14px desktop */
+  --text-micro: 0.75rem; /* 12px, same both */
 
   /* Radius */
   --radius-card: 1rem;
@@ -47,7 +50,8 @@ body {
   background-color: var(--color-base);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  line-height: 1.55;
+  font-size: var(--text-body);
+  line-height: 1.6;
   overflow-x: hidden;
 }
 
@@ -60,20 +64,50 @@ h4,
 }
 
 h1 {
-  font-size: var(--text-hero);
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-  font-weight: 800;
+  font-size: var(--text-h1);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  font-weight: 400;
 }
 
 h2 {
-  font-size: var(--text-section);
-  letter-spacing: -0.01em;
-  font-weight: 700;
+  font-size: var(--text-h2);
+  line-height: 1.2;
+  font-weight: 400;
 }
 
 h3,
 h4 {
-  font-size: var(--text-card-heading);
-  font-weight: 700;
+  font-size: var(--text-h3);
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+/* Homepage hero headline only — the one place --text-display applies */
+.text-display {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+  font-style: italic;
+}
+
+@media (min-width: 1024px) {
+  .text-display {
+    font-size: 3.5rem; /* 56px */
+  }
+  h1 {
+    font-size: 2.5rem; /* 40px */
+  }
+  h2 {
+    font-size: 1.75rem; /* 28px */
+  }
+  h3,
+  h4 {
+    font-size: 1.25rem; /* 20px */
+  }
+  body {
+    font-size: 1rem; /* 16px */
+  }
 }

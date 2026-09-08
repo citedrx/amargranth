@@ -17,13 +17,13 @@ export function Footer({
     <Suspense>
       <Await resolve={footerPromise}>
         {(footer) => (
-          <footer className="bg-tint-sand mt-20">
-            <div className="px-6 md:px-16 py-10 md:py-12 max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
+          <footer className="bg-tint-sand mt-24">
+            <div className="px-6 lg:px-16 py-16 max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
               <div className="text-center md:text-left">
                 <p className="font-display text-[1.25rem] font-extrabold text-ink tracking-[-0.02em] mb-2">
                   {header.shop.name}
                 </p>
-                <p className="text-ink-soft text-sm max-w-xs">
+                <p className="text-ink-soft text-body max-w-xs">
                   Illustrated storybooks bringing Indian mythology and
                   heritage to young readers.
                 </p>
@@ -36,8 +36,8 @@ export function Footer({
                 />
               )}
             </div>
-            <div className="border-t border-border px-6 md:px-16 py-5 max-w-7xl mx-auto text-center md:text-left">
-              <p className="text-ink-soft text-xs">
+            <div className="border-t border-border px-6 lg:px-16 py-5 max-w-7xl mx-auto text-center md:text-left">
+              <p className="text-ink-soft text-micro">
                 &copy; {new Date().getFullYear()} {header.shop.name}. All
                 rights reserved.
               </p>
@@ -60,7 +60,7 @@ function FooterMenu({
 }) {
   return (
     <nav
-      className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm"
+      className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-small"
       role="navigation"
     >
       {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
@@ -102,6 +102,15 @@ function FooterMenu({
 const FALLBACK_FOOTER_MENU = {
   id: 'gid://shopify/Menu/199655620664',
   items: [
+    {
+      id: 'collections-page',
+      resourceId: null,
+      tags: [],
+      title: 'Collections',
+      type: 'HTTP',
+      url: '/collections',
+      items: [],
+    },
     {
       id: 'about-page',
       resourceId: null,

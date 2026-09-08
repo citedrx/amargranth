@@ -3,11 +3,11 @@ import type {Route} from './+types/_index';
 import {Suspense} from 'react';
 import {Image, Money} from '@shopify/hydrogen';
 import type {
+  FeaturedCollectionFragment,
   HomepageProductItemFragment,
   RecentArticlesQuery,
 } from 'storefrontapi.generated';
 import {MockShopNotice} from '~/components/MockShopNotice';
-import {ProductItem} from '~/components/ProductItem';
 import {ArticleItem} from '~/components/ArticleItem';
 
 const COMBO_SET_HANDLE = '12-jyotirlings-51-shaktipeeths-book-set-hardcover';
@@ -30,12 +30,14 @@ export async function loader(args: Route.LoaderArgs) {
 }
 
 async function loadCriticalData({context}: Route.LoaderArgs) {
-  const [{products}] = await Promise.all([
-    context.storefront.query(CATALOG_PRODUCTS_QUERY),
+  const [{collections}, {products}] = await Promise.all([
+    context.storefront.query(FEATURED_COLLECTIONS_QUERY),
+    context.storefront.query(FEATURED_PRODUCTS_QUERY),
   ]);
 
   return {
     isShopLinked: Boolean(context.env.PUBLIC_STORE_DOMAIN),
+    collections: collections.nodes,
     products: products.nodes,
   };
 }
@@ -53,7 +55,17 @@ function loadDeferredData({context}: Route.LoaderArgs) {
   };
 }
 
-const MOTIF_ICONS = ['🪔', '🪷', '🪶'];
+const TINT_CLASSES = [
+  'bg-tint-sand',
+  'bg-tint-powder',
+  'bg-tint-sage',
+  'bg-tint-blush',
+];
+
+/** Uniform vertical rhythm between homepage sections (see DESIGN_SYSTEM.md
+ * Section 6): 48px mobile, 64px tablet, 96px desktop — applied as top
+ * margin so adjacent sections don't double up. */
+const SECTION_GAP = 'mt-12 md:mt-16 lg:mt-24';
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
@@ -62,32 +74,33 @@ export default function Homepage() {
     <div className="bg-base">
       {data.isShopLinked ? null : <MockShopNotice />}
       <Hero comboSet={comboSet} />
-      <MotifDivider />
-      <OurBooks products={data.products} />
+      <ShopByCollection collections={data.collections} />
+      <FeaturedProducts products={data.products} />
       <FromTheBlog articles={data.recentArticles} />
-      <MissionAndVision />
+      <BrandStory />
+      <EmailSignup />
     </div>
   );
 }
 
 function Hero({comboSet}: {comboSet?: HomepageProductItemFragment}) {
   return (
-    <section className="flex flex-col-reverse md:flex-row items-center gap-10 px-6 md:px-16 py-16 md:py-24 max-w-7xl mx-auto">
+    <section className="flex flex-col-reverse md:flex-row items-center gap-10 px-6 lg:px-16 py-16 lg:py-24 max-w-7xl mx-auto">
       <div className="flex-1">
-        <p className="text-accent font-semibold text-base tracking-wide mb-3">
+        <p className="text-accent font-semibold text-small tracking-wide mb-3">
           Stories of Shiva, Shakti &amp; Indian Culture
         </p>
-        <h1 className="font-display text-ink mb-6">
+        <h1 className="text-display text-ink mb-6">
           Stories that carry heritage into your child&rsquo;s hands
         </h1>
-        <p className="text-ink-soft text-[1.15rem] mb-9 max-w-md">
+        <p className="text-ink-soft text-body-lg mb-9 max-w-md">
           India&rsquo;s illustrated storybooks on the 12 Jyotirlingas, 51
           Shaktipeeths, sacred rivers, and more — made for curious young
           minds.
         </p>
         <Link
           to="/collections"
-          className="inline-block bg-accent hover:bg-accent-hover text-white font-semibold text-base px-8 py-3.5 rounded-pill transition-colors"
+          className="inline-block bg-accent hover:bg-accent-hover text-white font-semibold text-body px-8 py-3.5 rounded-pill transition-colors"
         >
           Shop the collection
         </Link>
@@ -113,16 +126,16 @@ function Hero({comboSet}: {comboSet?: HomepageProductItemFragment}) {
             </div>
             <div className="px-5 py-4 bg-white/70 flex items-center justify-between gap-3">
               <div>
-                <p className="text-accent font-semibold text-sm mb-0.5">
+                <p className="text-accent font-semibold text-small mb-0.5">
                   The Combo Set
                 </p>
-                <p className="text-ink font-semibold text-[0.92rem] line-clamp-1">
+                <p className="text-ink font-semibold text-body line-clamp-1">
                   {comboSet.title}
                 </p>
               </div>
               <Money
                 data={comboSet.priceRange.minVariantPrice}
-                className="text-accent font-extrabold text-lg whitespace-nowrap"
+                className="text-accent font-extrabold text-h3 whitespace-nowrap"
               />
             </div>
           </Link>
@@ -138,36 +151,65 @@ function Hero({comboSet}: {comboSet?: HomepageProductItemFragment}) {
   );
 }
 
-function MotifDivider() {
+function ShopByCollection({
+  collections,
+}: {
+  collections: FeaturedCollectionFragment[];
+}) {
+  if (!collections?.length) return null;
   return (
-    <div className="flex items-center justify-center gap-6 py-4">
-      {MOTIF_ICONS.map((icon, i) => (
-        <span key={i} className="text-amber text-2xl opacity-80">
-          {icon}
-        </span>
-      ))}
-    </div>
+    <section className={`px-6 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto`}>
+      <h2 className="text-ink mb-6">Shop by collection</h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+        {collections.slice(0, 6).map((collection, i) => (
+          <Link
+            key={collection.id}
+            to={`/collections/${collection.handle}`}
+            className="group text-center"
+          >
+            <div
+              className={`${TINT_CLASSES[i % TINT_CLASSES.length]} rounded-card aspect-square mb-3 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-[1.02]`}
+            >
+              {collection.image ? (
+                <Image
+                  data={collection.image}
+                  sizes="(min-width: 768px) 33vw, 50vw"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-4xl opacity-60">🕉️</span>
+              )}
+            </div>
+            <p className="font-semibold text-body text-ink">
+              {collection.title}
+            </p>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
 
-function OurBooks({products}: {products: HomepageProductItemFragment[]}) {
+function FeaturedProducts({
+  products,
+}: {
+  products: HomepageProductItemFragment[];
+}) {
   if (!products?.length) return null;
   return (
-    <section className="px-6 md:px-16 py-12 md:py-16 max-w-7xl mx-auto">
-      <div className="flex items-end justify-between mb-8">
-        <h2 className="font-display text-ink">
-          Our Books
-        </h2>
+    <section className={`px-6 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto`}>
+      <div className="flex items-end justify-between mb-6">
+        <h2 className="text-ink">Loved by families across India</h2>
         <Link
           to="/collections/all"
-          className="text-accent hover:text-accent-hover font-semibold text-sm md:text-base whitespace-nowrap"
+          className="text-accent hover:text-accent-hover font-semibold text-small whitespace-nowrap"
         >
           Shop all →
         </Link>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-7">
-        {products.map((product, i) => (
-          <ProductItem
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        {products.slice(0, 8).map((product, i) => (
+          <FeaturedProductCard
             key={product.id}
             product={product}
             index={i}
@@ -179,33 +221,73 @@ function OurBooks({products}: {products: HomepageProductItemFragment[]}) {
   );
 }
 
+function FeaturedProductCard({
+  product,
+  index,
+  loading,
+}: {
+  product: HomepageProductItemFragment;
+  index: number;
+  loading?: 'eager' | 'lazy';
+}) {
+  const isBestseller = product.tags?.includes('bestseller');
+  return (
+    <Link to={`/products/${product.handle}`} className="group">
+      <div
+        className={`relative ${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-card aspect-square mb-3 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-[1.02]`}
+      >
+        {isBestseller && (
+          <span className="absolute top-3 left-3 bg-accent text-white text-micro font-semibold uppercase tracking-wide px-2 py-1 rounded-pill">
+            Bestseller
+          </span>
+        )}
+        {product.featuredImage ? (
+          <Image
+            data={product.featuredImage}
+            sizes="(min-width: 768px) 25vw, 50vw"
+            loading={loading}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <span className="text-4xl opacity-60" role="img" aria-label="book">
+            📗
+          </span>
+        )}
+      </div>
+      <h3 className="text-ink mb-1 line-clamp-2">{product.title}</h3>
+      <Money
+        data={product.priceRange.minVariantPrice}
+        className="text-accent text-body font-semibold"
+      />
+    </Link>
+  );
+}
+
 function FromTheBlog({
   articles,
 }: {
   articles: Promise<RecentArticlesQuery | null>;
 }) {
   return (
-    <section className="px-6 md:px-16 py-12 md:py-16 max-w-7xl mx-auto">
-      <div className="flex items-end justify-between mb-8">
-        <h2 className="font-display text-ink">
-          From the Blog
-        </h2>
+    <section className={`px-6 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto`}>
+      <div className="flex items-end justify-between mb-6">
+        <h2 className="text-ink">From the Blog</h2>
         <Link
           to="/blogs/blog"
-          className="text-accent hover:text-accent-hover font-semibold text-sm md:text-base whitespace-nowrap"
+          className="text-accent hover:text-accent-hover font-semibold text-small whitespace-nowrap"
         >
           Read more stories →
         </Link>
       </div>
       <Suspense
-        fallback={<div className="text-ink-soft text-base">Loading…</div>}
+        fallback={<div className="text-ink-soft text-body">Loading…</div>}
       >
         <Await resolve={articles}>
           {(response) => {
             const nodes = response?.blog?.articles?.nodes;
             if (!nodes?.length) return null;
             return (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {nodes.map((article, i) => (
                   <ArticleItem
                     key={article.id}
@@ -223,53 +305,92 @@ function FromTheBlog({
   );
 }
 
-function MissionAndVision() {
+function BrandStory() {
   return (
-    <section className="bg-tint-sand">
-      <div className="px-6 md:px-16 py-16 md:py-24 max-w-4xl mx-auto text-center">
-        <p className="text-accent font-semibold text-base tracking-wide mb-3">
-          The Amar Granth Mission
+    <section
+      className={`px-6 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center`}
+    >
+      <div className="bg-tint-powder rounded-card aspect-[4/3] flex items-center justify-center order-2 md:order-1">
+        <span className="text-6xl" role="img" aria-label="lotus">
+          🪷
+        </span>
+      </div>
+      <div className="order-1 md:order-2">
+        <h2 className="text-ink mb-4">Our story</h2>
+        <p className="text-ink-soft text-body-lg leading-relaxed mb-5">
+          Amar Granth exists to preserve and pass on Hindu mythology and
+          Indian heritage — bringing the stories of gods, temples, and
+          traditions to children through beautifully illustrated books.
         </p>
-        <h2 className="font-display text-ink mb-8">
-          Heritage, told with heart
-        </h2>
-        <div className="grid md:grid-cols-2 gap-10 text-left">
-          <div>
-            <h3 className="font-display text-ink mb-3">
-              Our mission
-            </h3>
-            <p className="text-ink-soft text-lg leading-relaxed">
-              Amar Granth exists to preserve and pass on Hindu mythology
-              and Indian heritage — the stories of gods and goddesses,
-              their adventures, and what they still have to teach us
-              today. Every temple carries its own story and spiritual
-              significance; every region of India, its own traditions.
-              We bring these stories to children through beautifully
-              illustrated books, so heritage feels alive, not distant.
-            </p>
-          </div>
-          <div>
-            <h3 className="font-display text-ink mb-3">
-              Our vision
-            </h3>
-            <p className="text-ink-soft text-lg leading-relaxed">
-              A future where every Indian child grows up knowing the
-              stories of their gods, their temples, and their land — not
-              as distant history, but as living heritage they carry with
-              pride, wherever in the world they call home.
-            </p>
-          </div>
-        </div>
+        <Link
+          to="/about"
+          className="text-accent hover:text-accent-hover font-semibold text-body"
+        >
+          Read our full story →
+        </Link>
       </div>
     </section>
   );
 }
 
-const CATALOG_PRODUCTS_QUERY = `#graphql
+function EmailSignup() {
+  return (
+    <section className={`bg-tint-sand ${SECTION_GAP}`}>
+      <div className="px-6 lg:px-16 py-8 lg:py-12 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-5">
+        <div>
+          <h2 className="text-ink mb-1">Join our storytelling circle</h2>
+          <p className="text-ink-soft text-body">
+            New titles and heritage stories — straight to your inbox.
+          </p>
+        </div>
+        <form className="flex w-full md:w-auto gap-2">
+          <input
+            type="email"
+            required
+            placeholder="Your email"
+            className="flex-1 md:w-64 px-4 py-3 rounded-pill border border-border bg-white text-body focus:outline-none focus:ring-2 focus:ring-accent"
+          />
+          <button
+            type="submit"
+            className="bg-accent hover:bg-accent-hover text-white font-semibold text-body px-6 py-3 rounded-pill transition-colors whitespace-nowrap"
+          >
+            Sign up
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+}
+
+const FEATURED_COLLECTIONS_QUERY = `#graphql
+  fragment FeaturedCollection on Collection {
+    id
+    title
+    handle
+    image {
+      id
+      url
+      altText
+      width
+      height
+    }
+  }
+  query FeaturedCollections($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    collections(first: 6, sortKey: UPDATED_AT, reverse: true) {
+      nodes {
+        ...FeaturedCollection
+      }
+    }
+  }
+` as const;
+
+const FEATURED_PRODUCTS_QUERY = `#graphql
   fragment HomepageProductItem on Product {
     id
     title
     handle
+    tags
     featuredImage {
       id
       altText
@@ -288,7 +409,7 @@ const CATALOG_PRODUCTS_QUERY = `#graphql
       }
     }
   }
-  query CatalogProducts($country: CountryCode, $language: LanguageCode)
+  query FeaturedProducts($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
     products(first: 12, sortKey: TITLE) {
       nodes {

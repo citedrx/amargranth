@@ -377,9 +377,38 @@ export type FooterQuery = {
   >;
 };
 
+export type FeaturedCollectionFragment = Pick<
+  StorefrontAPI.Collection,
+  'id' | 'title' | 'handle'
+> & {
+  image?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
+  >;
+};
+
+export type FeaturedCollectionsQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type FeaturedCollectionsQuery = {
+  collections: {
+    nodes: Array<
+      Pick<StorefrontAPI.Collection, 'id' | 'title' | 'handle'> & {
+        image?: StorefrontAPI.Maybe<
+          Pick<
+            StorefrontAPI.Image,
+            'id' | 'url' | 'altText' | 'width' | 'height'
+          >
+        >;
+      }
+    >;
+  };
+};
+
 export type HomepageProductItemFragment = Pick<
   StorefrontAPI.Product,
-  'id' | 'title' | 'handle'
+  'id' | 'title' | 'handle' | 'tags'
 > & {
   featuredImage?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
@@ -390,15 +419,15 @@ export type HomepageProductItemFragment = Pick<
   };
 };
 
-export type CatalogProductsQueryVariables = StorefrontAPI.Exact<{
+export type FeaturedProductsQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
 }>;
 
-export type CatalogProductsQuery = {
+export type FeaturedProductsQuery = {
   products: {
     nodes: Array<
-      Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'> & {
+      Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle' | 'tags'> & {
         featuredImage?: StorefrontAPI.Maybe<
           Pick<
             StorefrontAPI.Image,
@@ -1288,9 +1317,13 @@ interface GeneratedQueryTypes {
     return: FooterQuery;
     variables: FooterQueryVariables;
   };
-  '#graphql\n  fragment HomepageProductItem on Product {\n    id\n    title\n    handle\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n      maxVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n  }\n  query CatalogProducts($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    products(first: 12, sortKey: TITLE) {\n      nodes {\n        ...HomepageProductItem\n      }\n    }\n  }\n': {
-    return: CatalogProductsQuery;
-    variables: CatalogProductsQueryVariables;
+  '#graphql\n  fragment FeaturedCollection on Collection {\n    id\n    title\n    handle\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n  }\n  query FeaturedCollections($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    collections(first: 6, sortKey: UPDATED_AT, reverse: true) {\n      nodes {\n        ...FeaturedCollection\n      }\n    }\n  }\n': {
+    return: FeaturedCollectionsQuery;
+    variables: FeaturedCollectionsQueryVariables;
+  };
+  '#graphql\n  fragment HomepageProductItem on Product {\n    id\n    title\n    handle\n    tags\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n      maxVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n  }\n  query FeaturedProducts($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    products(first: 12, sortKey: TITLE) {\n      nodes {\n        ...HomepageProductItem\n      }\n    }\n  }\n': {
+    return: FeaturedProductsQuery;
+    variables: FeaturedProductsQueryVariables;
   };
   '#graphql\n  fragment HomepageArticle on Article {\n    id\n    handle\n    title\n    publishedAt\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    blog {\n      handle\n    }\n  }\n  query RecentArticles($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    blog(handle: "blog") {\n      articles(first: 3, sortKey: PUBLISHED_AT, reverse: true) {\n        nodes {\n          ...HomepageArticle\n        }\n      }\n    }\n  }\n': {
     return: RecentArticlesQuery;

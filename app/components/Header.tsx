@@ -1,4 +1,4 @@
-import {Suspense} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {Await, NavLink, useAsyncValue} from 'react-router';
 import {
   type CartViewPayload,
@@ -17,6 +17,17 @@ interface HeaderProps {
 
 type Viewport = 'desktop' | 'mobile';
 
+function useScrolledPast(threshold: number) {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > threshold);
+    onScroll();
+    window.addEventListener('scroll', onScroll, {passive: true});
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [threshold]);
+  return scrolled;
+}
+
 export function Header({
   header,
   isLoggedIn,
@@ -24,8 +35,13 @@ export function Header({
   publicStoreDomain,
 }: HeaderProps) {
   const {shop, menu} = header;
+  const scrolled = useScrolledPast(80);
   return (
-    <header className="flex items-center justify-between px-6 md:px-16 py-4 border-b border-border bg-white">
+    <header
+      className={`sticky top-0 z-20 flex items-center justify-between px-6 lg:px-16 border-b border-border bg-base transition-[padding] duration-200 ${
+        scrolled ? 'py-2.5' : 'py-4'
+      }`}
+    >
       <NavLink
         prefetch="intent"
         to="/"
@@ -58,7 +74,7 @@ export function HeaderMenu({
 }) {
   const className =
     viewport === 'desktop'
-      ? 'hidden md:flex items-center gap-8'
+      ? 'hidden lg:flex items-center gap-8'
       : 'flex flex-col gap-4';
   const {close} = useAside();
 
@@ -69,7 +85,7 @@ export function HeaderMenu({
           end
           onClick={close}
           prefetch="intent"
-          className="text-sm font-semibold text-ink-soft hover:text-ink"
+          className="text-small font-semibold text-ink-soft hover:text-ink"
           to="/"
         >
           Home
@@ -87,7 +103,7 @@ export function HeaderMenu({
             : item.url;
         return (
           <NavLink
-            className="text-sm font-semibold text-ink-soft hover:text-ink transition-colors"
+            className="text-small font-semibold text-ink-soft hover:text-ink transition-colors"
             end
             key={item.id}
             onClick={close}
@@ -108,14 +124,14 @@ function HeaderCtas({
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
     <nav
-      className="flex items-center gap-4 text-sm text-ink-soft"
+      className="flex items-center gap-4 text-small text-ink-soft"
       role="navigation"
     >
       <HeaderMenuMobileToggle />
       <NavLink
         prefetch="intent"
         to="/account"
-        className="hover:text-ink transition-colors hidden md:inline"
+        className="hover:text-ink transition-colors hidden lg:inline"
       >
         <Suspense fallback="Sign in">
           <Await resolve={isLoggedIn} errorElement="Sign in">
@@ -133,7 +149,7 @@ function HeaderMenuMobileToggle() {
   const {open} = useAside();
   return (
     <button
-      className="header-menu-mobile-toggle reset p-2 -m-2"
+      className="reset p-2 -m-2 lg:hidden"
       onClick={() => open('mobile')}
       aria-label="Open menu"
     >
@@ -162,6 +178,7 @@ function CartBadge({count}: {count: number}) {
   return (
     <a
       href="/cart"
+      className="flex items-center gap-1.5"
       onClick={(e) => {
         e.preventDefault();
         open('cart');
@@ -173,7 +190,15 @@ function CartBadge({count}: {count: number}) {
         } as CartViewPayload);
       }}
     >
-      Cart <span aria-label={`(items: ${count})`}>{count}</span>
+      Cart
+      {count > 0 && (
+        <span
+          aria-label={`(items: ${count})`}
+          className="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 rounded-pill bg-accent text-white text-micro font-semibold"
+        >
+          {count}
+        </span>
+      )}
     </a>
   );
 }
