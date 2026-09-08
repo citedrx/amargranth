@@ -6,7 +6,7 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data?.blog.title ?? ''} blog`}];
+  return [{title: `${data?.blog.title ?? 'Stories'} | Amar Granth`}];
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -65,14 +65,17 @@ export default function Blog() {
   const {articles} = blog;
 
   return (
-    <div className="blog">
-      <h1>{blog.title}</h1>
-      <div className="blog-grid">
+    <div className="bg-base px-6 md:px-16 py-8 md:py-14 max-w-7xl mx-auto">
+      <h1 className="font-display text-2xl md:text-4xl text-ink mb-8">
+        {blog.title}
+      </h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
         <PaginatedResourceSection<ArticleItemFragment> connection={articles}>
           {({node: article, index}) => (
             <ArticleItem
               article={article}
               key={article.id}
+              index={index}
               loading={index < 2 ? 'eager' : 'lazy'}
             />
           )}
@@ -82,12 +85,21 @@ export default function Blog() {
   );
 }
 
+const TINT_CLASSES = [
+  'bg-tint-sand',
+  'bg-tint-powder',
+  'bg-tint-sage',
+  'bg-tint-blush',
+];
+
 function ArticleItem({
   article,
   loading,
+  index = 0,
 }: {
   article: ArticleItemFragment;
   loading?: HTMLImageElement['loading'];
+  index?: number;
 }) {
   const publishedAt = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
@@ -95,23 +107,32 @@ function ArticleItem({
     day: 'numeric',
   }).format(new Date(article.publishedAt!));
   return (
-    <div className="blog-article" key={article.id}>
-      <Link to={`/blogs/${article.blog.handle}/${article.handle}`}>
-        {article.image && (
-          <div className="blog-article-image">
-            <Image
-              alt={article.image.altText || article.title}
-              aspectRatio="3/2"
-              data={article.image}
-              loading={loading}
-              sizes="(min-width: 768px) 50vw, 100vw"
-            />
-          </div>
+    <Link
+      className="group"
+      key={article.id}
+      to={`/blogs/${article.blog.handle}/${article.handle}`}
+    >
+      <div
+        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-card aspect-[3/2] mb-4 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-[1.01]`}
+      >
+        {article.image ? (
+          <Image
+            alt={article.image.altText || article.title}
+            aspectRatio="3/2"
+            data={article.image}
+            loading={loading}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <span className="text-5xl opacity-60" role="img" aria-label="scroll">
+            📜
+          </span>
         )}
-        <h3>{article.title}</h3>
-        <small>{publishedAt}</small>
-      </Link>
-    </div>
+      </div>
+      <h3 className="font-display text-lg text-ink mb-1">{article.title}</h3>
+      <p className="text-ink-soft text-xs">{publishedAt}</p>
+    </Link>
   );
 }
 

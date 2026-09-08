@@ -7,7 +7,7 @@ import type {BlogsQuery} from 'storefrontapi.generated';
 type BlogNode = BlogsQuery['blogs']['nodes'][0];
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: `Hydrogen | Blogs`}];
+  return [{title: 'Stories | Amar Granth'}];
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -54,18 +54,20 @@ export default function Blogs() {
   const {blogs} = useLoaderData<typeof loader>();
 
   return (
-    <div className="blogs">
-      <h1>Blogs</h1>
-      <div className="blogs-grid">
+    <div className="bg-base px-6 md:px-16 py-8 md:py-14 max-w-7xl mx-auto">
+      <h1 className="font-display text-2xl md:text-4xl text-ink mb-8">
+        Stories
+      </h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
         <PaginatedResourceSection<BlogNode> connection={blogs}>
           {({node: blog}) => (
             <Link
-              className="blog"
+              className="block bg-tint-sand rounded-card p-8 hover:scale-[1.01] transition-transform"
               key={blog.handle}
               prefetch="intent"
               to={`/blogs/${blog.handle}`}
             >
-              <h2>{blog.title}</h2>
+              <h2 className="font-display text-xl text-ink">{blog.title}</h2>
             </Link>
           )}
         </PaginatedResourceSection>

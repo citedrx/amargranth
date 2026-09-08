@@ -1,10 +1,13 @@
-import {useLoaderData} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/blogs.$blogHandle.$articleHandle';
 import {Image} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data?.article.title ?? ''} article`}];
+  return [
+    {title: `${data?.article.title ?? ''} | Amar Granth`},
+    {name: 'description', content: data?.article.seo?.description},
+  ];
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -53,7 +56,7 @@ async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
 
   const article = blog.articleByHandle;
 
-  return {article};
+  return {article, blogHandle};
 }
 
 /**
@@ -66,7 +69,7 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 }
 
 export default function Article() {
-  const {article} = useLoaderData<typeof loader>();
+  const {article, blogHandle} = useLoaderData<typeof loader>();
   const {title, image, contentHtml, author} = article;
 
   const publishedDate = new Intl.DateTimeFormat('en-US', {
@@ -76,20 +79,33 @@ export default function Article() {
   }).format(new Date(article.publishedAt));
 
   return (
-    <div className="article">
-      <h1>
-        {title}
-        <div>
-          <time dateTime={article.publishedAt}>{publishedDate}</time> &middot;{' '}
-          <address>{author?.name}</address>
-        </div>
-      </h1>
+    <div className="bg-base">
+      <div className="px-6 md:px-16 py-8 md:py-14 max-w-3xl mx-auto">
+        <Link
+          to={`/blogs/${blogHandle}`}
+          className="text-sm text-ink-soft hover:text-ink transition-colors"
+        >
+          ← Back to stories
+        </Link>
+        <h1 className="font-display text-2xl md:text-4xl text-ink mt-4 mb-2 leading-tight">
+          {title}
+        </h1>
+        <p className="text-ink-soft text-sm mb-8">
+          <time dateTime={article.publishedAt}>{publishedDate}</time>
+          {author?.name ? <> &middot; {author.name}</> : null}
+        </p>
 
-      {image && <Image data={image} sizes="90vw" loading="eager" />}
-      <div
-        dangerouslySetInnerHTML={{__html: contentHtml}}
-        className="article"
-      />
+        {image ? (
+          <div className="bg-tint-sand rounded-card overflow-hidden mb-8">
+            <Image data={image} sizes="90vw" loading="eager" />
+          </div>
+        ) : null}
+
+        <div
+          dangerouslySetInnerHTML={{__html: contentHtml}}
+          className="text-ink text-base leading-relaxed [&_h2]:font-display [&_h2]:text-xl [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:font-display [&_h3]:text-lg [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ul]:space-y-1 [&_a]:text-accent [&_a]:underline [&_img]:rounded-card [&_img]:my-6"
+        />
+      </div>
     </div>
   );
 }
