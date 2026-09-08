@@ -20,8 +20,6 @@ type FaqSection = {
   items: FaqItem[];
 };
 
-// NOTE: Shipping, returns, and payment answers below are confirmed by ASM.
-// The "recommended age range" answer is still a placeholder — confirm before go-live.
 const FAQ_SECTIONS: FaqSection[] = [
   {
     title: 'Shipping',
@@ -67,7 +65,7 @@ const FAQ_SECTIONS: FaqSection[] = [
     items: [
       {
         question: 'What age group are these books for?',
-        answer: '[Placeholder — confirm recommended age range per title or series.]',
+        answer: 'Our books are recommended for ages 3 and up. They also work well as a read-along for parents to enjoy with their kids — and honestly, grown-ups love them too.',
       },
       {
         question: 'Are the books available in Hindi?',
@@ -91,14 +89,6 @@ export default function Faq() {
         <h1 className="font-display text-3xl md:text-5xl leading-tight text-ink mb-6 text-center">
           Questions? We&rsquo;ve got answers
         </h1>
-
-        <div className="bg-tint-blush border border-border rounded-card px-5 py-4 mb-10">
-          <p className="text-ink-soft text-xs leading-relaxed">
-            <strong className="text-ink">One answer still needs input:</strong>{' '}
-            the recommended age range below is marked with brackets as a
-            placeholder — please confirm it before this page goes live.
-          </p>
-        </div>
 
         <div className="space-y-10">
           {FAQ_SECTIONS.map((section) => (
