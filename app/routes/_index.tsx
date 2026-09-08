@@ -1,6 +1,7 @@
 import {Await, useLoaderData, Link} from 'react-router';
 import type {Route} from './+types/_index';
 import {Suspense} from 'react';
+import {Image, Money} from '@shopify/hydrogen';
 import type {
   HomepageProductItemFragment,
   RecentArticlesQuery,
@@ -8,6 +9,8 @@ import type {
 import {MockShopNotice} from '~/components/MockShopNotice';
 import {ProductItem} from '~/components/ProductItem';
 import {ArticleItem} from '~/components/ArticleItem';
+
+const COMBO_SET_HANDLE = '12-jyotirlings-51-shaktipeeths-book-set-hardcover';
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -54,10 +57,11 @@ const MOTIF_ICONS = ['🪔', '🪷', '🪶'];
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
+  const comboSet = data.products.find((p) => p.handle === COMBO_SET_HANDLE);
   return (
     <div className="bg-base">
       {data.isShopLinked ? null : <MockShopNotice />}
-      <Hero />
+      <Hero comboSet={comboSet} />
       <MotifDivider />
       <OurBooks products={data.products} />
       <FromTheBlog articles={data.recentArticles} />
@@ -66,7 +70,7 @@ export default function Homepage() {
   );
 }
 
-function Hero() {
+function Hero({comboSet}: {comboSet?: HomepageProductItemFragment}) {
   return (
     <section className="flex flex-col-reverse md:flex-row items-center gap-10 px-6 md:px-16 py-16 md:py-24 max-w-7xl mx-auto">
       <div className="flex-1">
@@ -89,11 +93,46 @@ function Hero() {
         </Link>
       </div>
       <div className="flex-1 w-full">
-        <div className="bg-tint-sage rounded-card aspect-[4/3] flex items-center justify-center">
-          <span className="text-8xl" role="img" aria-label="storybook">
-            📖
-          </span>
-        </div>
+        {comboSet ? (
+          <Link
+            to={`/products/${comboSet.handle}`}
+            className="group block bg-tint-sage rounded-card overflow-hidden"
+          >
+            <div className="aspect-[4/3] flex items-center justify-center overflow-hidden">
+              {comboSet.featuredImage ? (
+                <Image
+                  data={comboSet.featuredImage}
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="w-full h-full object-cover transition-transform group-hover:scale-[1.02]"
+                />
+              ) : (
+                <span className="text-8xl" role="img" aria-label="storybook">
+                  📖
+                </span>
+              )}
+            </div>
+            <div className="px-5 py-4 bg-white/70 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-accent font-semibold text-sm mb-0.5">
+                  The Combo Set
+                </p>
+                <p className="text-ink font-semibold text-[0.92rem] line-clamp-1">
+                  {comboSet.title}
+                </p>
+              </div>
+              <Money
+                data={comboSet.priceRange.minVariantPrice}
+                className="text-accent font-extrabold text-lg whitespace-nowrap"
+              />
+            </div>
+          </Link>
+        ) : (
+          <div className="bg-tint-sage rounded-card aspect-[4/3] flex items-center justify-center">
+            <span className="text-8xl" role="img" aria-label="storybook">
+              📖
+            </span>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -150,7 +150,7 @@ function SearchToggle() {
       onClick={() => open('search')}
       aria-label="Search"
     >
-      Search
+      <span>Search</span>
     </button>
   );
 }
