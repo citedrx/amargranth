@@ -4,7 +4,7 @@
  */
 
 @import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Nunito+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Work+Sans:wght@400;500;600;700;800&display=swap');
 
 /* Amar Granth — "Storybook Studio" design tokens */
 @theme {
@@ -23,8 +23,8 @@
   --color-tint-blush: #f6e6ec;
 
   /* Fonts */
-  --font-display: 'Fraunces', ui-serif, Georgia, serif;
-  --font-sans: 'Nunito Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Libre Caslon Text', ui-serif, Georgia, serif;
+  --font-sans: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
 
   /* Radius */
   --radius-card: 1rem;

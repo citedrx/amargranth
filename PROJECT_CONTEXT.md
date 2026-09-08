@@ -65,8 +65,8 @@ This is an established, ASM-approved direction — do not deviate from the palet
 | `--color-tint-sand` / `-powder` / `-sage` / `-blush` | `#F3E6D8` / `#E4EEF6` / `#EAF1E4` / `#F6E6EC` | Pastel backgrounds for collection tiles/cards, cycled per item |
 
 **Typography:**
-- Display/headings: `Fraunces` (soft serif) — loaded via Google Fonts `@import` in `tailwind.css`, applied via `--font-display` / `.font-display` / `h1,h2,h3`
-- Body/UI: `Nunito Sans` — applied via `--font-sans`, set as default on `body`
+- Display/headings: `Libre Caslon Text` (classic serif) — loaded via Google Fonts `@import` in `tailwind.css`, applied via `--font-display` / `.font-display` / `h1,h2,h3`. Replaced the original `Fraunces` in September 2026 per ASM: Fraunces read as "too curvy" for the premium-but-kid-friendly direction they wanted.
+- Body/UI: `Work Sans` — applied via `--font-sans`, set as default on `body`. Replaced the original `Nunito Sans` in the same pass.
 
 **Layout principles established for this brand:**
 - Flat navigation: logo + max ~4 links, no nested menus
