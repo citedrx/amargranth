@@ -9,16 +9,30 @@ export function ProductPrice({
   compareAtPrice?: MoneyV2 | null;
 }) {
   return (
-    <div aria-label="Price" className="product-price" role="group">
+    <div aria-label="Price" className="flex items-baseline gap-3" role="group">
       {compareAtPrice ? (
-        <div className="product-price-on-sale">
-          {price ? <Money data={price} /> : null}
+        <>
+          {price ? (
+            <Money
+              as="span"
+              data={price}
+              className="text-2xl md:text-3xl font-semibold text-accent"
+            />
+          ) : null}
           <s>
-            <Money data={compareAtPrice} />
+            <Money
+              as="span"
+              data={compareAtPrice}
+              className="text-base text-ink-soft"
+            />
           </s>
-        </div>
+        </>
       ) : price ? (
-        <Money data={price} />
+        <Money
+          as="span"
+          data={price}
+          className="text-2xl md:text-3xl font-semibold text-accent"
+        />
       ) : (
         <span>&nbsp;</span>
       )}

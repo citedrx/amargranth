@@ -1,4 +1,4 @@
-import {redirect, useLoaderData} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/products.$handle';
 import {
   getSelectedProductOptions,
@@ -15,7 +15,11 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
   return [
-    {title: `Hydrogen | ${data?.product.title ?? ''}`},
+    {title: `${data?.product.title ?? ''} | Amar Granth`},
+    {
+      name: 'description',
+      content: data?.product.seo.description ?? data?.product.description,
+    },
     {
       rel: 'canonical',
       href: `/products/${data?.product.handle}`,
@@ -95,30 +99,51 @@ export default function Product() {
     selectedOrFirstAvailableVariant: selectedVariant,
   });
 
-  const {title, descriptionHtml} = product;
+  const {title, descriptionHtml, seo} = product;
 
   return (
-    <div className="product">
-      <ProductImage image={selectedVariant?.image} />
-      <div className="product-main">
-        <h1>{title}</h1>
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
-        />
-        <br />
-        <ProductForm
-          productOptions={productOptions}
-          selectedVariant={selectedVariant}
-        />
-        <br />
-        <br />
-        <p>
-          <strong>Description</strong>
-        </p>
-        <br />
-        <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-        <br />
+    <div className="bg-base">
+      <div className="px-6 md:px-16 py-8 md:py-14 max-w-6xl mx-auto">
+        <Link
+          to="/collections"
+          className="text-sm text-ink-soft hover:text-ink transition-colors"
+        >
+          ← Back to collections
+        </Link>
+        <div className="grid md:grid-cols-2 gap-10 md:gap-14 mt-6">
+          <ProductImage image={selectedVariant?.image} />
+          <div>
+            <h1 className="font-display text-2xl md:text-4xl text-ink mb-3 leading-tight">
+              {title}
+            </h1>
+            {seo.description ? (
+              <p className="text-ink-soft text-base mb-5">
+                {seo.description}
+              </p>
+            ) : null}
+            <div className="mb-6">
+              <ProductPrice
+                price={selectedVariant?.price}
+                compareAtPrice={selectedVariant?.compareAtPrice}
+              />
+            </div>
+            <ProductForm
+              productOptions={productOptions}
+              selectedVariant={selectedVariant}
+            />
+            {descriptionHtml ? (
+              <div className="mt-10 pt-8 border-t border-border">
+                <h2 className="font-display text-lg text-ink mb-3">
+                  What&rsquo;s inside
+                </h2>
+                <div
+                  className="text-ink-soft text-sm leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_p]:mb-3 [&_p:last-child]:mb-0"
+                  dangerouslySetInnerHTML={{__html: descriptionHtml}}
+                />
+              </div>
+            ) : null}
+          </div>
+        </div>
       </div>
       <Analytics.ProductView
         data={{

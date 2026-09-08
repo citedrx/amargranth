@@ -6,18 +6,22 @@ export function ProductImage({
 }: {
   image: ProductVariantFragment['image'];
 }) {
-  if (!image) {
-    return <div className="product-image" />;
-  }
   return (
-    <div className="product-image">
-      <Image
-        alt={image.altText || 'Product Image'}
-        aspectRatio="1/1"
-        data={image}
-        key={image.id}
-        sizes="(min-width: 45em) 50vw, 100vw"
-      />
+    <div className="bg-tint-sand rounded-card aspect-square flex items-center justify-center overflow-hidden">
+      {image ? (
+        <Image
+          alt={image.altText || 'Product Image'}
+          aspectRatio="1/1"
+          data={image}
+          key={image.id}
+          sizes="(min-width: 45em) 50vw, 100vw"
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <span className="text-7xl opacity-60" role="img" aria-label="book">
+          📖
+        </span>
+      )}
     </div>
   );
 }
