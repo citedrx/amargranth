@@ -21,6 +21,11 @@ declare global {
   // Augment HydrogenCustomCartFragment with the codegen'd cart fragment type so
   // that context.cart.get() and all cart mutations return the extended cart type.
   interface HydrogenCustomCartFragment extends CartApiQueryFragment {}
+
+  // Meta Pixel ID for storefront-side conversion tracking (client-exposed, not a secret).
+  interface Env {
+    PUBLIC_META_PIXEL_ID?: string;
+  }
 }
 
 /**

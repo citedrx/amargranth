@@ -41,18 +41,26 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
         giftCardHeadingId={giftCardHeadingId}
         giftCardInputId={giftCardInputId}
       />
-      <CartCheckoutActions checkoutUrl={cart?.checkoutUrl} />
+      <CartCheckoutActions cart={cart} />
     </div>
   );
 }
 
-function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
+function CartCheckoutActions({cart}: {cart: CartSummaryProps['cart']}) {
+  const checkoutUrl = cart?.checkoutUrl;
   if (!checkoutUrl) return null;
 
   return (
     <a
       href={checkoutUrl}
       target="_self"
+      onClick={() => {
+        window.fbq?.('track', 'InitiateCheckout', {
+          value: Number(cart?.cost?.subtotalAmount?.amount) || undefined,
+          currency: cart?.cost?.subtotalAmount?.currencyCode || 'INR',
+          num_items: cart?.totalQuantity,
+        });
+      }}
       className="block text-center bg-accent hover:bg-accent-hover text-white font-semibold text-sm px-6 py-3.5 rounded-pill transition-colors mt-2"
     >
       Continue to checkout &rarr;

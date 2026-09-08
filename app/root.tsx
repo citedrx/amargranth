@@ -17,6 +17,7 @@ import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {PageLayout} from './components/PageLayout';
+import {MetaPixelBaseScript, MetaPixelEvents} from './components/MetaPixel';
 
 export type RootLoader = typeof loader;
 
@@ -79,6 +80,7 @@ export async function loader(args: Route.LoaderArgs) {
     ...deferredData,
     ...criticalData,
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
+    metaPixelId: env.PUBLIC_META_PIXEL_ID,
     shop: getShopAnalytics({
       storefront,
       publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
@@ -144,6 +146,7 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 
 export function Layout({children}: {children?: React.ReactNode}) {
   const nonce = useNonce();
+  const data = useRouteLoaderData<RootLoader>('root');
 
   return (
     <html lang="en">
@@ -155,6 +158,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <link rel="stylesheet" href={appStyles}></link>
         <Meta />
         <Links />
+        <MetaPixelBaseScript pixelId={data?.metaPixelId} />
       </head>
       <body>
         {children}
@@ -178,6 +182,7 @@ export default function App() {
       shop={data.shop}
       consent={data.consent}
     >
+      <MetaPixelEvents pixelId={data.metaPixelId} />
       <PageLayout {...data}>
         <Outlet />
       </PageLayout>
