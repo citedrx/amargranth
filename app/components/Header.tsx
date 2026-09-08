@@ -133,10 +133,11 @@ function HeaderMenuMobileToggle() {
   const {open} = useAside();
   return (
     <button
-      className="header-menu-mobile-toggle reset"
+      className="header-menu-mobile-toggle reset p-2 -m-2"
       onClick={() => open('mobile')}
+      aria-label="Open menu"
     >
-      <h3>☰</h3>
+      <span className="text-xl leading-none">☰</span>
     </button>
   );
 }
@@ -144,7 +145,11 @@ function HeaderMenuMobileToggle() {
 function SearchToggle() {
   const {open} = useAside();
   return (
-    <button className="reset" onClick={() => open('search')}>
+    <button
+      className="reset p-2 -m-2"
+      onClick={() => open('search')}
+      aria-label="Search"
+    >
       Search
     </button>
   );

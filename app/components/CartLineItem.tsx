@@ -123,7 +123,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
             disabled={quantity <= 1 || !!isOptimistic}
             name="decrease-quantity"
             value={prevQuantity}
-            className="w-7 h-7 flex items-center justify-center text-ink-soft hover:text-ink disabled:opacity-30 transition-colors"
+            className="w-9 h-9 flex items-center justify-center text-ink-soft hover:text-ink disabled:opacity-30 transition-colors"
           >
             <span>&#8722;</span>
           </button>
@@ -137,7 +137,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
             name="increase-quantity"
             value={nextQuantity}
             disabled={!!isOptimistic}
-            className="w-7 h-7 flex items-center justify-center text-ink-soft hover:text-ink disabled:opacity-30 transition-colors"
+            className="w-9 h-9 flex items-center justify-center text-ink-soft hover:text-ink disabled:opacity-30 transition-colors"
           >
             <span>&#43;</span>
           </button>

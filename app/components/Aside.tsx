@@ -70,7 +70,7 @@ export function Aside({
             {heading}
           </h3>
           <button
-            className="close reset text-ink-soft hover:text-ink transition-colors text-xl leading-none"
+            className="close reset text-ink-soft hover:text-ink transition-colors text-xl leading-none p-2 -m-2"
             onClick={close}
             aria-label="Close"
           >

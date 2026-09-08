@@ -102,9 +102,9 @@ export default function Faq() {
                     key={item.question}
                     className="group bg-white border border-border rounded-card px-5 py-4"
                   >
-                    <summary className="cursor-pointer list-none flex items-center justify-between font-semibold text-sm text-ink">
-                      {item.question}
-                      <span className="text-ink-soft group-open:rotate-45 transition-transform text-lg leading-none">
+                    <summary className="cursor-pointer list-none flex items-start justify-between gap-3 font-semibold text-sm text-ink">
+                      <span>{item.question}</span>
+                      <span className="shrink-0 text-ink-soft group-open:rotate-45 transition-transform text-lg leading-none">
                         +
                       </span>
                     </summary>
