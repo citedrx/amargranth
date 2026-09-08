@@ -1,0 +1,45 @@
+/**
+ * Configure Tailwind v4 in this file using CSS variables and directives:
+ * https://tailwindcss.com/docs/v4-beta#css-first-configuration
+ */
+
+@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Nunito+Sans:wght@400;500;600;700;800&display=swap');
+
+/* Amar Granth — "Storybook Studio" design tokens */
+@theme {
+  /* Colors */
+  --color-base: #fefcf7;
+  --color-ink: #2b2b28;
+  --color-ink-soft: #5f5e5a;
+  --color-accent: #3e7ca6;
+  --color-accent-hover: #336a8f;
+  --color-amber: #d9a441;
+  --color-border: #ece7db;
+
+  --color-tint-sand: #f3e6d8;
+  --color-tint-powder: #e4eef6;
+  --color-tint-sage: #eaf1e4;
+  --color-tint-blush: #f6e6ec;
+
+  /* Fonts */
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+  --font-sans: 'Nunito Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* Radius */
+  --radius-card: 1rem;
+  --radius-pill: 999px;
+}
+
+body {
+  background-color: var(--color-base);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+}
