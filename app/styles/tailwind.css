@@ -12,9 +12,12 @@
   --color-base: #fefcf7;
   --color-ink: #2b2b28;
   --color-ink-soft: #5f5e5a;
-  --color-accent: #d9761f;
-  --color-accent-hover: #b8611a;
-  --color-accent-active: #9c5015;
+  /* Burnt Saffron, darkened from the original #D9761F to hit WCAG AA
+     (4.5:1) with white text — the original measured only ~3.2:1. Hue and
+     saturation preserved, lightness reduced. See PROJECT_CONTEXT.md. */
+  --color-accent: #ac5e19;
+  --color-accent-hover: #9f5617;
+  --color-accent-active: #924f15;
   --color-amber: #e8b23d;
   --color-border: #ece7db;
 
