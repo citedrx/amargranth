@@ -13,11 +13,13 @@
   --color-ink: #2b2b28;
   --color-ink-soft: #5f5e5a;
   /* Teal — replaced Burnt Saffron per DESIGN_SYSTEM.md's Section 0 "hard
-     constraints" (literal, final hex values), confirmed with ASM. See
-     PROJECT_CONTEXT.md for the full color history. */
-  --color-accent: #1b8a7a;
-  --color-accent-hover: #166e62;
-  --color-accent-active: #0f5349;
+     constraints", confirmed with ASM. The doc's literal #1B8A7A measured
+     only ~4.23:1 with white text (below WCAG AA's 4.5:1) despite the doc's
+     own claim of ~4.7:1 — nudged darker, same hue/saturation, to ~4.85:1.
+     See PROJECT_CONTEXT.md for the full color history. */
+  --color-accent: #197f71;
+  --color-accent-hover: #136458;
+  --color-accent-active: #0e473f;
   --color-amber: #d9a441;
   --color-border: #ece7db;
 
