@@ -102,8 +102,14 @@ export default function Article() {
   return (
     <div className="bg-base">
       {image ? (
-        <div className="bg-tint-sand aspect-video max-w-[1280px] mx-auto overflow-hidden md:rounded-card md:mt-6">
-          <Image data={image} aspectRatio="16/9" sizes="100vw" loading="eager" className="w-full h-full object-cover" />
+        <div className="bg-tint-sand aspect-video max-w-[640px] mx-auto overflow-hidden md:rounded-card md:mt-6">
+          <Image
+            data={image}
+            aspectRatio="16/9"
+            sizes="(min-width: 640px) 640px, 100vw"
+            loading="eager"
+            className="w-full h-full object-cover"
+          />
         </div>
       ) : null}
 
