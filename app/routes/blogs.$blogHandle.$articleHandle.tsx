@@ -198,7 +198,14 @@ export default function Article() {
                     </span>
                   )}
                 </div>
-                <h3 className="text-ink line-clamp-2 p-4 md:p-6">{related.title}</h3>
+                <div className="p-4 md:p-6">
+                  <h3 className="text-ink line-clamp-2 min-h-[2.6em] mb-3">
+                    {related.title}
+                  </h3>
+                  <span className="text-accent font-semibold text-small">
+                    Read full story →
+                  </span>
+                </div>
               </Link>
             ))}
           </div>

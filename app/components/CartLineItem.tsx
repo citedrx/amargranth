@@ -38,7 +38,7 @@ export function CartLineItem({
     <li key={id} className="py-4 first:pt-0">
       <div className="flex gap-4">
         {image && (
-          <div className="bg-tint-sand rounded-card overflow-hidden shrink-0">
+          <div className="bg-tint-sand rounded-card overflow-hidden shrink-0 self-start">
             <Image
               alt={title}
               aspectRatio="1/1"

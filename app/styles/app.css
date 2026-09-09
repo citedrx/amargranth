@@ -311,16 +311,11 @@ button.reset:hover:not(:has(> *)) {
 * components/Cart
 * --------------------------------------------------
 */
-.cart-main {
-  height: 100%;
-  max-height: calc(100vh - var(--cart-aside-summary-height));
-  overflow-y: auto;
-  width: auto;
-}
-
-.cart-main.with-discount {
-  max-height: calc(100vh - var(--cart-aside-summary-height-with-discount));
-}
+/* height/max-height/overflow are handled directly on CartMain's own
+   elements via Tailwind (h-full flex flex-col + overflow-y-auto on the
+   scrollable items list) — these hardcoded skeleton-era pixel constants
+   didn't match the redesigned, more compact CartSummary and were leaving
+   a large blank gap at the bottom of the cart drawer. */
 
 .cart-line {
   padding: 0.75rem 0;

@@ -55,11 +55,11 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
       aria-label={layout === 'page' ? 'Cart page' : 'Cart drawer'}
     >
       <CartEmpty hidden={linesCount} layout={layout} />
-      <div className="cart-details flex flex-col flex-1">
+      <div className="cart-details flex flex-col flex-1 min-h-0">
         <p id="cart-lines" className="sr-only">
           Line items
         </p>
-        <div>
+        <div className="overflow-y-auto min-h-0">
           <ul aria-labelledby="cart-lines" className="divide-y divide-border">
             {(cart?.lines?.nodes ?? []).map((line) => {
               // we do not render non-parent lines at the root of the cart
