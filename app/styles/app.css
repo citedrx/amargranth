@@ -1,3 +1,13 @@
+/**
+ * Wrapped in Tailwind's `base` layer (same fix as reset.css) so Tailwind
+ * utility classes always win over these legacy skeleton rules, regardless
+ * of selector specificity. Without this, e.g. `aside p { margin: 0 0
+ * 0.25rem }` silently overrides `mb-4`-style utilities on every <p> inside
+ * the cart drawer, and `button.reset { font-size: inherit }` (specificity
+ * 0,1,1) beats `.text-xl` (0,1,0) on the Aside close button.
+ */
+@layer base {
+
 :root {
   --aside-width: 400px;
   --cart-aside-summary-height-with-discount: 300px;
@@ -643,3 +653,5 @@ button.reset:hover:not(:has(> *)) {
   gap: 0.75rem;
   flex-wrap: wrap;
 }
+
+} /* end @layer base */
