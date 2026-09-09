@@ -94,7 +94,7 @@ function Hero({comboSet}: {comboSet?: HomepageProductItemFragment}) {
           minds.
         </p>
         <Link
-          to="/collections"
+          to="/collections/all"
           className="inline-block bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body px-8 py-3.5 rounded-pill transition-colors"
         >
           Shop the collection
