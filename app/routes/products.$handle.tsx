@@ -272,7 +272,7 @@ export default function Product() {
                 ]
               : []
           }
-          className="shrink-0 bg-accent hover:bg-accent-hover disabled:bg-border disabled:text-ink-soft disabled:cursor-not-allowed text-white font-semibold text-small px-6 h-11 rounded-pill transition-colors"
+          className="shrink-0 bg-accent hover:bg-accent-hover active:bg-accent-active disabled:bg-border disabled:text-ink-soft disabled:cursor-not-allowed text-white font-semibold text-small px-6 h-11 rounded-pill transition-colors"
         >
           {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
         </AddToCartButton>
@@ -363,9 +363,13 @@ function RelatedProductCard({
   index: number;
 }) {
   return (
-    <Link to={`/products/${product.handle}`} className="group" prefetch="intent">
+    <Link
+      to={`/products/${product.handle}`}
+      className="card block p-4 md:p-6"
+      prefetch="intent"
+    >
       <div
-        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-card aspect-square mb-3 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-[1.02]`}
+        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-[0.625rem] aspect-square mb-3 overflow-hidden flex items-center justify-center`}
       >
         {product.featuredImage ? (
           <Image

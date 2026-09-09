@@ -27,12 +27,12 @@ export function ArticleItem({
   }).format(new Date(article.publishedAt!));
   return (
     <Link
-      className="group"
+      className="card block p-4 md:p-6"
       key={article.id}
       to={`/blogs/${article.blog.handle}/${article.handle}`}
     >
       <div
-        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-card aspect-[3/2] mb-4 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-[1.01]`}
+        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-[0.625rem] aspect-[3/2] mb-4 overflow-hidden flex items-center justify-center`}
       >
         {article.image ? (
           <Image

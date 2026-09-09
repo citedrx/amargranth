@@ -38,7 +38,7 @@ export function Header({
   const scrolled = useScrolledPast(80);
   return (
     <header
-      className={`sticky top-0 z-20 flex items-center justify-between px-6 lg:px-16 border-b border-border bg-base transition-[padding] duration-200 ${
+      className={`sticky top-0 z-20 flex items-center justify-between px-5 md:px-12 lg:px-16 border-b border-border bg-base transition-[padding] duration-200 ${
         scrolled ? 'py-2.5' : 'py-4'
       }`}
     >

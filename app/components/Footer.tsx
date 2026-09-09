@@ -18,7 +18,7 @@ export function Footer({
       <Await resolve={footerPromise}>
         {(footer) => (
           <footer className="bg-tint-sand mt-24">
-            <div className="px-6 lg:px-16 py-16 max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
+            <div className="px-5 md:px-12 lg:px-16 py-16 max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
               <div className="text-center md:text-left">
                 <p className="font-display text-[1.25rem] font-extrabold text-ink tracking-[-0.02em] mb-2">
                   {header.shop.name}
@@ -36,7 +36,7 @@ export function Footer({
                 />
               )}
             </div>
-            <div className="border-t border-border px-6 lg:px-16 py-5 max-w-7xl mx-auto text-center md:text-left">
+            <div className="border-t border-border px-5 md:px-12 lg:px-16 py-5 max-w-7xl mx-auto text-center md:text-left">
               <p className="text-ink-soft text-micro">
                 &copy; {new Date().getFullYear()} {header.shop.name}. All
                 rights reserved.

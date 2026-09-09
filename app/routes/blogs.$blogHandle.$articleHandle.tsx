@@ -136,7 +136,7 @@ export default function Article() {
         {crossLinkProduct ? (
           <Link
             to={`/products/${crossLinkProduct.handle}`}
-            className="mt-10 flex items-center gap-4 bg-tint-sand rounded-card p-4 hover:scale-[1.01] transition-transform"
+            className="group mt-10 flex items-center gap-4 bg-tint-sand rounded-card p-4 hover:scale-[1.01] transition-transform"
           >
             {crossLinkProduct.featuredImage ? (
               <div className="w-16 h-16 rounded-[0.5rem] overflow-hidden shrink-0 bg-white">
@@ -160,7 +160,7 @@ export default function Article() {
                 className="text-accent text-body font-semibold"
               />
             </div>
-            <span className="shrink-0 bg-accent hover:bg-accent-hover text-white font-semibold text-small px-5 h-11 rounded-pill transition-colors flex items-center">
+            <span className="shrink-0 bg-accent group-hover:bg-accent-hover group-active:bg-accent-active text-white font-semibold text-small px-5 h-11 rounded-pill transition-colors flex items-center">
               Shop this book
             </span>
           </Link>
@@ -175,9 +175,9 @@ export default function Article() {
               <Link
                 key={related.id}
                 to={`/blogs/${blogHandle}/${related.handle}`}
-                className="group"
+                className="card block p-4 md:p-6"
               >
-                <div className="bg-tint-sand rounded-card aspect-video mb-3 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-[1.01]">
+                <div className="bg-tint-sand rounded-[0.625rem] aspect-video mb-3 overflow-hidden flex items-center justify-center">
                   {related.image ? (
                     <Image
                       alt={related.image.altText || related.title}

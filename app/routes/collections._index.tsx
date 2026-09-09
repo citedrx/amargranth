@@ -90,13 +90,13 @@ function CollectionItem({
 }) {
   return (
     <Link
-      className="group text-center"
+      className="card block text-center p-4 md:p-6"
       key={collection.id}
       to={`/collections/${collection.handle}`}
       prefetch="intent"
     >
       <div
-        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-card aspect-square mb-3 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-[1.02]`}
+        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-[0.625rem] aspect-square mb-3 overflow-hidden flex items-center justify-center`}
       >
         {collection?.image ? (
           <Image

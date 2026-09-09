@@ -82,7 +82,7 @@ const FAQ_SECTIONS: FaqSection[] = [
 export default function Faq() {
   return (
     <div className="bg-base">
-      <section className="px-6 md:px-16 py-14 md:py-20 max-w-3xl mx-auto">
+      <section className="px-5 md:px-12 lg:px-16 py-14 md:py-20 max-w-3xl mx-auto">
         <p className="text-accent font-semibold text-sm tracking-wide mb-3 text-center">
           Frequently Asked Questions
         </p>

@@ -16,7 +16,7 @@ const MOTIF_ICONS = ['🪔', '🪷', '🪶'];
 export default function About() {
   return (
     <div className="bg-base">
-      <section className="px-6 md:px-16 py-14 md:py-20 max-w-3xl mx-auto text-center">
+      <section className="px-5 md:px-12 lg:px-16 py-14 md:py-20 max-w-3xl mx-auto text-center">
         <p className="text-accent font-semibold text-sm tracking-wide mb-3">
           Our Story
         </p>
@@ -38,7 +38,7 @@ export default function About() {
         ))}
       </div>
 
-      <section className="px-6 md:px-16 py-14 md:py-20 max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+      <section className="px-5 md:px-12 lg:px-16 py-14 md:py-20 max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
         <div className="bg-tint-powder rounded-card aspect-[4/3] flex items-center justify-center">
           <span className="text-6xl" role="img" aria-label="lotus">
             🪷
@@ -62,7 +62,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="px-6 md:px-16 py-14 md:py-20 max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+      <section className="px-5 md:px-12 lg:px-16 py-14 md:py-20 max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
         <div className="order-2 md:order-1">
           <h2 className="font-display text-ink mb-4">
             What we make
@@ -86,7 +86,7 @@ export default function About() {
       </section>
 
       <section className="bg-tint-sand">
-        <div className="px-6 md:px-16 py-12 md:py-16 max-w-3xl mx-auto text-center">
+        <div className="px-5 md:px-12 lg:px-16 py-12 md:py-16 max-w-3xl mx-auto text-center">
           <h2 className="font-display text-ink mb-3">
             Have a question, or just want to say hello?
           </h2>
@@ -95,7 +95,7 @@ export default function About() {
           </p>
           <a
             href="/contact"
-            className="inline-block bg-accent hover:bg-accent-hover text-white font-semibold text-sm px-7 py-3 rounded-pill transition-colors"
+            className="inline-block bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-sm px-7 py-3 rounded-pill transition-colors"
           >
             Get in touch
           </a>

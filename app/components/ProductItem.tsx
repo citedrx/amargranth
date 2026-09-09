@@ -29,9 +29,14 @@ export function ProductItem({
   const variantUrl = useVariantUrl(product.handle);
   const image = product.featuredImage;
   return (
-    <Link className="group" key={product.id} prefetch="intent" to={variantUrl}>
+    <Link
+      className="card block p-4 md:p-6"
+      key={product.id}
+      prefetch="intent"
+      to={variantUrl}
+    >
       <div
-        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-card aspect-square mb-3 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-[1.02]`}
+        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-[0.625rem] aspect-square mb-3 overflow-hidden flex items-center justify-center`}
       >
         {image ? (
           <Image

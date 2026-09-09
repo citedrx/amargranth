@@ -158,9 +158,12 @@ function BlogArticleCard({
   const categoryLabel = categoryLabelForTags(article.tags);
 
   return (
-    <Link className="group" to={`/blogs/${article.blog.handle}/${article.handle}`}>
+    <Link
+      className="card block p-4 md:p-6"
+      to={`/blogs/${article.blog.handle}/${article.handle}`}
+    >
       <div
-        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-card aspect-video mb-3 overflow-hidden relative flex items-center justify-center transition-transform group-hover:scale-[1.01]`}
+        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-[0.625rem] aspect-video mb-3 overflow-hidden relative flex items-center justify-center`}
       >
         {categoryLabel ? (
           <span className="absolute top-3 left-3 bg-white/90 text-ink text-micro font-semibold uppercase tracking-wide px-2 py-1 rounded-pill">

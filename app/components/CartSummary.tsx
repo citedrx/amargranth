@@ -65,7 +65,7 @@ function CartCheckoutActions({cart}: {cart: CartSummaryProps['cart']}) {
           currency: cart?.cost?.subtotalAmount?.currencyCode || 'INR',
         });
       }}
-      className="flex items-center justify-center w-full bg-accent hover:bg-accent-hover text-white font-semibold text-body h-[52px] rounded-pill transition-colors mt-2"
+      className="flex items-center justify-center w-full bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body h-[52px] rounded-pill transition-colors mt-2"
     >
       Checkout
     </a>

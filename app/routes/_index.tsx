@@ -85,22 +85,22 @@ export default function Homepage() {
 
 function Hero({comboSet}: {comboSet?: HomepageProductItemFragment}) {
   return (
-    <section className="flex flex-col-reverse md:flex-row items-center gap-10 px-6 lg:px-16 py-16 lg:py-24 max-w-7xl mx-auto">
+    <section className="flex flex-col-reverse md:flex-row items-center gap-10 px-5 md:px-12 lg:px-16 py-16 lg:py-24 max-w-7xl mx-auto">
       <div className="flex-1">
         <p className="text-accent font-semibold text-small tracking-wide mb-3">
           Stories of Shiva, Shakti &amp; Indian Culture
         </p>
-        <h1 className="text-display text-ink mb-6">
+        <h1 className="text-display text-ink mb-4">
           Stories that carry heritage into your child&rsquo;s hands
         </h1>
-        <p className="text-ink-soft text-body-lg mb-9 max-w-md">
+        <p className="text-ink-soft text-body-lg mb-8 max-w-md">
           India&rsquo;s illustrated storybooks on the 12 Jyotirlingas, 51
           Shaktipeeths, sacred rivers, and more — made for curious young
           minds.
         </p>
         <Link
           to="/collections"
-          className="inline-block bg-accent hover:bg-accent-hover text-white font-semibold text-body px-8 py-3.5 rounded-pill transition-colors"
+          className="inline-block bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body px-8 py-3.5 rounded-pill transition-colors"
         >
           Shop the collection
         </Link>
@@ -158,17 +158,17 @@ function ShopByCollection({
 }) {
   if (!collections?.length) return null;
   return (
-    <section className={`px-6 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto`}>
+    <section className={`px-5 md:px-12 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto`}>
       <h2 className="text-ink mb-6">Shop by collection</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
         {collections.slice(0, 6).map((collection, i) => (
           <Link
             key={collection.id}
             to={`/collections/${collection.handle}`}
-            className="group text-center"
+            className="card block text-center p-4 md:p-6"
           >
             <div
-              className={`${TINT_CLASSES[i % TINT_CLASSES.length]} rounded-card aspect-square mb-3 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-[1.02]`}
+              className={`${TINT_CLASSES[i % TINT_CLASSES.length]} rounded-[0.625rem] aspect-square mb-3 overflow-hidden flex items-center justify-center`}
             >
               {collection.image ? (
                 <Image
@@ -197,7 +197,7 @@ function FeaturedProducts({
 }) {
   if (!products?.length) return null;
   return (
-    <section className={`px-6 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto`}>
+    <section className={`px-5 md:px-12 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto`}>
       <div className="flex items-end justify-between mb-6">
         <h2 className="text-ink">Loved by families across India</h2>
         <Link
@@ -232,9 +232,9 @@ function FeaturedProductCard({
 }) {
   const isBestseller = product.tags?.includes('bestseller');
   return (
-    <Link to={`/products/${product.handle}`} className="group">
+    <Link to={`/products/${product.handle}`} className="card block p-4 md:p-6">
       <div
-        className={`relative ${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-card aspect-square mb-3 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-[1.02]`}
+        className={`relative ${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-[0.625rem] aspect-square mb-3 overflow-hidden flex items-center justify-center`}
       >
         {isBestseller && (
           <span className="absolute top-3 left-3 bg-accent text-white text-micro font-semibold uppercase tracking-wide px-2 py-1 rounded-pill">
@@ -269,7 +269,7 @@ function FromTheBlog({
   articles: Promise<RecentArticlesQuery | null>;
 }) {
   return (
-    <section className={`px-6 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto`}>
+    <section className={`px-5 md:px-12 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto`}>
       <div className="flex items-end justify-between mb-6">
         <h2 className="text-ink">From the Blog</h2>
         <Link
@@ -308,7 +308,7 @@ function FromTheBlog({
 function BrandStory() {
   return (
     <section
-      className={`px-6 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center`}
+      className={`px-5 md:px-12 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center`}
     >
       <div className="bg-tint-powder rounded-card aspect-[4/3] flex items-center justify-center order-2 md:order-1">
         <span className="text-6xl" role="img" aria-label="lotus">
@@ -336,7 +336,7 @@ function BrandStory() {
 function EmailSignup() {
   return (
     <section className={`bg-tint-sand ${SECTION_GAP}`}>
-      <div className="px-6 lg:px-16 py-8 lg:py-12 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-5">
+      <div className="px-5 md:px-12 lg:px-16 py-8 lg:py-12 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-5">
         <div>
           <h2 className="text-ink mb-1">Join our storytelling circle</h2>
           <p className="text-ink-soft text-body">
@@ -352,7 +352,7 @@ function EmailSignup() {
           />
           <button
             type="submit"
-            className="bg-accent hover:bg-accent-hover text-white font-semibold text-body px-6 py-3 rounded-pill transition-colors whitespace-nowrap"
+            className="bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body px-6 py-3 rounded-pill transition-colors whitespace-nowrap"
           >
             Sign up
           </button>

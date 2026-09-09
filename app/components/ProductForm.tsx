@@ -110,7 +110,7 @@ export function ProductForm({
               ]
             : []
         }
-        className="w-full bg-accent hover:bg-accent-hover disabled:bg-border disabled:text-ink-soft disabled:cursor-not-allowed text-white font-semibold text-body h-[52px] rounded-pill transition-colors"
+        className="w-full bg-accent hover:bg-accent-hover active:bg-accent-active disabled:bg-border disabled:text-ink-soft disabled:cursor-not-allowed text-white font-semibold text-body h-[52px] rounded-pill transition-colors"
       >
         {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
       </AddToCartButton>
