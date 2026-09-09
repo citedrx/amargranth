@@ -20,7 +20,7 @@ export default function About() {
         <p className="text-accent font-semibold text-sm tracking-wide mb-3">
           Our Story
         </p>
-        <h1 className="font-display text-ink mb-6">
+        <h1 className="text-ink mb-6">
           Timeless stories, told with heart
         </h1>
         <p className="text-ink-soft text-base md:text-lg leading-relaxed">
@@ -45,7 +45,7 @@ export default function About() {
           </span>
         </div>
         <div>
-          <h2 className="font-display text-ink mb-4">
+          <h2 className="text-ink mb-4">
             Why we do this
           </h2>
           <p className="text-ink-soft leading-relaxed mb-4">
@@ -64,7 +64,7 @@ export default function About() {
 
       <section className="px-5 md:px-12 lg:px-16 py-14 md:py-20 max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
         <div className="order-2 md:order-1">
-          <h2 className="font-display text-ink mb-4">
+          <h2 className="text-ink mb-4">
             What we make
           </h2>
           <p className="text-ink-soft leading-relaxed mb-4">
@@ -87,7 +87,7 @@ export default function About() {
 
       <section className="bg-tint-sand">
         <div className="px-5 md:px-12 lg:px-16 py-12 md:py-16 max-w-3xl mx-auto text-center">
-          <h2 className="font-display text-ink mb-3">
+          <h2 className="text-ink mb-3">
             Have a question, or just want to say hello?
           </h2>
           <p className="text-ink-soft text-sm mb-6">

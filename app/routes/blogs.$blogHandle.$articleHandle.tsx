@@ -130,7 +130,7 @@ export default function Article() {
 
         <div
           dangerouslySetInnerHTML={{__html: contentHtml}}
-          className="text-ink text-body-lg leading-relaxed [&_h2]:font-display [&_h2]:text-h2 [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:font-display [&_h3]:text-h3 [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ul]:space-y-1 [&_a]:text-accent [&_a]:underline [&_img]:rounded-card [&_img]:my-6"
+          className="text-ink text-body-lg leading-relaxed [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ul]:space-y-1 [&_a]:text-accent [&_a]:underline [&_img]:rounded-card [&_img]:my-6"
         />
 
         {crossLinkProduct ? (
@@ -175,9 +175,9 @@ export default function Article() {
               <Link
                 key={related.id}
                 to={`/blogs/${blogHandle}/${related.handle}`}
-                className="card block p-4 md:p-6"
+                className="card block"
               >
-                <div className="bg-tint-sand rounded-[0.625rem] aspect-video mb-3 overflow-hidden flex items-center justify-center">
+                <div className="bg-tint-sand aspect-video flex items-center justify-center">
                   {related.image ? (
                     <Image
                       alt={related.image.altText || related.title}
@@ -192,7 +192,7 @@ export default function Article() {
                     </span>
                   )}
                 </div>
-                <h3 className="text-ink line-clamp-2">{related.title}</h3>
+                <h3 className="text-ink line-clamp-2 p-4 md:p-6">{related.title}</h3>
               </Link>
             ))}
           </div>

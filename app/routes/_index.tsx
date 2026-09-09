@@ -3,12 +3,12 @@ import type {Route} from './+types/_index';
 import {Suspense} from 'react';
 import {Image, Money} from '@shopify/hydrogen';
 import type {
-  FeaturedCollectionFragment,
   HomepageProductItemFragment,
   RecentArticlesQuery,
 } from 'storefrontapi.generated';
 import {MockShopNotice} from '~/components/MockShopNotice';
 import {ArticleItem} from '~/components/ArticleItem';
+import {ProductCardActions} from '~/components/ProductCardActions';
 
 const COMBO_SET_HANDLE = '12-jyotirlings-51-shaktipeeths-book-set-hardcover';
 
@@ -30,14 +30,10 @@ export async function loader(args: Route.LoaderArgs) {
 }
 
 async function loadCriticalData({context}: Route.LoaderArgs) {
-  const [{collections}, {products}] = await Promise.all([
-    context.storefront.query(FEATURED_COLLECTIONS_QUERY),
-    context.storefront.query(FEATURED_PRODUCTS_QUERY),
-  ]);
+  const {products} = await context.storefront.query(FEATURED_PRODUCTS_QUERY);
 
   return {
     isShopLinked: Boolean(context.env.PUBLIC_STORE_DOMAIN),
-    collections: collections.nodes,
     products: products.nodes,
   };
 }
@@ -74,7 +70,6 @@ export default function Homepage() {
     <div className="bg-base">
       {data.isShopLinked ? null : <MockShopNotice />}
       <Hero comboSet={comboSet} />
-      <ShopByCollection collections={data.collections} />
       <FeaturedProducts products={data.products} />
       <FromTheBlog articles={data.recentArticles} />
       <BrandStory />
@@ -151,45 +146,6 @@ function Hero({comboSet}: {comboSet?: HomepageProductItemFragment}) {
   );
 }
 
-function ShopByCollection({
-  collections,
-}: {
-  collections: FeaturedCollectionFragment[];
-}) {
-  if (!collections?.length) return null;
-  return (
-    <section className={`px-5 md:px-12 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto`}>
-      <h2 className="text-ink mb-6">Shop by collection</h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-        {collections.slice(0, 6).map((collection, i) => (
-          <Link
-            key={collection.id}
-            to={`/collections/${collection.handle}`}
-            className="card block text-center p-4 md:p-6"
-          >
-            <div
-              className={`${TINT_CLASSES[i % TINT_CLASSES.length]} rounded-[0.625rem] aspect-square mb-3 overflow-hidden flex items-center justify-center`}
-            >
-              {collection.image ? (
-                <Image
-                  data={collection.image}
-                  sizes="(min-width: 768px) 33vw, 50vw"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-4xl opacity-60">🕉️</span>
-              )}
-            </div>
-            <p className="font-semibold text-body text-ink">
-              {collection.title}
-            </p>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function FeaturedProducts({
   products,
 }: {
@@ -231,35 +187,50 @@ function FeaturedProductCard({
   loading?: 'eager' | 'lazy';
 }) {
   const isBestseller = product.tags?.includes('bestseller');
+  const variant = product.variants?.nodes?.[0];
+  const variantUrl = `/products/${product.handle}`;
   return (
-    <Link to={`/products/${product.handle}`} className="card block p-4 md:p-6">
-      <div
-        className={`relative ${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-[0.625rem] aspect-square mb-3 overflow-hidden flex items-center justify-center`}
-      >
-        {isBestseller && (
-          <span className="absolute top-3 left-3 bg-accent text-white text-micro font-semibold uppercase tracking-wide px-2 py-1 rounded-pill">
-            Bestseller
-          </span>
-        )}
-        {product.featuredImage ? (
-          <Image
-            data={product.featuredImage}
-            sizes="(min-width: 768px) 25vw, 50vw"
-            loading={loading}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <span className="text-4xl opacity-60" role="img" aria-label="book">
-            📗
-          </span>
-        )}
+    <div className="card">
+      <Link to={variantUrl} className="block">
+        <div
+          className={`relative ${TINT_CLASSES[index % TINT_CLASSES.length]} aspect-square flex items-center justify-center`}
+        >
+          {isBestseller && (
+            <span className="absolute top-3 left-3 bg-accent text-white text-micro font-semibold uppercase tracking-wide px-2 py-1 rounded-pill">
+              Bestseller
+            </span>
+          )}
+          {product.featuredImage ? (
+            <Image
+              data={product.featuredImage}
+              sizes="(min-width: 768px) 25vw, 50vw"
+              loading={loading}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-4xl opacity-60" role="img" aria-label="book">
+              📗
+            </span>
+          )}
+        </div>
+      </Link>
+      <div className="p-4 md:p-6">
+        <Link to={variantUrl}>
+          <h3 className="text-ink mb-1 line-clamp-2 min-h-[2.6em]">
+            {product.title}
+          </h3>
+        </Link>
+        <Money
+          data={product.priceRange.minVariantPrice}
+          className="text-accent text-body font-semibold"
+        />
+        <ProductCardActions
+          variantUrl={variantUrl}
+          variantId={variant?.id}
+          availableForSale={variant?.availableForSale}
+        />
       </div>
-      <h3 className="text-ink mb-1 line-clamp-2">{product.title}</h3>
-      <Money
-        data={product.priceRange.minVariantPrice}
-        className="text-accent text-body font-semibold"
-      />
-    </Link>
+    </div>
   );
 }
 
@@ -317,16 +288,27 @@ function BrandStory() {
       </div>
       <div className="order-1 md:order-2">
         <h2 className="text-ink mb-4">Our story</h2>
-        <p className="text-ink-soft text-body-lg leading-relaxed mb-5">
+        <p className="text-ink-soft text-body-lg leading-relaxed mb-4">
           Amar Granth exists to preserve and pass on Hindu mythology and
           Indian heritage — bringing the stories of gods, temples, and
           traditions to children through beautifully illustrated books.
+        </p>
+        <p className="text-ink-soft leading-relaxed mb-4">
+          For millions of parents raising children away from the temples,
+          rivers, and stories they grew up with, passing on that heritage
+          can feel like a puzzle with missing pieces. We wanted to make it
+          easier — and more beautiful.
+        </p>
+        <p className="text-ink-soft leading-relaxed mb-5">
+          Every Amar Granth title is illustrated, researched, and written to
+          make ancient stories feel alive for the next generation — without
+          losing what makes them sacred.
         </p>
         <Link
           to="/about"
           className="text-accent hover:text-accent-hover font-semibold text-body"
         >
-          Read our full story →
+          More about us →
         </Link>
       </div>
     </section>
@@ -362,29 +344,6 @@ function EmailSignup() {
   );
 }
 
-const FEATURED_COLLECTIONS_QUERY = `#graphql
-  fragment FeaturedCollection on Collection {
-    id
-    title
-    handle
-    image {
-      id
-      url
-      altText
-      width
-      height
-    }
-  }
-  query FeaturedCollections($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    collections(first: 6, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...FeaturedCollection
-      }
-    }
-  }
-` as const;
-
 const FEATURED_PRODUCTS_QUERY = `#graphql
   fragment HomepageProductItem on Product {
     id
@@ -412,6 +371,12 @@ const FEATURED_PRODUCTS_QUERY = `#graphql
       minVariantPrice {
         amount
         currencyCode
+      }
+    }
+    variants(first: 1) {
+      nodes {
+        id
+        availableForSale
       }
     }
   }
@@ -445,7 +410,7 @@ const RECENT_ARTICLES_QUERY = `#graphql
   query RecentArticles($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
     blog(handle: "blog") {
-      articles(first: 3, sortKey: PUBLISHED_AT, reverse: true) {
+      articles(first: 6, sortKey: PUBLISHED_AT, reverse: true) {
         nodes {
           ...HomepageArticle
         }

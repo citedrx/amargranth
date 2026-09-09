@@ -10,7 +10,9 @@ export function AddToCartButton({
   onClick,
 }: {
   analytics?: unknown;
-  children: React.ReactNode;
+  children:
+    | React.ReactNode
+    | ((fetcher: FetcherWithComponents<any>) => React.ReactNode);
   className?: string;
   disabled?: boolean;
   lines: Array<OptimisticCartLineInput>;
@@ -31,7 +33,7 @@ export function AddToCartButton({
             disabled={disabled ?? fetcher.state !== 'idle'}
             className={className}
           >
-            {children}
+            {typeof children === 'function' ? children(fetcher) : children}
           </button>
         </>
       )}

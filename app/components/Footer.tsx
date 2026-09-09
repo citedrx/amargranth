@@ -20,7 +20,7 @@ export function Footer({
           <footer className="bg-tint-sand mt-24">
             <div className="px-5 md:px-12 lg:px-16 py-16 max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
               <div className="text-center md:text-left">
-                <p className="font-display text-[1.25rem] font-extrabold text-ink tracking-[-0.02em] mb-2">
+                <p className="font-heading text-[1.25rem] font-extrabold text-ink tracking-[-0.02em] mb-2">
                   {header.shop.name}
                 </p>
                 <p className="text-ink-soft text-body max-w-xs">

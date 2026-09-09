@@ -65,7 +65,7 @@ export function Aside({
         <header className="border-border">
           <h3
             id={id}
-            className="font-display text-h3 text-ink normal-case tracking-normal"
+            className="text-h3 text-ink normal-case tracking-normal"
           >
             {heading}
           </h3>

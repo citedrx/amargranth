@@ -18,6 +18,7 @@ import type {
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductForm} from '~/components/ProductForm';
 import {AddToCartButton} from '~/components/AddToCartButton';
+import {ProductCardActions} from '~/components/ProductCardActions';
 import {useAside} from '~/components/Aside';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
@@ -362,35 +363,46 @@ function RelatedProductCard({
   product: RelatedProductItemFragment;
   index: number;
 }) {
+  const variantUrl = `/products/${product.handle}`;
+  const variant = product.variants?.nodes?.[0];
   return (
-    <Link
-      to={`/products/${product.handle}`}
-      className="card block p-4 md:p-6"
-      prefetch="intent"
-    >
-      <div
-        className={`${TINT_CLASSES[index % TINT_CLASSES.length]} rounded-[0.625rem] aspect-square mb-3 overflow-hidden flex items-center justify-center`}
-      >
-        {product.featuredImage ? (
-          <Image
-            alt={product.featuredImage.altText || product.title}
-            aspectRatio="1/1"
-            data={product.featuredImage}
-            sizes="(min-width: 1024px) 22vw, 45vw"
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <span className="text-4xl opacity-60" role="img" aria-label="book">
-            📗
-          </span>
-        )}
+    <div className="card">
+      <Link to={variantUrl} className="block" prefetch="intent">
+        <div
+          className={`${TINT_CLASSES[index % TINT_CLASSES.length]} aspect-square flex items-center justify-center`}
+        >
+          {product.featuredImage ? (
+            <Image
+              alt={product.featuredImage.altText || product.title}
+              aspectRatio="1/1"
+              data={product.featuredImage}
+              sizes="(min-width: 1024px) 22vw, 45vw"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-4xl opacity-60" role="img" aria-label="book">
+              📗
+            </span>
+          )}
+        </div>
+      </Link>
+      <div className="p-4 md:p-6">
+        <Link to={variantUrl} prefetch="intent">
+          <h3 className="text-ink mb-1 line-clamp-2 min-h-[2.6em]">
+            {product.title}
+          </h3>
+        </Link>
+        <Money
+          data={product.priceRange.minVariantPrice}
+          className="text-accent text-body font-semibold"
+        />
+        <ProductCardActions
+          variantUrl={variantUrl}
+          variantId={variant?.id}
+          availableForSale={variant?.availableForSale}
+        />
       </div>
-      <h3 className="text-ink mb-1 line-clamp-2">{product.title}</h3>
-      <Money
-        data={product.priceRange.minVariantPrice}
-        className="text-accent text-body font-semibold"
-      />
-    </Link>
+    </div>
   );
 }
 
@@ -514,6 +526,12 @@ const RELATED_PRODUCTS_QUERY = `#graphql
       minVariantPrice {
         amount
         currencyCode
+      }
+    }
+    variants(first: 1) {
+      nodes {
+        id
+        availableForSale
       }
     }
   }

@@ -19,7 +19,7 @@ export default function Contact() {
         <p className="text-accent font-semibold text-sm tracking-wide mb-3">
           Get in Touch
         </p>
-        <h1 className="font-display text-ink mb-6">
+        <h1 className="text-ink mb-6">
           We&rsquo;d love to hear from you
         </h1>
         <p className="text-ink-soft text-base md:text-lg leading-relaxed mb-10">
@@ -32,7 +32,7 @@ export default function Contact() {
           <p className="text-ink-soft text-sm mb-2">Email us at</p>
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="font-display text-xl md:text-2xl text-accent hover:text-accent-hover transition-colors"
+            className="font-semibold text-xl md:text-2xl text-accent hover:text-accent-hover transition-colors"
           >
             {CONTACT_EMAIL}
           </a>
