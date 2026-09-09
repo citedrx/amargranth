@@ -12,13 +12,13 @@
   --color-base: #fefcf7;
   --color-ink: #2b2b28;
   --color-ink-soft: #5f5e5a;
-  /* Burnt Saffron, darkened from the original #D9761F to hit WCAG AA
-     (4.5:1) with white text — the original measured only ~3.2:1. Hue and
-     saturation preserved, lightness reduced. See PROJECT_CONTEXT.md. */
-  --color-accent: #ac5e19;
-  --color-accent-hover: #9f5617;
-  --color-accent-active: #924f15;
-  --color-amber: #e8b23d;
+  /* Teal — replaced Burnt Saffron per DESIGN_SYSTEM.md's Section 0 "hard
+     constraints" (literal, final hex values), confirmed with ASM. See
+     PROJECT_CONTEXT.md for the full color history. */
+  --color-accent: #1b8a7a;
+  --color-accent-hover: #166e62;
+  --color-accent-active: #0f5349;
+  --color-amber: #d9a441;
   --color-border: #ece7db;
 
   --color-tint-sand: #f3e6d8;

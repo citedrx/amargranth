@@ -58,10 +58,10 @@ This is an established, ASM-approved direction — do not deviate from the palet
 | `--color-base` | `#FEFCF7` | Page background (warm off-white, not pure white) |
 | `--color-ink` | `#2B2B28` | Primary text |
 | `--color-ink-soft` | `#5F5E5A` | Secondary/muted text |
-| `--color-accent` | `#AC5E19` | Primary CTA color ("Burnt Saffron") — the only color used for clickable/actionable things. Originally `#D9761F` (chosen September 2026 to leverage the saffron/orange from the old Wix theme), **darkened to `#AC5E19` later the same month** after an accessibility audit against `DESIGN_SYSTEM.md`'s Section 5 found white-on-`#D9761F` measured only ~3.2:1 contrast — below WCAG AA's 4.5:1 minimum for normal-size text (only large text like the PDP price cleared the 3:1 large-text threshold). Same hue/saturation, reduced lightness only, per ASM's explicit choice (offered "darken it" vs. "keep it, accept the gap" vs. "decide later" — ASM picked darken). New value hits ~4.8:1. |
-| `--color-accent-hover` | `#9F5617` | Accent hover state (~5.5:1) |
-| `--color-accent-active` | `#924F15` | Accent active/pressed state (~6.3:1) — added in the same audit; every accent-filled button now has an explicit `active:` state, not just default/hover. |
-| `--color-amber` | `#E8B23D` | Decorative only (motif icons) — never used for CTAs or links. Refreshed to a richer gold alongside the saffron accent change. |
+| `--color-accent` | `#1B8A7A` | Primary CTA color ("Teal") — the only color used for clickable/actionable things. **Full color history:** `#D9761F` Burnt Saffron (Sept 2026, to echo the old Wix theme) → darkened to `#AC5E19` (same month) after white-on-saffron measured only ~3.2:1, below WCAG AA's 4.5:1 → **switched to Teal `#1B8A7A`** (same month, again) when a re-uploaded `DESIGN_SYSTEM.md` added a Section 0 "hard constraints" block mandating teal and calling the saffron a "drift" bug — confirmed as an intentional pivot with ASM before implementing (it directly reversed ASM's own prior saffron decision, so it wasn't applied silently). Note: the doc's own Section 0 claims `#1B8A7A` + white measures ~4.7:1; independent calculation gets **~4.23:1**, itself slightly under the 4.5:1 AA line — flagged to ASM, not yet re-addressed. Hover and active states are comfortably compliant (~6.1:1, ~8.9:1). |
+| `--color-accent-hover` | `#166E62` | Accent hover state (~6.1:1) |
+| `--color-accent-active` | `#0F5349` | Accent active/pressed state (~8.9:1) |
+| `--color-amber` | `#D9A441` | Decorative only (motif icons) — never used for CTAs or links, never carries text. Updated to this exact value alongside the teal switch (`DESIGN_SYSTEM.md` Section 0 lists it as one of eleven "literal and final" hex values). |
 | `--color-border` | `#ECE7DB` | Card/input borders |
 | `--color-tint-sand` / `-powder` / `-sage` / `-blush` | `#F3E6D8` / `#E4EEF6` / `#EAF1E4` / `#F6E6EC` | Pastel backgrounds for collection tiles/cards, cycled per item |
 
@@ -75,7 +75,7 @@ This is an established, ASM-approved direction — do not deviate from the palet
 
 **Layout principles established for this brand:**
 - Flat navigation: logo + max ~4 links, no nested menus
-- One accent color does all the "clickability" signaling (burnt saffron); amber is decorative-only (small motif icons like 🪔🪷🪶, never full-bleed patterns)
+- One accent color does all the "clickability" signaling (teal, see Colors above for history); amber is decorative-only (small motif icons like 🪔🪷🪶, never full-bleed patterns)
 - Pastel-tinted tiles/cards instead of busy photography backgrounds — keeps things feeling calm and minimal
 - Short, punchy copy over long paragraphs (this is a kids' brand — keep microcopy light and warm, not corporate)
 - Rounded corners throughout (`--radius-card: 1rem`, `--radius-pill: 999px` for buttons/inputs)
