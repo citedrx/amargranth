@@ -40,6 +40,8 @@ The old site (amargranth.com) was built on **Wix Classic Editor**. It's being mi
 | A Children's Guide to the 51 Shaktipeeths [Hardcover] | `a-childrens-guide-to-the-51-shaktipeeths-hardcover` | ₹495 (was ₹595) | 200 |
 | A Children's Guide to the 12 Shiva Jyotirlings [Best Seller] [Hard Cover] | `a-childrens-guide-to-the-12-shiva-jyotirlings-best-seller-hard-cover` | ₹495 (was ₹595) | 30 |
 
+**The "(was ₹X)" figures above are now real, active `compareAtPrice` values in Shopify** (set via the Admin API on all 6 products that have one — Rudraksha never had a markdown). They weren't before: a real screenshot showed the PDP rendering a single accent-colored price with no strikethrough despite `DESIGN_SYSTEM.md`'s explicit discounted-price spec (struck-through original + final price in `--color-badge-sale`), and a direct Admin API check confirmed every one of the 7 variants had `compareAtPrice: null` — the "(was ₹X)" notation here had only ever been descriptive/historical (the old Wix price), never wired into Shopify's actual markdown field. `ProductPrice.tsx`/`ProductItem.tsx`'s discount-color logic (see the Fourth `DESIGN_SYSTEM.md` revision entry below) was already correct against real data; it just had no real markdown to react to until now. Confirmed with ASM before touching live pricing data.
+
 ### Collections
 
 12 Jyotirlings · 51 Shaktipeeths · Rivers of Bharat · Combo Set · Rudraksha Guide · Parashurama
