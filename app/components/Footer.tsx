@@ -8,6 +8,51 @@ interface FooterProps {
   publicStoreDomain: string;
 }
 
+const SOCIAL_LINKS = [
+  {
+    name: 'Facebook',
+    url: 'https://www.facebook.com/p/Amar-Granth-100090905684315/',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" aria-hidden="true">
+        <path
+          d="M14.5 21v-7.5h2.5l.5-3h-3V8.5c0-.9.25-1.5 1.55-1.5H17.5V4.3c-.26-.03-1.16-.11-2.2-.11-2.18 0-3.68 1.33-3.68 3.77V10.5H9v3h2.62V21h2.88Z"
+          fill="currentColor"
+        />
+      </svg>
+    ),
+  },
+  {
+    name: 'Instagram',
+    url: 'https://www.instagram.com/amargranthofficial/',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" />
+      </svg>
+    ),
+  },
+];
+
+function SocialLinks() {
+  return (
+    <div className="flex items-center gap-3 mt-4 justify-center md:justify-start">
+      {SOCIAL_LINKS.map((social) => (
+        <a
+          key={social.name}
+          href={social.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={social.name}
+          className="flex items-center justify-center w-9 h-9 rounded-pill border border-border text-ink-soft hover:border-accent hover:text-accent transition-colors"
+        >
+          {social.icon}
+        </a>
+      ))}
+    </div>
+  );
+}
+
 export function Footer({
   footer: footerPromise,
   header,
@@ -27,6 +72,7 @@ export function Footer({
                   Illustrated storybooks bringing Indian mythology and
                   heritage to young readers.
                 </p>
+                <SocialLinks />
               </div>
               {footer?.menu && header.shop.primaryDomain?.url && (
                 <FooterMenu
