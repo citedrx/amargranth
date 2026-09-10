@@ -14,7 +14,7 @@ import type {
 } from 'storefrontapi.generated';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: `Hydrogen | Search`}];
+  return [{title: `Search | Amar Granth`}];
 };
 
 export async function loader({request, context}: Route.LoaderArgs) {
@@ -41,30 +41,39 @@ export default function SearchPage() {
   if (type === 'predictive') return null;
 
   return (
-    <div className="search">
-      <h1>Search</h1>
+    <div className="bg-base px-5 md:px-12 lg:px-16 py-6 md:py-10 max-w-3xl mx-auto">
+      <h1 className="text-ink mb-6">Search</h1>
       <SearchForm>
         {({inputRef}) => (
-          <>
+          <div className="flex gap-2 mb-8">
             <input
               defaultValue={term}
               name="q"
-              placeholder="Search…"
+              placeholder="Search books and stories…"
               ref={inputRef}
               type="search"
+              className="flex-1 min-w-0 px-4 py-3 rounded-pill border border-border bg-white text-body focus:outline-none focus:ring-2 focus:ring-accent"
             />
-            &nbsp;
-            <button type="submit">Search</button>
-          </>
+            <button
+              type="submit"
+              className="bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body px-6 h-[52px] rounded-pill transition-colors"
+            >
+              Search
+            </button>
+          </div>
         )}
       </SearchForm>
-      {error && <p style={{color: 'red'}}>{error}</p>}
+      {error ? (
+        <p className="text-small text-ink bg-tint-blush rounded-card px-4 py-3 mb-8">
+          {error}
+        </p>
+      ) : null}
       {!term || !result?.total ? (
         <SearchResults.Empty />
       ) : (
         <SearchResults result={result} term={term}>
           {({articles, pages, products, term}) => (
-            <div>
+            <div className="flex flex-col gap-10">
               <SearchResults.Products products={products} term={term} />
               <SearchResults.Pages pages={pages} term={term} />
               <SearchResults.Articles articles={articles} term={term} />

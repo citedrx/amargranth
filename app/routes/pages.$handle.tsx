@@ -3,7 +3,7 @@ import type {Route} from './+types/pages.$handle';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data?.page.title ?? ''}`}];
+  return [{title: `${data?.page.title ?? ''} | Amar Granth`}];
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -58,11 +58,12 @@ export default function Page() {
   const {page} = useLoaderData<typeof loader>();
 
   return (
-    <div className="page">
-      <header>
-        <h1>{page.title}</h1>
-      </header>
-      <main dangerouslySetInnerHTML={{__html: page.body}} />
+    <div className="bg-base px-5 md:px-12 lg:px-16 py-6 md:py-10 max-w-[640px] mx-auto">
+      <h1 className="text-ink mb-6">{page.title}</h1>
+      <div
+        dangerouslySetInnerHTML={{__html: page.body}}
+        className="text-ink text-body-lg leading-relaxed [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ul]:space-y-1 [&_a]:text-accent [&_a]:underline [&_img]:rounded-card [&_img]:my-6"
+      />
     </div>
   );
 }

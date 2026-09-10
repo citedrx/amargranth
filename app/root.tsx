@@ -197,27 +197,53 @@ export default function App() {
   );
 }
 
+function ErrorContent({errorStatus}: {errorStatus: number}) {
+  const isNotFound = errorStatus === 404;
+
+  return (
+    <div className="bg-base min-h-[60vh] flex items-center">
+      <div className="px-5 md:px-12 lg:px-16 py-16 max-w-[640px] mx-auto text-center">
+        <p className="text-accent font-semibold text-small tracking-wide mb-3">
+          {errorStatus}
+        </p>
+        <h1 className="text-ink mb-4">
+          {isNotFound ? 'We couldn&rsquo;t find that page' : 'Something went wrong'}
+        </h1>
+        <p className="text-ink-soft text-body-lg mb-8">
+          {isNotFound
+            ? 'The page you&rsquo;re looking for may have moved or no longer exists.'
+            : 'Please try again in a moment, or head back to browse our storybooks.'}
+        </p>
+        <a
+          href="/"
+          className="inline-block bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body px-8 py-3.5 rounded-pill transition-colors"
+        >
+          Back to home
+        </a>
+      </div>
+    </div>
+  );
+}
+
 export function ErrorBoundary() {
   const error = useRouteError();
-  let errorMessage = 'Unknown error';
+  const data = useRouteLoaderData<RootLoader>('root');
   let errorStatus = 500;
 
   if (isRouteErrorResponse(error)) {
-    errorMessage = error?.data?.message ?? error.data;
     errorStatus = error.status;
-  } else if (error instanceof Error) {
-    errorMessage = error.message;
   }
 
-  return (
-    <div className="route-error">
-      <h1>Oops</h1>
-      <h2>{errorStatus}</h2>
-      {errorMessage && (
-        <fieldset>
-          <pre>{errorMessage}</pre>
-        </fieldset>
-      )}
-    </div>
-  );
+  // If the root loader itself succeeded (the error came from a child route),
+  // keep the header/footer so there's still a way to navigate away instead
+  // of stranding the visitor on a bare page.
+  if (data) {
+    return (
+      <PageLayout {...data}>
+        <ErrorContent errorStatus={errorStatus} />
+      </PageLayout>
+    );
+  }
+
+  return <ErrorContent errorStatus={errorStatus} />;
 }

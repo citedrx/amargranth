@@ -86,13 +86,16 @@ export default function AccountProfile() {
   const customer = action?.customer ?? account?.customer;
 
   return (
-    <div className="account-profile">
-      <h2>My profile</h2>
-      <br />
-      <Form method="PUT">
-        <legend>Personal information</legend>
-        <fieldset>
-          <label htmlFor="firstName">First name</label>
+    <div className="max-w-md">
+      <h2 className="text-ink mb-5">My profile</h2>
+      <Form method="PUT" className="flex flex-col gap-4">
+        <div>
+          <label
+            htmlFor="firstName"
+            className="block text-small font-semibold text-ink mb-1.5"
+          >
+            First name
+          </label>
           <input
             id="firstName"
             name="firstName"
@@ -102,8 +105,16 @@ export default function AccountProfile() {
             aria-label="First name"
             defaultValue={customer.firstName ?? ''}
             minLength={2}
+            className="w-full px-4 py-3 rounded-pill border border-border bg-white text-body focus:outline-none focus:ring-2 focus:ring-accent"
           />
-          <label htmlFor="lastName">Last name</label>
+        </div>
+        <div>
+          <label
+            htmlFor="lastName"
+            className="block text-small font-semibold text-ink mb-1.5"
+          >
+            Last name
+          </label>
           <input
             id="lastName"
             name="lastName"
@@ -113,19 +124,20 @@ export default function AccountProfile() {
             aria-label="Last name"
             defaultValue={customer.lastName ?? ''}
             minLength={2}
+            className="w-full px-4 py-3 rounded-pill border border-border bg-white text-body focus:outline-none focus:ring-2 focus:ring-accent"
           />
-        </fieldset>
+        </div>
         {action?.error ? (
-          <p>
-            <mark>
-              <small>{action.error}</small>
-            </mark>
+          <p className="text-small text-ink bg-tint-blush rounded-card px-4 py-3">
+            {action.error}
           </p>
-        ) : (
-          <br />
-        )}
-        <button type="submit" disabled={state !== 'idle'}>
-          {state !== 'idle' ? 'Updating' : 'Update'}
+        ) : null}
+        <button
+          type="submit"
+          disabled={state !== 'idle'}
+          className="self-start bg-accent hover:bg-accent-hover active:bg-accent-active disabled:bg-border disabled:text-ink-soft disabled:cursor-not-allowed text-white font-semibold text-body px-8 h-11 rounded-pill transition-colors"
+        >
+          {state !== 'idle' ? 'Updating…' : 'Update'}
         </button>
       </Form>
     </div>

@@ -81,142 +81,118 @@ export default function OrderRoute() {
     discountPercentage,
     fulfillmentStatus,
   } = useLoaderData<typeof loader>();
+  const hasDiscount =
+    (discountValue && discountValue.amount) || discountPercentage;
+
   return (
-    <div className="account-order">
-      <h2>Order {order.name}</h2>
-      <p>Placed on {new Date(order.processedAt!).toDateString()}</p>
-      {order.confirmationNumber && (
-        <p>Confirmation: {order.confirmationNumber}</p>
-      )}
-      <br />
-      <div>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Product</th>
-              <th scope="col">Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lineItems.map((lineItem, lineItemIndex) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <OrderLineRow key={lineItemIndex} lineItem={lineItem} />
-            ))}
-          </tbody>
-          <tfoot>
-            {((discountValue && discountValue.amount) ||
-              discountPercentage) && (
-              <tr>
-                <th scope="row" colSpan={3}>
-                  <p>Discounts</p>
-                </th>
-                <th scope="row">
-                  <p>Discounts</p>
-                </th>
-                <td>
-                  {discountPercentage ? (
-                    <span>-{discountPercentage}% OFF</span>
-                  ) : (
-                    discountValue && <Money data={discountValue!} />
-                  )}
-                </td>
-              </tr>
+    <div className="max-w-2xl">
+      <h2 className="text-ink mb-1">Order {order.name}</h2>
+      <p className="text-small text-ink-soft">
+        Placed on {new Date(order.processedAt!).toDateString()}
+      </p>
+      {order.confirmationNumber ? (
+        <p className="text-small text-ink-soft">
+          Confirmation: {order.confirmationNumber}
+        </p>
+      ) : null}
+
+      <ul className="mt-6 divide-y divide-border border-t border-border">
+        {lineItems.map((lineItem, lineItemIndex) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <OrderLineRow key={lineItemIndex} lineItem={lineItem} />
+        ))}
+      </ul>
+
+      <div className="mt-4 pt-4 border-t border-border flex flex-col gap-2 max-w-xs ml-auto">
+        {hasDiscount ? (
+          <div className="flex items-center justify-between text-body text-ink-soft">
+            <span>Discount</span>
+            {discountPercentage ? (
+              <span>-{discountPercentage}% off</span>
+            ) : (
+              discountValue && <Money data={discountValue} />
             )}
-            <tr>
-              <th scope="row" colSpan={3}>
-                <p>Subtotal</p>
-              </th>
-              <th scope="row">
-                <p>Subtotal</p>
-              </th>
-              <td>
-                <Money data={order.subtotal!} />
-              </td>
-            </tr>
-            <tr>
-              <th scope="row" colSpan={3}>
-                Tax
-              </th>
-              <th scope="row">
-                <p>Tax</p>
-              </th>
-              <td>
-                <Money data={order.totalTax!} />
-              </td>
-            </tr>
-            <tr>
-              <th scope="row" colSpan={3}>
-                Total
-              </th>
-              <th scope="row">
-                <p>Total</p>
-              </th>
-              <td>
-                <Money data={order.totalPrice!} />
-              </td>
-            </tr>
-          </tfoot>
-        </table>
+          </div>
+        ) : null}
+        <div className="flex items-center justify-between text-body text-ink-soft">
+          <span>Subtotal</span>
+          <Money data={order.subtotal!} />
+        </div>
+        <div className="flex items-center justify-between text-body text-ink-soft">
+          <span>Tax</span>
+          <Money data={order.totalTax!} />
+        </div>
+        <div className="flex items-center justify-between text-h3 font-semibold text-ink pt-2 border-t border-border">
+          <span>Total</span>
+          <Money data={order.totalPrice!} />
+        </div>
+      </div>
+
+      <div className="mt-8 pt-8 border-t border-border grid sm:grid-cols-2 gap-8">
         <div>
-          <h3>Shipping Address</h3>
+          <h3 className="text-ink mb-2">Shipping address</h3>
           {order?.shippingAddress ? (
-            <address>
+            <address className="not-italic text-body text-ink-soft leading-relaxed">
               <p>{order.shippingAddress.name}</p>
               {order.shippingAddress.formatted ? (
                 <p>{order.shippingAddress.formatted}</p>
-              ) : (
-                ''
-              )}
+              ) : null}
               {order.shippingAddress.formattedArea ? (
                 <p>{order.shippingAddress.formattedArea}</p>
-              ) : (
-                ''
-              )}
+              ) : null}
             </address>
           ) : (
-            <p>No shipping address defined</p>
+            <p className="text-body text-ink-soft">
+              No shipping address defined
+            </p>
           )}
-          <h3>Status</h3>
-          <div>
-            <p>{fulfillmentStatus}</p>
-          </div>
+        </div>
+        <div>
+          <h3 className="text-ink mb-2">Status</h3>
+          <p className="text-body text-ink-soft">{fulfillmentStatus}</p>
         </div>
       </div>
-      <br />
-      <p>
-        <a target="_blank" href={order.statusPageUrl} rel="noreferrer">
-          View Order Status →
-        </a>
-      </p>
+
+      <a
+        target="_blank"
+        href={order.statusPageUrl}
+        rel="noreferrer"
+        className="inline-block mt-8 text-accent hover:text-accent-hover font-semibold text-small"
+      >
+        View order status →
+      </a>
     </div>
   );
 }
 
 function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
   return (
-    <tr key={lineItem.id}>
-      <td>
-        <div>
-          {lineItem?.image && (
-            <div>
-              <Image data={lineItem.image} width={96} height={96} />
-            </div>
-          )}
-          <div>
-            <p>{lineItem.title}</p>
-            <small>{lineItem.variantTitle}</small>
-          </div>
+    <li className="py-4 flex items-center gap-4">
+      {lineItem?.image ? (
+        <div className="bg-tint-sand rounded-card overflow-hidden shrink-0">
+          <Image
+            data={lineItem.image}
+            width={64}
+            height={64}
+            className="w-16 h-16 object-cover"
+          />
         </div>
-      </td>
-      <td>
-        <Money data={lineItem.price!} />
-      </td>
-      <td>{lineItem.quantity}</td>
-      <td>
-        <Money data={lineItem.totalDiscount!} />
-      </td>
-    </tr>
+      ) : null}
+      <div className="flex-1 min-w-0">
+        <p className="font-semibold text-body text-ink">{lineItem.title}</p>
+        {lineItem.variantTitle ? (
+          <p className="text-small text-ink-soft">{lineItem.variantTitle}</p>
+        ) : null}
+        <p className="text-small text-ink-soft mt-1">
+          Qty {lineItem.quantity} · <Money data={lineItem.price!} />
+        </p>
+      </div>
+      {lineItem.totalDiscount && Number(lineItem.totalDiscount.amount) > 0 ? (
+        <Money
+          data={lineItem.totalDiscount}
+          className="text-small text-ink-soft whitespace-nowrap"
+        />
+      ) : null}
+    </li>
   );
 }
