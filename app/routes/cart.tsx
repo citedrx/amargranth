@@ -79,8 +79,15 @@ export async function action({request, context}: Route.ActionArgs) {
 
   const redirectTo = formData.get('redirectTo') ?? null;
   if (typeof redirectTo === 'string') {
-    status = 303;
-    headers.set('Location', redirectTo);
+    // 'checkout' is a special sentinel meaning "skip the cart, go straight
+    // to Shopify checkout" — resolved to the real cart's checkoutUrl rather
+    // than a hardcoded path, since it depends on the mutation just run.
+    const location =
+      redirectTo === 'checkout' ? cartResult?.checkoutUrl : redirectTo;
+    if (location) {
+      status = 303;
+      headers.set('Location', location);
+    }
   }
 
   return data(

@@ -72,9 +72,15 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
   // The API handle might be localized, so redirect to the localized handle
   redirectIfHandleIsLocalized(request, {handle, data: product});
 
+  const promoEndDate = product.promoEndDate?.value;
+  const promoActive = Boolean(
+    promoEndDate && new Date(promoEndDate) >= new Date(),
+  );
+
   return {
     product,
     relatedProducts: allProducts.nodes,
+    promoActive,
   };
 }
 
@@ -110,6 +116,57 @@ function getRelatedProducts(
     .slice(0, 4);
 }
 
+/**
+ * Combo/bundle upsell callout — only on standalone Jyotirlingas or
+ * Shaktipeeths pages, and only when the math genuinely favors the combo
+ * (this product's price + the counterpart standalone product's price costs
+ * more than the Combo Set). Driven entirely by real tags and real prices
+ * already in Shopify, not a hardcoded pairing — a different-format edition
+ * (e.g. the Hindi paperback) simply won't clear the savings check and the
+ * callout stays hidden for it.
+ */
+function getComboUpsell(
+  current: {id: string; tags: readonly string[]; price: number},
+  all: RelatedProductItemFragment[],
+) {
+  const comboProduct = all.find((p) => p.tags?.includes('combo-set'));
+  if (!comboProduct || current.tags.includes('combo-set')) return null;
+
+  const isJyotirlingas = current.tags.some(
+    (t) => t.toLowerCase() === 'jyotirlingas',
+  );
+  const isShaktipeeths = current.tags.some(
+    (t) => t.toLowerCase() === 'shaktipeeths',
+  );
+  if (!isJyotirlingas && !isShaktipeeths) return null;
+
+  const counterpartTag = isJyotirlingas ? 'shaktipeeths' : 'jyotirlingas';
+  const counterparts = all.filter(
+    (p) =>
+      p.id !== current.id &&
+      !p.tags?.includes('combo-set') &&
+      p.tags?.some((t) => t.toLowerCase() === counterpartTag),
+  );
+  if (counterparts.length === 0) return null;
+
+  const comboPrice = Number(comboProduct.priceRange.minVariantPrice.amount);
+  // A catalog can have more than one edition of the counterpart (e.g. a
+  // Hindi paperback vs. the hardcover the Combo Set actually bundles) — only
+  // the pairing that genuinely saves money is worth surfacing.
+  const bestSavings = Math.max(
+    ...counterparts.map(
+      (c) => current.price + Number(c.priceRange.minVariantPrice.amount) - comboPrice,
+    ),
+  );
+  if (bestSavings <= 0) return null;
+
+  return {
+    comboProduct,
+    savings: bestSavings,
+    currencyCode: comboProduct.priceRange.minVariantPrice.currencyCode,
+  };
+}
+
 function useScrolledPastEl(ref: React.RefObject<HTMLElement | null>) {
   const [scrolledPast, setScrolledPast] = useState(false);
   useEffect(() => {
@@ -125,8 +182,18 @@ function useScrolledPastEl(ref: React.RefObject<HTMLElement | null>) {
   return scrolledPast;
 }
 
+function parseBullets(value: string | null | undefined): string[] {
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed.filter((b) => typeof b === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
 export default function Product() {
-  const {product, relatedProducts} = useLoaderData<typeof loader>();
+  const {product, relatedProducts, promoActive} = useLoaderData<typeof loader>();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -144,7 +211,7 @@ export default function Product() {
     selectedOrFirstAvailableVariant: selectedVariant,
   });
 
-  const {title, descriptionHtml, seo, tags} = product;
+  const {title, seo, tags} = product;
   const galleryImages = [
     selectedVariant?.image,
     ...product.images.nodes.filter((img) => img.id !== selectedVariant?.image?.id),
@@ -153,8 +220,18 @@ export default function Product() {
   const ctaRef = useRef<HTMLDivElement>(null);
   const showStickyBar = useScrolledPastEl(ctaRef);
   const {open} = useAside();
+  const [quantity, setQuantity] = useState(1);
 
   const related = getRelatedProducts({id: product.id, tags}, relatedProducts);
+  const comboUpsell = getComboUpsell(
+    {
+      id: product.id,
+      tags,
+      price: Number(selectedVariant?.price?.amount ?? 0),
+    },
+    relatedProducts,
+  );
+  const bullets = parseBullets(product.whatsInsideBullets?.value);
 
   return (
     <div className="bg-base">
@@ -174,6 +251,23 @@ export default function Product() {
           <ProductGallery images={galleryImages} title={title} />
 
           <div>
+            {promoActive && product.promoLabel?.value ? (
+              <div className="inline-flex items-center gap-2 bg-tint-sand text-ink text-small font-semibold rounded-pill px-4 py-2 mb-4">
+                🪔 {product.promoLabel.value}
+                {product.promoDiscount?.value
+                  ? ` — ${product.promoDiscount.value}`
+                  : ''}
+                {product.promoEndDate?.value
+                  ? `, ends ${new Date(
+                      product.promoEndDate.value,
+                    ).toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'short',
+                    })}`
+                  : ''}
+              </div>
+            ) : null}
+
             <h1 className="text-ink mb-2">{title}</h1>
             {seo.description ? (
               <p className="text-body-lg text-ink-soft mb-5">
@@ -188,9 +282,11 @@ export default function Product() {
             </div>
 
             <div ref={ctaRef}>
+              <QuantitySelector quantity={quantity} onChange={setQuantity} />
               <ProductForm
                 productOptions={productOptions}
                 selectedVariant={selectedVariant}
+                quantity={quantity}
               />
             </div>
 
@@ -199,13 +295,40 @@ export default function Product() {
               <li>↩ Damaged on arrival? Email us within 24hrs for a replacement</li>
             </ul>
 
-            {descriptionHtml ? (
+            {comboUpsell ? (
+              <Link
+                to={`/products/${comboUpsell.comboProduct.handle}`}
+                className="mt-6 flex items-center justify-between gap-3 rounded-card border-2 border-accent bg-tint-sand px-5 py-4 hover:bg-tint-powder transition-colors"
+              >
+                <span className="text-small text-ink">
+                  Get both books in the{' '}
+                  <span className="font-semibold">
+                    {comboUpsell.comboProduct.title}
+                  </span>{' '}
+                  and save{' '}
+                  <span className="font-semibold text-accent">
+                    <Money
+                      data={{
+                        amount: String(comboUpsell.savings),
+                        currencyCode: comboUpsell.currencyCode,
+                      }}
+                    />
+                  </span>
+                </span>
+                <span className="text-accent font-semibold text-small shrink-0">
+                  View set →
+                </span>
+              </Link>
+            ) : null}
+
+            {bullets.length > 0 ? (
               <div className="mt-8 pt-6 border-t border-border">
                 <h2 className="text-ink mb-3">What&rsquo;s inside</h2>
-                <div
-                  className="text-ink-soft text-body leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_p]:mb-3 [&_p:last-child]:mb-0"
-                  dangerouslySetInnerHTML={{__html: descriptionHtml}}
-                />
+                <ul className="list-disc pl-5 space-y-1.5 text-ink-soft text-body">
+                  {bullets.map((bullet) => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
+                </ul>
               </div>
             ) : null}
 
@@ -267,7 +390,7 @@ export default function Product() {
               ? [
                   {
                     merchandiseId: selectedVariant.id,
-                    quantity: 1,
+                    quantity,
                     selectedVariant,
                   },
                 ]
@@ -289,11 +412,49 @@ export default function Product() {
               vendor: product.vendor,
               variantId: selectedVariant?.id || '',
               variantTitle: selectedVariant?.title || '',
-              quantity: 1,
+              quantity,
             },
           ],
         }}
       />
+    </div>
+  );
+}
+
+function QuantitySelector({
+  quantity,
+  onChange,
+}: {
+  quantity: number;
+  onChange: (quantity: number) => void;
+}) {
+  return (
+    <div className="mb-4">
+      <span className="block text-small font-semibold text-ink mb-2">
+        Quantity
+      </span>
+      <div className="flex items-center border border-border rounded-pill w-fit">
+        <button
+          type="button"
+          aria-label="Decrease quantity"
+          disabled={quantity <= 1}
+          onClick={() => onChange(Math.max(1, quantity - 1))}
+          className="w-11 h-11 flex items-center justify-center text-ink-soft hover:text-ink disabled:opacity-30 transition-colors"
+        >
+          <span>&#8722;</span>
+        </button>
+        <span className="text-body font-semibold text-ink w-8 text-center">
+          {quantity}
+        </span>
+        <button
+          type="button"
+          aria-label="Increase quantity"
+          onClick={() => onChange(quantity + 1)}
+          className="w-11 h-11 flex items-center justify-center text-ink-soft hover:text-ink transition-colors"
+        >
+          <span>&#43;</span>
+        </button>
+      </div>
     </div>
   );
 }
@@ -490,6 +651,18 @@ const PRODUCT_FRAGMENT = `#graphql
     seo {
       description
       title
+    }
+    promoLabel: metafield(namespace: "custom", key: "promo_label") {
+      value
+    }
+    promoDiscount: metafield(namespace: "custom", key: "promo_discount") {
+      value
+    }
+    promoEndDate: metafield(namespace: "custom", key: "promo_end_date") {
+      value
+    }
+    whatsInsideBullets: metafield(namespace: "custom", key: "whats_inside_bullets") {
+      value
     }
   }
   ${PRODUCT_VARIANT_FRAGMENT}

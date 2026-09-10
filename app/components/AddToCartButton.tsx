@@ -8,6 +8,7 @@ export function AddToCartButton({
   disabled,
   lines,
   onClick,
+  redirectTo,
 }: {
   analytics?: unknown;
   children:
@@ -17,6 +18,10 @@ export function AddToCartButton({
   disabled?: boolean;
   lines: Array<OptimisticCartLineInput>;
   onClick?: () => void;
+  /** When set, the cart action redirects here after the mutation completes.
+   * Pass the literal 'checkout' to skip the cart and go straight to Shopify
+   * checkout with the real cart's checkoutUrl. */
+  redirectTo?: string;
 }) {
   return (
     <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
@@ -27,6 +32,9 @@ export function AddToCartButton({
             type="hidden"
             value={JSON.stringify(analytics)}
           />
+          {redirectTo ? (
+            <input name="redirectTo" type="hidden" value={redirectTo} />
+          ) : null}
           <button
             type="submit"
             onClick={onClick}

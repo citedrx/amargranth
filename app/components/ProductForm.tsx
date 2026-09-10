@@ -11,9 +11,11 @@ import type {ProductFragment} from 'storefrontapi.generated';
 export function ProductForm({
   productOptions,
   selectedVariant,
+  quantity,
 }: {
   productOptions: MappedProductOptions[];
   selectedVariant: ProductFragment['selectedOrFirstAvailableVariant'];
+  quantity: number;
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
@@ -94,26 +96,46 @@ export function ProductForm({
           </div>
         );
       })}
-      <AddToCartButton
-        disabled={!selectedVariant || !selectedVariant.availableForSale}
-        onClick={() => {
-          open('cart');
-        }}
-        lines={
-          selectedVariant
-            ? [
-                {
-                  merchandiseId: selectedVariant.id,
-                  quantity: 1,
-                  selectedVariant,
-                },
-              ]
-            : []
-        }
-        className="w-full bg-accent hover:bg-accent-hover active:bg-accent-active disabled:bg-border disabled:text-ink-soft disabled:cursor-not-allowed text-white font-semibold text-body h-[52px] rounded-pill transition-colors"
-      >
-        {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
-      </AddToCartButton>
+      <div className="flex flex-col gap-3">
+        <AddToCartButton
+          disabled={!selectedVariant || !selectedVariant.availableForSale}
+          onClick={() => {
+            open('cart');
+          }}
+          lines={
+            selectedVariant
+              ? [
+                  {
+                    merchandiseId: selectedVariant.id,
+                    quantity,
+                    selectedVariant,
+                  },
+                ]
+              : []
+          }
+          className="w-full bg-accent hover:bg-accent-hover active:bg-accent-active disabled:bg-border disabled:text-ink-soft disabled:cursor-not-allowed text-white font-semibold text-body h-[52px] rounded-pill transition-colors"
+        >
+          {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
+        </AddToCartButton>
+        <AddToCartButton
+          disabled={!selectedVariant || !selectedVariant.availableForSale}
+          redirectTo="checkout"
+          lines={
+            selectedVariant
+              ? [
+                  {
+                    merchandiseId: selectedVariant.id,
+                    quantity,
+                    selectedVariant,
+                  },
+                ]
+              : []
+          }
+          className="w-full bg-transparent border-2 border-accent hover:bg-tint-sage active:bg-tint-sand disabled:border-border disabled:text-ink-soft disabled:cursor-not-allowed text-accent font-semibold text-body h-[52px] rounded-pill transition-colors"
+        >
+          Buy now
+        </AddToCartButton>
+      </div>
     </div>
   );
 }
