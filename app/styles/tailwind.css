@@ -46,11 +46,6 @@
   --color-dark: var(--color-ink);
   --color-light: #ffffff;
 
-  /* Logo mark only (Logo.tsx) — the sun mascot's cheek blush has no close
-     match among the 11 palette colors, so it gets its own token here (the
-     one canonical color file) rather than a hardcoded hex in the component. */
-  --color-logo-cheek: #f2a488;
-
   /* Fonts — three-part system: Instrument Serif is reserved for the single
      homepage hero headline (.text-display) only; Domine handles every other
      heading (h1/h2/h3/h4, .font-heading); Inter handles body/UI/buttons. */
