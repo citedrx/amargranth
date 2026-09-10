@@ -7,6 +7,7 @@ import {
 } from '@shopify/hydrogen';
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
+import {Logo} from '~/components/Logo';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -46,9 +47,12 @@ export function Header({
         prefetch="intent"
         to="/"
         end
-        className="font-heading text-[1.25rem] font-extrabold text-ink tracking-[-0.02em]"
+        className="flex items-center gap-2.5"
       >
-        {shop.name}
+        <Logo className="w-8 h-8 shrink-0" />
+        <span className="font-heading text-[1.25rem] font-extrabold text-ink tracking-[-0.02em]">
+          {shop.name}
+        </span>
       </NavLink>
       <HeaderMenu
         menu={menu}

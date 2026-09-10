@@ -1,6 +1,7 @@
 import {Suspense} from 'react';
 import {Await, NavLink} from 'react-router';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
+import {Logo} from '~/components/Logo';
 
 interface FooterProps {
   footer: Promise<FooterQuery | null>;
@@ -65,9 +66,12 @@ export function Footer({
           <footer className="bg-tint-sand mt-24">
             <div className="px-5 md:px-12 lg:px-16 py-16 max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
               <div className="text-center md:text-left">
-                <p className="font-heading text-[1.25rem] font-extrabold text-ink tracking-[-0.02em] mb-2">
-                  {header.shop.name}
-                </p>
+                <div className="flex items-center gap-2.5 justify-center md:justify-start mb-2">
+                  <Logo className="w-8 h-8 shrink-0" />
+                  <p className="font-heading text-[1.25rem] font-extrabold text-ink tracking-[-0.02em]">
+                    {header.shop.name}
+                  </p>
+                </div>
                 <p className="text-ink-soft text-body max-w-xs">
                   Illustrated storybooks bringing Indian mythology and
                   heritage to young readers.
