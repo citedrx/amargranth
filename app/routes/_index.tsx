@@ -264,7 +264,15 @@ function FromTheBlog({
                   if (!nodes?.length) return null;
                   return (
                     <div key={category.tag}>
-                      <h3 className="text-ink mb-4">{category.label}</h3>
+                      <div className="flex items-end justify-between mb-4">
+                        <h3 className="text-ink">{category.label}</h3>
+                        <Link
+                          to={`/blogs/blog?tag=${category.tag}`}
+                          className="text-accent hover:text-accent-hover font-semibold text-small whitespace-nowrap"
+                        >
+                          View all →
+                        </Link>
+                      </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {nodes.map((article, i) => (
                           <ArticleItem

@@ -19,9 +19,9 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
   return (
     <div
       aria-labelledby={summaryId}
-      className="mt-auto pt-5 border-t border-border"
+      className="flex flex-col gap-3 border-t border-border p-6"
     >
-      <dl role="group" className="flex items-center justify-between mb-4">
+      <dl role="group" className="flex items-center justify-between">
         <dt className="text-body text-ink-soft">Subtotal</dt>
         <dd className="text-h3 font-semibold text-ink">
           {cart?.cost?.subtotalAmount?.amount ? (
@@ -65,7 +65,7 @@ function CartCheckoutActions({cart}: {cart: CartSummaryProps['cart']}) {
           currency: cart?.cost?.subtotalAmount?.currencyCode || 'INR',
         });
       }}
-      className="flex items-center justify-center w-full bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body h-[52px] rounded-pill transition-colors mt-2"
+      className="flex items-center justify-center w-full bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body h-[52px] rounded-pill transition-colors"
     >
       Checkout
     </a>
@@ -87,7 +87,7 @@ function CartDiscounts({
       ?.map(({code}) => code) || [];
 
   return (
-    <section aria-label="Discounts" className="mb-3">
+    <section aria-label="Discounts">
       {/* Have existing discount, display it with a remove option */}
       <dl hidden={!codes.length}>
         <div>
@@ -217,7 +217,7 @@ function CartGiftCard({
   };
 
   return (
-    <section aria-label="Gift cards" className="mb-3">
+    <section aria-label="Gift cards">
       {giftCardCodes && giftCardCodes.length > 0 && (
         <dl className="mb-2 space-y-2">
           <dt id={giftCardHeadingId} className="sr-only">

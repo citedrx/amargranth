@@ -2,8 +2,8 @@
  * Everything below is wrapped in Tailwind's own `base` layer so Tailwind
  * utility classes (text-white, text-body-lg, bg-accent, etc.) always win
  * over these legacy skeleton defaults, regardless of selector specificity.
- * Without this, plain unlayered rules here (e.g. `a { color: #000 }`)
- * silently beat layered Tailwind utilities on every <a>/<p>/body element
+ * Without this, plain unlayered rules here (e.g. a hardcoded black link
+ * color) silently beat layered Tailwind utilities on every <a>/<p>/body element
  * that doesn't carry an extra higher-specificity override — that's what
  * was producing black CTA button text instead of the intended white.
  */
@@ -63,7 +63,7 @@
   }
 
   a {
-    color: #000;
+    color: var(--color-ink);
     text-decoration: none;
   }
 
@@ -74,7 +74,7 @@
 
   hr {
     border-bottom: none;
-    border-top: 1px solid #000;
+    border-top: 1px solid var(--color-border);
     margin: 0;
   }
 
@@ -115,7 +115,7 @@
 
   input {
     border-radius: 4px;
-    border: 1px solid #000;
+    border: 1px solid var(--color-border);
     font-size: 1rem;
     margin-bottom: 0.5rem;
     margin-top: 0.25rem;
@@ -142,7 +142,7 @@
   }
 
   code {
-    background: #ddd;
+    background: var(--color-border);
     border-radius: 4px;
     font-family: monospace;
     padding: 0.25rem;

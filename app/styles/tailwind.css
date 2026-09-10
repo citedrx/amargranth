@@ -12,11 +12,16 @@
   --color-base: #fefcf7;
   --color-ink: #2b2b28;
   --color-ink-soft: #5f5e5a;
-  /* Teal — DESIGN_SYSTEM.md Section 0 "hard constraints" (literal, final
-     hex values). Using the doc's exact values, no deviation. */
-  --color-accent: #1b8a7a;
-  --color-accent-hover: #166e62;
-  --color-accent-active: #0f5349;
+  /* Terracotta Saffron — DESIGN_SYSTEM.md Section 0 "hard constraints"
+     (literal, final hex values). Was teal (#1b8a7a) in a prior doc revision;
+     the doc's Section 0.1 explicitly tested this exact swap as proof its
+     single-token architecture works — changing the accent should touch only
+     these 3 lines. Independently verified via WCAG math (not just trusting
+     the doc's own claim, per its own "compute, don't estimate" rule):
+     white text on #b45309 = 5.02:1, a real pass, unlike teal's 4.23:1. */
+  --color-accent: #b45309;
+  --color-accent-hover: #994708;
+  --color-accent-active: #7e3a06;
   --color-amber: #d9a441;
   --color-border: #ece7db;
 
@@ -24,6 +29,12 @@
   --color-tint-powder: #e4eef6;
   --color-tint-sage: #eaf1e4;
   --color-tint-blush: #f6e6ec;
+
+  /* Legacy Hydrogen-skeleton aliases (app.css's MockShopNotice) — kept here,
+     the single color source-of-truth file, per DESIGN_SYSTEM.md Section 0.1
+     rather than hardcoded in app.css directly. */
+  --color-dark: var(--color-ink);
+  --color-light: #ffffff;
 
   /* Fonts — three-part system: Instrument Serif is reserved for the single
      homepage hero headline (.text-display) only; Domine handles every other

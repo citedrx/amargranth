@@ -85,7 +85,7 @@ export function HeaderMenu({
           end
           onClick={close}
           prefetch="intent"
-          className="text-small font-semibold text-ink-soft hover:text-ink"
+          className="text-body font-medium text-ink-soft hover:text-ink"
           to="/"
         >
           Home
@@ -103,7 +103,7 @@ export function HeaderMenu({
             : item.url;
         return (
           <NavLink
-            className="text-body font-semibold text-ink-soft hover:text-ink transition-colors"
+            className="text-body font-medium text-ink-soft hover:text-ink transition-colors"
             end
             key={item.id}
             onClick={close}

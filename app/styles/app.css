@@ -14,8 +14,9 @@
   --cart-aside-summary-height: 250px;
   --grid-item-width: 355px;
   --header-height: 64px;
-  --color-dark: #000;
-  --color-light: #fff;
+  /* --color-dark / --color-light are defined once, in tailwind.css's
+     @theme block, per DESIGN_SYSTEM.md Section 0.1's single-source-of-truth
+     rule — not redefined here. */
 }
 
 img {
@@ -61,7 +62,7 @@ img {
   }
 
   footer {
-    background: rgba(0, 0, 0, 0.06);
+    background: color-mix(in srgb, var(--color-ink) 6%, transparent);
     padding: 0.5rem 1rem;
   }
 
@@ -72,7 +73,7 @@ img {
   }
 
   code {
-    background: rgba(0, 0, 0, 0.06);
+    background: color-mix(in srgb, var(--color-ink) 6%, transparent);
     border-radius: 0.25rem;
     padding: 0.1em 0.3em;
   }
@@ -96,7 +97,7 @@ img {
 
 aside {
   background: var(--color-light);
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 50px color-mix(in srgb, var(--color-ink) 30%, transparent);
   height: 100vh;
   width: min(var(--aside-width), 100vw);
   position: fixed;
@@ -164,7 +165,7 @@ aside li {
 }
 
 .overlay {
-  background: rgba(0, 0, 0, 0.2);
+  background: color-mix(in srgb, var(--color-ink) 20%, transparent);
   bottom: 0;
   left: 0;
   opacity: 0;
@@ -187,10 +188,6 @@ aside li {
   position: absolute;
   top: 0;
   width: calc(100% - var(--aside-width));
-}
-
-.overlay .light {
-  background: rgba(255, 255, 255, 0.5);
 }
 
 .overlay .cancel {
@@ -230,81 +227,11 @@ button.reset:hover:not(:has(> *)) {
   cursor: pointer;
 }
 
-/*
-* --------------------------------------------------
-* components/Header
-* --------------------------------------------------
-*/
-.header {
-  align-items: center;
-  background: #fff;
-  display: flex;
-  height: var(--header-height);
-  padding: 0 1rem;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
-.header-menu-mobile-toggle {
-  @media (min-width: 48em) {
-    display: none;
-  }
-}
-
-.header-menu-mobile {
-  display: flex;
-  flex-direction: column;
-  grid-gap: 1rem;
-}
-
-.header-menu-desktop {
-  display: none;
-  grid-gap: 1rem;
-  @media (min-width: 45em) {
-    display: flex;
-    grid-gap: 1rem;
-    margin-left: 3rem;
-  }
-}
-
-.header-menu-item {
-  cursor: pointer;
-}
-
-.header-ctas {
-  align-items: center;
-  display: flex;
-  grid-gap: 1rem;
-  margin-left: auto;
-}
-
-.header-ctas > * {
-  min-width: fit-content;
-}
-
-/*
-* --------------------------------------------------
-* components/Footer
-* --------------------------------------------------
-*/
-.footer {
-  background: var(--color-dark);
-  margin-top: auto;
-}
-
-.footer-menu {
-  justify-content: center;
-  display: flex;
-  flex-wrap: wrap;
-  grid-gap: 1rem;
-  padding: 1rem;
-}
-
-.footer-menu a {
-  color: var(--color-light);
-  min-width: fit-content;
-}
+/* components/Header and components/Footer are fully rebuilt with Tailwind
+   utility classes (see Header.tsx and Footer.tsx) — the skeleton's header,
+   footer, header-menu, and footer-menu selectors are unused and were
+   removed here rather than "fixed," since dead CSS carrying hardcoded
+   colors is just as much a Section 0.1 violation as live CSS. */
 
 /*
 * --------------------------------------------------
@@ -606,7 +533,7 @@ button.reset:hover:not(:has(> *)) {
 }
 
 .order-search-fieldset {
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   padding: 1rem;
 }
@@ -638,7 +565,7 @@ button.reset:hover:not(:has(> *)) {
 .order-search-input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   font-size: 1rem;
 }

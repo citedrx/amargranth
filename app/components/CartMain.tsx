@@ -51,35 +51,33 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
 
   return (
     <section
-      className={`${className} flex flex-col h-full ${layout === 'page' ? 'px-5 md:px-12 lg:px-16 pt-6 pb-14 max-w-3xl mx-auto' : 'px-5 py-4'}`}
+      className={`${className} ${layout === 'page' ? 'px-5 md:px-12 lg:px-16 pt-6 pb-14 max-w-3xl mx-auto' : 'px-5 py-4'}`}
       aria-label={layout === 'page' ? 'Cart page' : 'Cart drawer'}
     >
       <CartEmpty hidden={linesCount} layout={layout} />
-      <div className="cart-details flex flex-col flex-1 min-h-0">
+      <div className="cart-details">
         <p id="cart-lines" className="sr-only">
           Line items
         </p>
-        <div className="overflow-y-auto min-h-0">
-          <ul aria-labelledby="cart-lines" className="divide-y divide-border">
-            {(cart?.lines?.nodes ?? []).map((line) => {
-              // we do not render non-parent lines at the root of the cart
-              if (
-                'parentRelationship' in line &&
-                line.parentRelationship?.parent
-              ) {
-                return null;
-              }
-              return (
-                <CartLineItem
-                  key={line.id}
-                  line={line}
-                  layout={layout}
-                  childrenMap={childrenMap}
-                />
-              );
-            })}
-          </ul>
-        </div>
+        <ul aria-labelledby="cart-lines" className="divide-y divide-border">
+          {(cart?.lines?.nodes ?? []).map((line) => {
+            // we do not render non-parent lines at the root of the cart
+            if (
+              'parentRelationship' in line &&
+              line.parentRelationship?.parent
+            ) {
+              return null;
+            }
+            return (
+              <CartLineItem
+                key={line.id}
+                line={line}
+                layout={layout}
+                childrenMap={childrenMap}
+              />
+            );
+          })}
+        </ul>
         {cartHasItems && <CartSummary cart={cart} layout={layout} />}
       </div>
     </section>

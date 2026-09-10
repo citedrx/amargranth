@@ -71,7 +71,7 @@ export function Aside({
           <button
             className="flex items-center justify-center w-11 h-11 -mr-2 rounded-pill border border-border text-ink-soft hover:border-accent hover:text-accent transition-colors text-xl leading-none"
             onClick={close}
-            aria-label="Close"
+            aria-label={type === 'cart' ? 'Close cart' : 'Close menu'}
           >
             &times;
           </button>
