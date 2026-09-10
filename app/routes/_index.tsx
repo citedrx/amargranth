@@ -8,7 +8,7 @@ import type {
 } from 'storefrontapi.generated';
 import {MockShopNotice} from '~/components/MockShopNotice';
 import {ArticleItem} from '~/components/ArticleItem';
-import {ProductCardActions} from '~/components/ProductCardActions';
+import {ProductItem} from '~/components/ProductItem';
 import {BLOG_CATEGORIES} from '~/lib/blogCategories';
 
 const COMBO_SET_HANDLE = '12-jyotirlings-51-shaktipeeths-book-set-hardcover';
@@ -51,13 +51,6 @@ function loadDeferredData({context}: Route.LoaderArgs) {
     articlesByCategory,
   };
 }
-
-const TINT_CLASSES = [
-  'bg-tint-sand',
-  'bg-tint-powder',
-  'bg-tint-sage',
-  'bg-tint-blush',
-];
 
 /** Uniform vertical rhythm between homepage sections (see DESIGN_SYSTEM.md
  * Section 6): 48px mobile, 64px tablet, 96px desktop — applied as top
@@ -166,72 +159,16 @@ function FeaturedProducts({
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {products.slice(0, 8).map((product, i) => (
-          <FeaturedProductCard
+          <ProductItem
             key={product.id}
             product={product}
             index={i}
             loading={i < 4 ? 'eager' : undefined}
+            badge={product.tags?.includes('bestseller') ? 'Bestseller' : undefined}
           />
         ))}
       </div>
     </section>
-  );
-}
-
-function FeaturedProductCard({
-  product,
-  index,
-  loading,
-}: {
-  product: HomepageProductItemFragment;
-  index: number;
-  loading?: 'eager' | 'lazy';
-}) {
-  const isBestseller = product.tags?.includes('bestseller');
-  const variant = product.variants?.nodes?.[0];
-  const variantUrl = `/products/${product.handle}`;
-  return (
-    <div className="card">
-      <Link to={variantUrl} className="block">
-        <div
-          className={`relative ${TINT_CLASSES[index % TINT_CLASSES.length]} aspect-square flex items-center justify-center`}
-        >
-          {isBestseller && (
-            <span className="absolute top-3 left-3 bg-accent text-white text-micro font-semibold uppercase tracking-wide px-2 py-1 rounded-pill">
-              Bestseller
-            </span>
-          )}
-          {product.featuredImage ? (
-            <Image
-              data={product.featuredImage}
-              sizes="(min-width: 768px) 25vw, 50vw"
-              loading={loading}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <span className="text-4xl opacity-60" role="img" aria-label="book">
-              📗
-            </span>
-          )}
-        </div>
-      </Link>
-      <div className="p-4 md:p-6">
-        <Link to={variantUrl}>
-          <h3 className="text-ink mb-1 line-clamp-2 min-h-[2.6em]">
-            {product.title}
-          </h3>
-        </Link>
-        <Money
-          data={product.priceRange.minVariantPrice}
-          className="text-accent text-body font-semibold"
-        />
-        <ProductCardActions
-          variantUrl={variantUrl}
-          variantId={variant?.id}
-          availableForSale={variant?.availableForSale}
-        />
-      </div>
-    </div>
   );
 }
 

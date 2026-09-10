@@ -10,10 +10,14 @@ export function ProductPrice({
   compareAtPrice?: MoneyV2 | null;
   size?: 'large' | 'small';
 }) {
+  const isDiscounted = Boolean(
+    compareAtPrice && price && compareAtPrice.amount !== price.amount,
+  );
+  const priceColor = isDiscounted ? 'text-badge-sale' : 'text-accent';
   const priceClassName =
     size === 'large'
-      ? 'text-h2 font-semibold text-accent'
-      : 'text-body font-semibold text-accent';
+      ? `text-h2 font-semibold ${priceColor}`
+      : `text-body font-semibold ${priceColor}`;
   const compareClassName = size === 'large' ? 'text-body' : 'text-small';
 
   return (

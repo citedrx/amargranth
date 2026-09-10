@@ -2,6 +2,7 @@ import {Suspense} from 'react';
 import {Await, NavLink} from 'react-router';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {Logo} from '~/components/Logo';
+import {siteConfig} from '~/lib/site-config';
 
 interface FooterProps {
   footer: Promise<FooterQuery | null>;
@@ -12,7 +13,7 @@ interface FooterProps {
 const SOCIAL_LINKS = [
   {
     name: 'Facebook',
-    url: 'https://www.facebook.com/p/Amar-Granth-100090905684315/',
+    url: siteConfig.social.facebook,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" aria-hidden="true">
         <path
@@ -24,7 +25,7 @@ const SOCIAL_LINKS = [
   },
   {
     name: 'Instagram',
-    url: 'https://www.instagram.com/amargranthofficial/',
+    url: siteConfig.social.instagram,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" aria-hidden="true">
         <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="currentColor" strokeWidth="1.8" />
@@ -149,45 +150,26 @@ function FooterMenu({
   );
 }
 
+// Fallback only — the live Shopify-managed footer menu is tried first (see
+// FooterMenu above). The plain page links here come from
+// siteConfig.navigation.footer (DESIGN_SYSTEM.md Section 0.3) rather than a
+// second hardcoded copy; the SHOP_POLICY entries stay literal since they
+// carry real Shopify resource GIDs, not content a non-dev would edit.
 const FALLBACK_FOOTER_MENU = {
   id: 'gid://shopify/Menu/199655620664',
   items: [
-    {
-      id: 'collections-page',
+    ...[
+      ...siteConfig.navigation.footer.shop,
+      ...siteConfig.navigation.footer.support,
+    ].map((link, index) => ({
+      id: `fallback-footer-${index}`,
       resourceId: null,
       tags: [],
-      title: 'Collections',
+      title: link.label,
       type: 'HTTP',
-      url: '/collections',
+      url: link.href,
       items: [],
-    },
-    {
-      id: 'about-page',
-      resourceId: null,
-      tags: [],
-      title: 'About',
-      type: 'HTTP',
-      url: '/about',
-      items: [],
-    },
-    {
-      id: 'contact-page',
-      resourceId: null,
-      tags: [],
-      title: 'Contact',
-      type: 'HTTP',
-      url: '/contact',
-      items: [],
-    },
-    {
-      id: 'faq-page',
-      resourceId: null,
-      tags: [],
-      title: 'FAQ',
-      type: 'HTTP',
-      url: '/faq',
-      items: [],
-    },
+    })),
     {
       id: 'gid://shopify/MenuItem/461633060920',
       resourceId: 'gid://shopify/ShopPolicy/23358046264',

@@ -19,6 +19,7 @@ export function ProductItem({
   product,
   loading,
   index = 0,
+  badge,
 }: {
   product:
     | CollectionItemFragment
@@ -26,6 +27,9 @@ export function ProductItem({
     | HomepageProductItemFragment;
   loading?: 'eager' | 'lazy';
   index?: number;
+  /** Status micro-badge (e.g. "Bestseller") — always --color-badge-status,
+   * never the accent color, per DESIGN_SYSTEM.md Section 5.3. */
+  badge?: string;
 }) {
   const variantUrl = useVariantUrl(product.handle);
   const image = product.featuredImage;
@@ -34,8 +38,13 @@ export function ProductItem({
     <div className="card" key={product.id}>
       <Link prefetch="intent" to={variantUrl} className="block">
         <div
-          className={`${TINT_CLASSES[index % TINT_CLASSES.length]} aspect-square flex items-center justify-center`}
+          className={`relative ${TINT_CLASSES[index % TINT_CLASSES.length]} aspect-square flex items-center justify-center`}
         >
+          {badge ? (
+            <span className="absolute top-3 left-3 bg-badge-status text-white text-micro font-semibold uppercase tracking-wide px-2 py-1 rounded-pill">
+              {badge}
+            </span>
+          ) : null}
           {image ? (
             <Image
               alt={image.altText || product.title}
@@ -58,22 +67,28 @@ export function ProductItem({
             {product.title}
           </h3>
         </Link>
-        <div className="flex items-baseline gap-2">
-          <Money
-            data={product.priceRange.minVariantPrice}
-            className="text-accent text-body font-medium"
-          />
-          {product.compareAtPriceRange &&
-          Number(product.compareAtPriceRange.minVariantPrice.amount) >
-            Number(product.priceRange.minVariantPrice.amount) ? (
-            <s>
+        {(() => {
+          const isDiscounted =
+            product.compareAtPriceRange &&
+            Number(product.compareAtPriceRange.minVariantPrice.amount) >
+              Number(product.priceRange.minVariantPrice.amount);
+          return (
+            <div className="flex items-baseline gap-2">
               <Money
-                data={product.compareAtPriceRange.minVariantPrice}
-                className="text-ink-soft text-small"
+                data={product.priceRange.minVariantPrice}
+                className={`text-body font-medium ${isDiscounted ? 'text-badge-sale' : 'text-accent'}`}
               />
-            </s>
-          ) : null}
-        </div>
+              {isDiscounted ? (
+                <s>
+                  <Money
+                    data={product.compareAtPriceRange!.minVariantPrice}
+                    className="text-ink-soft text-small"
+                  />
+                </s>
+              ) : null}
+            </div>
+          );
+        })()}
         <ProductCardActions
           variantUrl={variantUrl}
           variantId={variant?.id}

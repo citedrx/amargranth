@@ -8,6 +8,7 @@ import {
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import {Logo} from '~/components/Logo';
+import {siteConfig} from '~/lib/site-config';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -209,57 +210,18 @@ function CartBanner() {
   return <CartBadge count={cart?.totalQuantity ?? 0} />;
 }
 
+// Fallback only — the live Shopify-managed menu is tried first (see
+// HeaderMenu above). Generated from siteConfig.navigation.header
+// (DESIGN_SYSTEM.md Section 0.3) rather than a second hardcoded copy.
 const FALLBACK_HEADER_MENU = {
   id: 'gid://shopify/Menu/199655587896',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461609500728',
-      resourceId: null,
-      tags: [],
-      title: 'Collections',
-      type: 'HTTP',
-      url: '/collections',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609533496',
-      resourceId: null,
-      tags: [],
-      title: 'Blog',
-      type: 'HTTP',
-      url: '/blogs/journal',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609566264',
-      resourceId: null,
-      tags: [],
-      title: 'Policies',
-      type: 'HTTP',
-      url: '/policies',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609599032',
-      resourceId: null,
-      tags: [],
-      title: 'About',
-      type: 'HTTP',
-      url: '/about',
-      items: [],
-    },
-  ],
+  items: siteConfig.navigation.header.map((link, index) => ({
+    id: `fallback-header-${index}`,
+    resourceId: null,
+    tags: [],
+    title: link.label,
+    type: 'HTTP',
+    url: link.href,
+    items: [],
+  })),
 };
-
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'black',
-  };
-}

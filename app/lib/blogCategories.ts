@@ -1,16 +1,13 @@
+import {siteConfig} from '~/lib/site-config';
+
 /**
  * Blog category taxonomy, driven by the real tags already applied to the
  * 66 migrated articles during the Wix -> Shopify migration (verified via
- * the Admin API, not invented) — matches DESIGN_SYSTEM.md section 7.5.
+ * the Admin API, not invented) — matches DESIGN_SYSTEM.md section 7.5. The
+ * data itself lives in site-config.ts (Section 0.3's single source of
+ * truth); this file re-exports it plus the helper functions built on it.
  */
-export const BLOG_CATEGORIES = [
-  {label: 'Jyotirlings', tag: 'jyotirlinga'},
-  {label: 'Shaktipeeths', tag: 'shaktipeeth'},
-  {label: 'Rivers of Bharat', tag: 'rivers'},
-  {label: 'Rishis & Sages', tag: 'rishis'},
-  {label: 'Temples', tag: 'temples'},
-  {label: 'Rudraksha', tag: 'rudraksha'},
-] as const;
+export const BLOG_CATEGORIES = siteConfig.blogCategories;
 
 export type BlogCategoryTag = (typeof BLOG_CATEGORIES)[number]['tag'];
 

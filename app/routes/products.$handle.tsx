@@ -21,6 +21,7 @@ import {AddToCartButton} from '~/components/AddToCartButton';
 import {ProductCardActions} from '~/components/ProductCardActions';
 import {useAside} from '~/components/Aside';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {siteConfig} from '~/lib/site-config';
 
 export const meta: Route.MetaFunction = ({data}) => {
   return [
@@ -94,64 +95,56 @@ function loadDeferredData({context, params}: Route.LoaderArgs) {
 }
 
 /**
- * Combo Set buyers already own the standalone Jyotirlingas and Shaktipeeths
- * titles' content — never recommend those as "related" alongside it. Driven
- * entirely by real product tags (owns-jyotirlingas / owns-shaktipeeths on the
- * Combo Set, Jyotirlingas / Shaktipeeths on the standalone titles), not a
- * hardcoded product list.
+ * Combo Set buyers already own the standalone titles listed in its bundle's
+ * includesHandles — never recommend those as "related" alongside it. Driven
+ * by siteConfig.bundles (DESIGN_SYSTEM.md Section 0.3's single source of
+ * truth for this business rule), not tags or a list duplicated here.
  */
 function getRelatedProducts(
-  current: {id: string; tags: readonly string[]},
+  current: {id: string; handle: string},
   all: RelatedProductItemFragment[],
 ) {
-  const ownedCategories = current.tags
-    .filter((t) => t.toLowerCase().startsWith('owns-'))
-    .map((t) => t.toLowerCase().replace('owns-', ''));
+  const ownedHandles = new Set(
+    siteConfig.bundles
+      .filter((b) => b.comboHandle === current.handle)
+      .flatMap((b) => b.includesHandles),
+  );
 
   return all
     .filter((p) => p.id !== current.id)
-    .filter(
-      (p) => !p.tags?.some((t) => ownedCategories.includes(t.toLowerCase())),
-    )
+    .filter((p) => !ownedHandles.has(p.handle))
     .slice(0, 4);
 }
 
 /**
- * Combo/bundle upsell callout — only on standalone Jyotirlingas or
- * Shaktipeeths pages, and only when the math genuinely favors the combo
- * (this product's price + the counterpart standalone product's price costs
- * more than the Combo Set). Driven entirely by real tags and real prices
- * already in Shopify, not a hardcoded pairing — a different-format edition
- * (e.g. the Hindi paperback) simply won't clear the savings check and the
- * callout stays hidden for it.
+ * Combo/bundle upsell callout — only on a product listed in a bundle's
+ * includesHandles (siteConfig.bundles), and only when the math genuinely
+ * favors the combo (this product's price + the other included title's price
+ * costs more than the Combo Set's real price). A different-format edition
+ * not listed in includesHandles (e.g. the Hindi paperback, which isn't part
+ * of the real bundle) simply never matches and the callout stays hidden.
  */
 function getComboUpsell(
-  current: {id: string; tags: readonly string[]; price: number},
+  current: {id: string; handle: string; price: number},
   all: RelatedProductItemFragment[],
 ) {
-  const comboProduct = all.find((p) => p.tags?.includes('combo-set'));
-  if (!comboProduct || current.tags.includes('combo-set')) return null;
-
-  const isJyotirlingas = current.tags.some(
-    (t) => t.toLowerCase() === 'jyotirlingas',
+  const bundle = siteConfig.bundles.find((b) =>
+    b.includesHandles.includes(current.handle),
   );
-  const isShaktipeeths = current.tags.some(
-    (t) => t.toLowerCase() === 'shaktipeeths',
-  );
-  if (!isJyotirlingas && !isShaktipeeths) return null;
+  if (!bundle) return null;
 
-  const counterpartTag = isJyotirlingas ? 'shaktipeeths' : 'jyotirlingas';
+  const comboProduct = all.find((p) => p.handle === bundle.comboHandle);
+  if (!comboProduct) return null;
+
   const counterparts = all.filter(
     (p) =>
       p.id !== current.id &&
-      !p.tags?.includes('combo-set') &&
-      p.tags?.some((t) => t.toLowerCase() === counterpartTag),
+      bundle.includesHandles.includes(p.handle),
   );
   if (counterparts.length === 0) return null;
 
   const comboPrice = Number(comboProduct.priceRange.minVariantPrice.amount);
-  // A catalog can have more than one edition of the counterpart (e.g. a
-  // Hindi paperback vs. the hardcover the Combo Set actually bundles) — only
+  // A bundle could in principle include more than one other title — only
   // the pairing that genuinely saves money is worth surfacing.
   const bestSavings = Math.max(
     ...counterparts.map(
@@ -211,7 +204,7 @@ export default function Product() {
     selectedOrFirstAvailableVariant: selectedVariant,
   });
 
-  const {title, seo, tags} = product;
+  const {title, seo, handle} = product;
   const galleryImages = [
     selectedVariant?.image,
     ...product.images.nodes.filter((img) => img.id !== selectedVariant?.image?.id),
@@ -222,11 +215,14 @@ export default function Product() {
   const {open} = useAside();
   const [quantity, setQuantity] = useState(1);
 
-  const related = getRelatedProducts({id: product.id, tags}, relatedProducts);
+  const related = getRelatedProducts(
+    {id: product.id, handle},
+    relatedProducts,
+  );
   const comboUpsell = getComboUpsell(
     {
       id: product.id,
-      tags,
+      handle,
       price: Number(selectedVariant?.price?.amount ?? 0),
     },
     relatedProducts,
@@ -252,7 +248,7 @@ export default function Product() {
 
           <div>
             {promoActive && product.promoLabel?.value ? (
-              <div className="inline-flex items-center gap-2 bg-tint-sand text-ink text-small font-semibold rounded-pill px-4 py-2 mb-4">
+              <div className="inline-flex items-center gap-2 bg-badge-sale text-white text-small font-semibold rounded-pill px-4 py-2 mb-4">
                 🪔 {product.promoLabel.value}
                 {product.promoDiscount?.value
                   ? ` — ${product.promoDiscount.value}`
@@ -291,8 +287,8 @@ export default function Product() {
             </div>
 
             <ul className="flex flex-col gap-1.5 mt-5 text-small text-ink-soft">
-              <li>🚚 Free shipping across India · 24–48hr dispatch</li>
-              <li>↩ Damaged on arrival? Email us within 24hrs for a replacement</li>
+              <li>🚚 {siteConfig.trust.shipping}</li>
+              <li>↩ {siteConfig.trust.returns}</li>
             </ul>
 
             {comboUpsell ? (

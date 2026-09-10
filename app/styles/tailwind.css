@@ -30,6 +30,16 @@
   --color-tint-sage: #eaf1e4;
   --color-tint-blush: #f6e6ec;
 
+  /* Promotional palette — attention tags only, never actionable elements
+     (that's --color-accent's job, exclusively). Independently verified,
+     both pass AA with white text: badge-status 5.295:1, badge-sale 5.72:1.
+     Three purposes, three colors, never mixed: accent = actionable
+     (buttons/links/prices), badge-status = positive/social-proof
+     (Bestseller/New/Trending), badge-sale = time-bound urgency
+     (Sale/% off/Limited Time). */
+  --color-badge-status: #0d7a5f; /* Deep Teal-Green */
+  --color-badge-sale: #c0294f; /* Crimson */
+
   /* Legacy Hydrogen-skeleton aliases (app.css's MockShopNotice) — kept here,
      the single color source-of-truth file, per DESIGN_SYSTEM.md Section 0.1
      rather than hardcoded in app.css directly. */
