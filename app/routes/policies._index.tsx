@@ -2,6 +2,10 @@ import {useLoaderData, Link} from 'react-router';
 import type {Route} from './+types/policies._index';
 import type {PoliciesQuery, PolicyItemFragment} from 'storefrontapi.generated';
 
+export const meta: Route.MetaFunction = () => {
+  return [{title: 'Policies | Amar Granth'}];
+};
+
 export async function loader({context}: Route.LoaderArgs) {
   const data: PoliciesQuery = await context.storefront.query(POLICIES_QUERY);
 
@@ -25,15 +29,20 @@ export default function Policies() {
   const {policies} = useLoaderData<typeof loader>();
 
   return (
-    <div className="policies">
-      <h1>Policies</h1>
-      <div>
+    <div className="bg-base px-5 md:px-12 lg:px-16 py-6 md:py-10 max-w-[640px] mx-auto">
+      <h1 className="text-ink mb-6">Policies</h1>
+      <ul className="flex flex-col divide-y divide-border border-t border-border">
         {policies.map((policy) => (
-          <fieldset key={policy.id}>
-            <Link to={`/policies/${policy.handle}`}>{policy.title}</Link>
-          </fieldset>
+          <li key={policy.id}>
+            <Link
+              to={`/policies/${policy.handle}`}
+              className="block py-4 text-body font-semibold text-ink hover:text-accent transition-colors"
+            >
+              {policy.title}
+            </Link>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
