@@ -17,7 +17,7 @@ export default function About() {
   return (
     <div className="bg-base">
       <section className="px-5 md:px-12 lg:px-16 py-14 md:py-20 max-w-3xl mx-auto text-center">
-        <p className="text-accent font-semibold text-sm tracking-wide mb-3">
+        <p className="text-accent font-semibold text-body tracking-wide mb-3">
           Our Story
         </p>
         <h1 className="text-ink mb-6">
@@ -68,7 +68,7 @@ export default function About() {
             What we make
           </h2>
           <p className="text-ink-soft leading-relaxed mb-4">
-            Our books cover the 12 Jyotirlingas, the 51 Shaktipeeths, the
+            Our books cover the 12 Jyotirlings, the 51 Shaktipeeths, the
             sacred rivers of Bharat, the legend of Lord Parashurama, and the
             story of the rudraksha — each one written for curious young
             minds and illustrated to be pored over again and again.

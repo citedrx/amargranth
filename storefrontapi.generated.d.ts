@@ -447,13 +447,103 @@ export type HomepageArticleFragment = Pick<
   blog: Pick<StorefrontAPI.Blog, 'handle'>;
 };
 
-export type RecentArticlesQueryVariables = StorefrontAPI.Exact<{
+export type RecentArticlesByCategoryQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
 }>;
 
-export type RecentArticlesQuery = {
-  blog?: StorefrontAPI.Maybe<{
+export type RecentArticlesByCategoryQuery = {
+  jyotirlinga?: StorefrontAPI.Maybe<{
+    articles: {
+      nodes: Array<
+        Pick<
+          StorefrontAPI.Article,
+          'id' | 'handle' | 'title' | 'publishedAt'
+        > & {
+          image?: StorefrontAPI.Maybe<
+            Pick<
+              StorefrontAPI.Image,
+              'id' | 'altText' | 'url' | 'width' | 'height'
+            >
+          >;
+          blog: Pick<StorefrontAPI.Blog, 'handle'>;
+        }
+      >;
+    };
+  }>;
+  shaktipeeth?: StorefrontAPI.Maybe<{
+    articles: {
+      nodes: Array<
+        Pick<
+          StorefrontAPI.Article,
+          'id' | 'handle' | 'title' | 'publishedAt'
+        > & {
+          image?: StorefrontAPI.Maybe<
+            Pick<
+              StorefrontAPI.Image,
+              'id' | 'altText' | 'url' | 'width' | 'height'
+            >
+          >;
+          blog: Pick<StorefrontAPI.Blog, 'handle'>;
+        }
+      >;
+    };
+  }>;
+  rivers?: StorefrontAPI.Maybe<{
+    articles: {
+      nodes: Array<
+        Pick<
+          StorefrontAPI.Article,
+          'id' | 'handle' | 'title' | 'publishedAt'
+        > & {
+          image?: StorefrontAPI.Maybe<
+            Pick<
+              StorefrontAPI.Image,
+              'id' | 'altText' | 'url' | 'width' | 'height'
+            >
+          >;
+          blog: Pick<StorefrontAPI.Blog, 'handle'>;
+        }
+      >;
+    };
+  }>;
+  rishis?: StorefrontAPI.Maybe<{
+    articles: {
+      nodes: Array<
+        Pick<
+          StorefrontAPI.Article,
+          'id' | 'handle' | 'title' | 'publishedAt'
+        > & {
+          image?: StorefrontAPI.Maybe<
+            Pick<
+              StorefrontAPI.Image,
+              'id' | 'altText' | 'url' | 'width' | 'height'
+            >
+          >;
+          blog: Pick<StorefrontAPI.Blog, 'handle'>;
+        }
+      >;
+    };
+  }>;
+  temples?: StorefrontAPI.Maybe<{
+    articles: {
+      nodes: Array<
+        Pick<
+          StorefrontAPI.Article,
+          'id' | 'handle' | 'title' | 'publishedAt'
+        > & {
+          image?: StorefrontAPI.Maybe<
+            Pick<
+              StorefrontAPI.Image,
+              'id' | 'altText' | 'url' | 'width' | 'height'
+            >
+          >;
+          blog: Pick<StorefrontAPI.Blog, 'handle'>;
+        }
+      >;
+    };
+  }>;
+  rudraksha?: StorefrontAPI.Maybe<{
     articles: {
       nodes: Array<
         Pick<
@@ -1429,9 +1519,9 @@ interface GeneratedQueryTypes {
     return: FeaturedProductsQuery;
     variables: FeaturedProductsQueryVariables;
   };
-  '#graphql\n  fragment HomepageArticle on Article {\n    id\n    handle\n    title\n    publishedAt\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    blog {\n      handle\n    }\n  }\n  query RecentArticles($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    blog(handle: "blog") {\n      articles(first: 6, sortKey: PUBLISHED_AT, reverse: true) {\n        nodes {\n          ...HomepageArticle\n        }\n      }\n    }\n  }\n': {
-    return: RecentArticlesQuery;
-    variables: RecentArticlesQueryVariables;
+  '#graphql\n  fragment HomepageArticle on Article {\n    id\n    handle\n    title\n    publishedAt\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    blog {\n      handle\n    }\n  }\n  query RecentArticlesByCategory($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    jyotirlinga: blog(handle: "blog") {\n      articles(first: 3, query: "tag:jyotirlinga", sortKey: PUBLISHED_AT, reverse: true) {\n        nodes {\n          ...HomepageArticle\n        }\n      }\n    }\n    shaktipeeth: blog(handle: "blog") {\n      articles(first: 3, query: "tag:shaktipeeth", sortKey: PUBLISHED_AT, reverse: true) {\n        nodes {\n          ...HomepageArticle\n        }\n      }\n    }\n    rivers: blog(handle: "blog") {\n      articles(first: 3, query: "tag:rivers", sortKey: PUBLISHED_AT, reverse: true) {\n        nodes {\n          ...HomepageArticle\n        }\n      }\n    }\n    rishis: blog(handle: "blog") {\n      articles(first: 3, query: "tag:rishis", sortKey: PUBLISHED_AT, reverse: true) {\n        nodes {\n          ...HomepageArticle\n        }\n      }\n    }\n    temples: blog(handle: "blog") {\n      articles(first: 3, query: "tag:temples", sortKey: PUBLISHED_AT, reverse: true) {\n        nodes {\n          ...HomepageArticle\n        }\n      }\n    }\n    rudraksha: blog(handle: "blog") {\n      articles(first: 3, query: "tag:rudraksha", sortKey: PUBLISHED_AT, reverse: true) {\n        nodes {\n          ...HomepageArticle\n        }\n      }\n    }\n  }\n': {
+    return: RecentArticlesByCategoryQuery;
+    variables: RecentArticlesByCategoryQueryVariables;
   };
   '#graphql\n  query Article(\n    $articleHandle: String!\n    $blogHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    blog(handle: $blogHandle) {\n      handle\n      articleByHandle(handle: $articleHandle) {\n        handle\n        title\n        tags\n        contentHtml\n        publishedAt\n        author: authorV2 {\n          name\n        }\n        image {\n          id\n          altText\n          url\n          width\n          height\n        }\n        seo {\n          description\n          title\n        }\n      }\n    }\n  }\n': {
     return: ArticleQuery;

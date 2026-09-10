@@ -4,11 +4,12 @@ import {Suspense} from 'react';
 import {Image, Money} from '@shopify/hydrogen';
 import type {
   HomepageProductItemFragment,
-  RecentArticlesQuery,
+  RecentArticlesByCategoryQuery,
 } from 'storefrontapi.generated';
 import {MockShopNotice} from '~/components/MockShopNotice';
 import {ArticleItem} from '~/components/ArticleItem';
 import {ProductCardActions} from '~/components/ProductCardActions';
+import {BLOG_CATEGORIES} from '~/lib/blogCategories';
 
 const COMBO_SET_HANDLE = '12-jyotirlings-51-shaktipeeths-book-set-hardcover';
 
@@ -18,7 +19,7 @@ export const meta: Route.MetaFunction = () => {
     {
       name: 'description',
       content:
-        'Illustrated storybooks on the 12 Jyotirlingas, 51 Shaktipeeths, Rivers of Bharat and more — bringing Indian mythology and heritage to young readers.',
+        'Illustrated storybooks on the 12 Jyotirlings, 51 Shaktipeeths, Rivers of Bharat and more — bringing Indian mythology and heritage to young readers.',
     },
   ];
 };
@@ -39,15 +40,15 @@ async function loadCriticalData({context}: Route.LoaderArgs) {
 }
 
 function loadDeferredData({context}: Route.LoaderArgs) {
-  const recentArticles = context.storefront
-    .query(RECENT_ARTICLES_QUERY)
+  const articlesByCategory = context.storefront
+    .query(RECENT_ARTICLES_BY_CATEGORY_QUERY)
     .catch((error: Error) => {
       console.error(error);
       return null;
     });
 
   return {
-    recentArticles,
+    articlesByCategory,
   };
 }
 
@@ -71,7 +72,7 @@ export default function Homepage() {
       {data.isShopLinked ? null : <MockShopNotice />}
       <Hero comboSet={comboSet} />
       <FeaturedProducts products={data.products} />
-      <FromTheBlog articles={data.recentArticles} />
+      <FromTheBlog articlesByCategory={data.articlesByCategory} />
       <BrandStory />
       <EmailSignup />
     </div>
@@ -82,14 +83,14 @@ function Hero({comboSet}: {comboSet?: HomepageProductItemFragment}) {
   return (
     <section className="flex flex-col-reverse md:flex-row items-center gap-10 px-5 md:px-12 lg:px-16 py-16 lg:py-24 max-w-7xl mx-auto">
       <div className="flex-1">
-        <p className="text-accent font-semibold text-small tracking-wide mb-3">
+        <p className="text-accent font-semibold text-body tracking-wide mb-3">
           Stories of Shiva, Shakti &amp; Indian Culture
         </p>
         <h1 className="text-display text-ink mb-4">
           Stories that carry heritage into your child&rsquo;s hands
         </h1>
         <p className="text-ink-soft text-body-lg mb-8 max-w-md">
-          India&rsquo;s illustrated storybooks on the 12 Jyotirlingas, 51
+          India&rsquo;s illustrated storybooks on the 12 Jyotirlings, 51
           Shaktipeeths, sacred rivers, and more — made for curious young
           minds.
         </p>
@@ -235,9 +236,9 @@ function FeaturedProductCard({
 }
 
 function FromTheBlog({
-  articles,
+  articlesByCategory,
 }: {
-  articles: Promise<RecentArticlesQuery | null>;
+  articlesByCategory: Promise<RecentArticlesByCategoryQuery | null>;
 }) {
   return (
     <section className={`px-5 md:px-12 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto`}>
@@ -253,20 +254,30 @@ function FromTheBlog({
       <Suspense
         fallback={<div className="text-ink-soft text-body">Loading…</div>}
       >
-        <Await resolve={articles}>
+        <Await resolve={articlesByCategory}>
           {(response) => {
-            const nodes = response?.blog?.articles?.nodes;
-            if (!nodes?.length) return null;
+            if (!response) return null;
             return (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {nodes.map((article, i) => (
-                  <ArticleItem
-                    key={article.id}
-                    article={article}
-                    index={i}
-                    loading={i < 3 ? 'eager' : 'lazy'}
-                  />
-                ))}
+              <div className="flex flex-col gap-10">
+                {BLOG_CATEGORIES.map((category) => {
+                  const nodes = response[category.tag]?.articles?.nodes;
+                  if (!nodes?.length) return null;
+                  return (
+                    <div key={category.tag}>
+                      <h3 className="text-ink mb-4">{category.label}</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {nodes.map((article, i) => (
+                          <ArticleItem
+                            key={article.id}
+                            article={article}
+                            index={i}
+                            loading="lazy"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             );
           }}
@@ -390,7 +401,7 @@ const FEATURED_PRODUCTS_QUERY = `#graphql
   }
 ` as const;
 
-const RECENT_ARTICLES_QUERY = `#graphql
+const RECENT_ARTICLES_BY_CATEGORY_QUERY = `#graphql
   fragment HomepageArticle on Article {
     id
     handle
@@ -407,10 +418,45 @@ const RECENT_ARTICLES_QUERY = `#graphql
       handle
     }
   }
-  query RecentArticles($country: CountryCode, $language: LanguageCode)
+  query RecentArticlesByCategory($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    blog(handle: "blog") {
-      articles(first: 6, sortKey: PUBLISHED_AT, reverse: true) {
+    jyotirlinga: blog(handle: "blog") {
+      articles(first: 3, query: "tag:jyotirlinga", sortKey: PUBLISHED_AT, reverse: true) {
+        nodes {
+          ...HomepageArticle
+        }
+      }
+    }
+    shaktipeeth: blog(handle: "blog") {
+      articles(first: 3, query: "tag:shaktipeeth", sortKey: PUBLISHED_AT, reverse: true) {
+        nodes {
+          ...HomepageArticle
+        }
+      }
+    }
+    rivers: blog(handle: "blog") {
+      articles(first: 3, query: "tag:rivers", sortKey: PUBLISHED_AT, reverse: true) {
+        nodes {
+          ...HomepageArticle
+        }
+      }
+    }
+    rishis: blog(handle: "blog") {
+      articles(first: 3, query: "tag:rishis", sortKey: PUBLISHED_AT, reverse: true) {
+        nodes {
+          ...HomepageArticle
+        }
+      }
+    }
+    temples: blog(handle: "blog") {
+      articles(first: 3, query: "tag:temples", sortKey: PUBLISHED_AT, reverse: true) {
+        nodes {
+          ...HomepageArticle
+        }
+      }
+    }
+    rudraksha: blog(handle: "blog") {
+      articles(first: 3, query: "tag:rudraksha", sortKey: PUBLISHED_AT, reverse: true) {
         nodes {
           ...HomepageArticle
         }

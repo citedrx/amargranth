@@ -7,7 +7,7 @@ import {
 } from 'react';
 import {useId} from 'react';
 
-type AsideType = 'search' | 'cart' | 'mobile' | 'closed';
+type AsideType = 'cart' | 'mobile' | 'closed';
 type AsideContextValue = {
   type: AsideType;
   open: (mode: AsideType) => void;
@@ -18,8 +18,7 @@ type AsideContextValue = {
  * A side bar component with Overlay
  * @example
  * ```jsx
- * <Aside type="search" heading="SEARCH">
- *  <input type="search" />
+ * <Aside type="cart" heading="Cart">
  *  ...
  * </Aside>
  * ```
@@ -62,7 +61,7 @@ export function Aside({
     >
       <button className="close-outside" onClick={close} />
       <aside className="bg-base flex flex-col">
-        <header className="border-border">
+        <header className="shrink-0 flex items-center justify-between px-5 h-16 border-b border-border">
           <h3
             id={id}
             className="text-h3 text-ink normal-case tracking-normal"
@@ -70,7 +69,7 @@ export function Aside({
             {heading}
           </h3>
           <button
-            className="close reset text-ink-soft hover:text-ink transition-colors text-xl leading-none p-2 -m-2"
+            className="flex items-center justify-center w-11 h-11 -mr-2 rounded-pill border border-border text-ink-soft hover:border-accent hover:text-accent transition-colors text-xl leading-none"
             onClick={close}
             aria-label="Close"
           >

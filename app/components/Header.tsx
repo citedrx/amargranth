@@ -103,7 +103,7 @@ export function HeaderMenu({
             : item.url;
         return (
           <NavLink
-            className="text-small font-semibold text-ink-soft hover:text-ink transition-colors"
+            className="text-body font-semibold text-ink-soft hover:text-ink transition-colors"
             end
             key={item.id}
             onClick={close}
@@ -139,7 +139,6 @@ function HeaderCtas({
           </Await>
         </Suspense>
       </NavLink>
-      <SearchToggle />
       <CartToggle cart={cart} />
     </nav>
   );
@@ -154,19 +153,6 @@ function HeaderMenuMobileToggle() {
       aria-label="Open menu"
     >
       <span className="text-xl leading-none">☰</span>
-    </button>
-  );
-}
-
-function SearchToggle() {
-  const {open} = useAside();
-  return (
-    <button
-      className="reset p-2 -m-2"
-      onClick={() => open('search')}
-      aria-label="Search"
-    >
-      <span>Search</span>
     </button>
   );
 }

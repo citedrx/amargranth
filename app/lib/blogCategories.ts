@@ -4,7 +4,7 @@
  * the Admin API, not invented) — matches DESIGN_SYSTEM.md section 7.5.
  */
 export const BLOG_CATEGORIES = [
-  {label: 'Jyotirlingas', tag: 'jyotirlinga'},
+  {label: 'Jyotirlings', tag: 'jyotirlinga'},
   {label: 'Shaktipeeths', tag: 'shaktipeeth'},
   {label: 'Rivers of Bharat', tag: 'rivers'},
   {label: 'Rishis & Sages', tag: 'rishis'},

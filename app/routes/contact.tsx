@@ -16,7 +16,7 @@ export default function Contact() {
   return (
     <div className="bg-base">
       <section className="px-5 md:px-12 lg:px-16 py-14 md:py-20 max-w-2xl mx-auto text-center">
-        <p className="text-accent font-semibold text-sm tracking-wide mb-3">
+        <p className="text-accent font-semibold text-body tracking-wide mb-3">
           Get in Touch
         </p>
         <h1 className="text-ink mb-6">
