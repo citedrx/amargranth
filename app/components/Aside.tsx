@@ -62,10 +62,7 @@ export function Aside({
       <button className="close-outside" onClick={close} />
       <aside className="bg-base flex flex-col">
         <header className="shrink-0 flex items-center justify-between px-5 h-16 border-b border-border">
-          <h3
-            id={id}
-            className="text-h3 text-ink normal-case tracking-normal"
-          >
+          <h3 id={id} className="text-ink normal-case tracking-normal">
             {heading}
           </h3>
           <button
@@ -76,7 +73,9 @@ export function Aside({
             &times;
           </button>
         </header>
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        <main className="flex-1 overflow-y-auto overscroll-contain">
+          {children}
+        </main>
       </aside>
     </div>
   );

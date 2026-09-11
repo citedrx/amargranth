@@ -18,6 +18,14 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
   const giftCardHeadingId = useId();
   const giftCardInputId = useId();
 
+  const subtotal = cart?.cost?.subtotalAmount;
+  const total = cart?.cost?.totalAmount;
+  const hasSavings = Boolean(
+    subtotal?.amount &&
+      total?.amount &&
+      Number(total.amount) < Number(subtotal.amount),
+  );
+
   return (
     <div
       aria-labelledby={summaryId}
@@ -25,14 +33,20 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
     >
       <dl role="group" className="flex items-center justify-between">
         <dt className="text-body text-ink-soft">Subtotal</dt>
-        <dd className="text-h3 font-semibold text-ink">
-          {cart?.cost?.subtotalAmount?.amount ? (
-            <Money data={cart?.cost?.subtotalAmount} />
-          ) : (
-            '-'
-          )}
+        <dd
+          className={`text-h3 font-semibold ${hasSavings ? 'text-ink-soft line-through' : 'text-ink'}`}
+        >
+          {subtotal?.amount ? <Money data={subtotal} /> : '-'}
         </dd>
       </dl>
+      {hasSavings && total ? (
+        <dl role="group" className="flex items-center justify-between -mt-2">
+          <dt className="text-body text-ink-soft">Total</dt>
+          <dd className="text-h3 font-semibold text-badge-sale">
+            <Money data={total} />
+          </dd>
+        </dl>
+      ) : null}
       <CartDiscounts
         discountCodes={cart?.discountCodes}
         discountsHeadingId={discountsHeadingId}
@@ -113,7 +127,7 @@ function CartDiscounts({
           </dt>
           <UpdateDiscountForm>
             <div
-              className="flex items-center justify-between bg-tint-sage rounded-pill px-4 py-2"
+              className="flex items-center justify-between bg-tint-sage rounded-pill pl-4 pr-2 py-2"
               role="group"
               aria-labelledby={discountsHeadingId}
             >
@@ -123,7 +137,7 @@ function CartDiscounts({
               <button
                 type="submit"
                 aria-label="Remove discount"
-                className="text-micro text-ink-soft hover:text-ink underline"
+                className="min-h-11 flex items-center px-2 text-micro text-ink-soft hover:text-ink underline"
               >
                 Remove
               </button>
@@ -143,12 +157,12 @@ function CartDiscounts({
             type="text"
             name="discountCode"
             placeholder="Discount code"
-            className="flex-1 min-w-0 px-4 py-2 rounded-pill border border-border bg-white text-small focus:outline-none focus:ring-2 focus:ring-accent"
+            className="flex-1 min-w-0 h-11 px-4 rounded-pill border border-border bg-white text-small focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button
             type="submit"
             aria-label="Apply discount code"
-            className="rounded-pill border border-border px-4 py-2 text-small font-semibold text-ink hover:border-accent hover:text-accent transition-colors"
+            className="h-11 flex items-center rounded-pill border border-border px-4 text-small font-semibold text-ink hover:border-accent hover:text-accent transition-colors"
           >
             Apply
           </button>
@@ -278,13 +292,13 @@ function CartGiftCard({
             name="giftCardCode"
             placeholder="Gift card code"
             ref={giftCardCodeInput}
-            className="flex-1 min-w-0 px-4 py-2 rounded-pill border border-border bg-white text-small focus:outline-none focus:ring-2 focus:ring-accent"
+            className="flex-1 min-w-0 h-11 px-4 rounded-pill border border-border bg-white text-small focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button
             type="submit"
             disabled={giftCardAddFetcher.state !== 'idle'}
             aria-label="Apply gift card code"
-            className="rounded-pill border border-border px-4 py-2 text-small font-semibold text-ink hover:border-accent hover:text-accent transition-colors disabled:opacity-50"
+            className="h-11 flex items-center rounded-pill border border-border px-4 text-small font-semibold text-ink hover:border-accent hover:text-accent transition-colors disabled:opacity-50"
           >
             Apply
           </button>
@@ -333,14 +347,14 @@ function RemoveGiftCardForm({
         giftCardCodes: [giftCardId],
       }}
     >
-      <div className="flex items-center justify-between bg-tint-sage rounded-pill px-4 py-2">
+      <div className="flex items-center justify-between bg-tint-sage rounded-pill pl-4 pr-2 py-2">
         <span>{children}</span>
         <button
           type="submit"
           aria-label={`Remove gift card ending in ${lastCharacters}`}
           onClick={onRemoveClick}
           ref={buttonRef}
-          className="text-micro text-ink-soft hover:text-ink underline py-2 -my-2"
+          className="min-h-11 flex items-center px-2 text-micro text-ink-soft hover:text-ink underline"
         >
           Remove
         </button>

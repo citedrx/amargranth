@@ -170,7 +170,7 @@ function CartLineRemoveButton({
       <button
         disabled={disabled}
         type="submit"
-        className="text-small text-ink-soft hover:text-ink underline transition-colors disabled:opacity-30 py-2 -my-2"
+        className="min-h-11 flex items-center text-small text-ink-soft hover:text-ink underline transition-colors disabled:opacity-30"
       >
         Remove
       </button>
