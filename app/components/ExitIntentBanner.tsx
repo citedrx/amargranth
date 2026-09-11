@@ -203,11 +203,12 @@ function ExitIntentBannerInner({
   const handleCopy = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(DISCOUNT_CODE);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Clipboard API unavailable — the code is still visible to read/type.
+      // Clipboard API unavailable/blocked (e.g. some in-app browsers) — the
+      // code is still visible above to read or select manually.
     }
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   }, []);
 
   if (!visible) return null;
@@ -268,7 +269,7 @@ function ExitIntentBannerInner({
             onClick={() => setVisible(false)}
             className="block text-center w-full bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body h-[52px] leading-[52px] rounded-pill transition-colors"
           >
-            Shop now &amp; save
+            Order now &amp; save
           </a>
         </div>
       </div>
