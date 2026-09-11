@@ -9,6 +9,7 @@ import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
 import {Header, HeaderMenu} from '~/components/Header';
 import {CartMain} from '~/components/CartMain';
+import {ExitIntentBanner} from '~/components/ExitIntentBanner';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -31,6 +32,7 @@ export function PageLayout({
     <Aside.Provider>
       <CartAside cart={cart} />
       <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
+      <ExitIntentBanner />
       <div className="min-h-screen flex flex-col">
         {header && (
           <Header
