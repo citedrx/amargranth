@@ -245,20 +245,20 @@ function ExitIntentBannerInner({
             A little something before you go
           </p>
           <h3 id={headingId} className="text-ink mb-2">
-            10% off, on the house
+            Get extra 10% off on your order value
           </h3>
           <p className="text-ink-soft text-body mb-4">
             Use EXTRA10 at checkout &mdash; good for one order, so make it
             count.
           </p>
-          <div className="flex items-center justify-between gap-3 border border-border rounded-pill px-4 py-2 mb-4 bg-tint-sand">
-            <span className="font-heading text-body-lg font-bold tracking-wide text-ink">
+          <div className="flex items-center justify-between gap-3 border-2 border-dashed border-border rounded-pill px-4 py-3 mb-4 bg-tint-sand">
+            <span className="font-heading text-h2 font-extrabold tracking-[0.06em] text-badge-sale">
               {DISCOUNT_CODE}
             </span>
             <button
               type="button"
               onClick={() => void handleCopy()}
-              className="text-small font-semibold text-accent hover:text-accent-hover transition-colors px-2 py-2 -my-2"
+              className="text-small font-semibold text-accent hover:text-accent-hover transition-colors px-2 py-2 -my-2 shrink-0"
             >
               {copied ? 'Copied!' : 'Copy code'}
             </button>
