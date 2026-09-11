@@ -1,4 +1,5 @@
 import {Await, useLoaderData, Link} from 'react-router';
+import ourStoryImg from '~/assets/illustration-our-story.png';
 import type {Route} from './+types/_index';
 import {Suspense} from 'react';
 import {Image, Money} from '@shopify/hydrogen';
@@ -265,10 +266,12 @@ function BrandStory() {
     <section
       className={`px-5 md:px-12 lg:px-16 ${SECTION_GAP} max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center`}
     >
-      <div className="bg-tint-powder rounded-card aspect-[4/3] flex items-center justify-center order-2 md:order-1">
-        <span className="text-6xl" role="img" aria-label="lotus">
-          🪷
-        </span>
+      <div className="bg-tint-powder rounded-card aspect-[4/3] overflow-hidden order-2 md:order-1">
+        <img
+          src={ourStoryImg}
+          alt="An open storybook with illustrated Hindu temple towers rising from its pages"
+          className="w-full h-full object-cover"
+        />
       </div>
       <div className="order-1 md:order-2">
         <h2 className="text-ink mb-4">Our story</h2>

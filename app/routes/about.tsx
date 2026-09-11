@@ -1,3 +1,5 @@
+import ourStoryImg from '~/assets/illustration-our-story.png';
+import whatWeMakeImg from '~/assets/illustration-what-we-make.png';
 import type {Route} from './+types/about';
 
 export const meta: Route.MetaFunction = () => {
@@ -39,10 +41,12 @@ export default function About() {
       </div>
 
       <section className="px-5 md:px-12 lg:px-16 py-14 md:py-20 max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
-        <div className="bg-tint-powder rounded-card aspect-[4/3] flex items-center justify-center">
-          <span className="text-6xl" role="img" aria-label="lotus">
-            🪷
-          </span>
+        <div className="bg-tint-powder rounded-card aspect-[4/3] overflow-hidden">
+          <img
+            src={ourStoryImg}
+            alt="An open storybook with illustrated Hindu temple towers rising from its pages"
+            className="w-full h-full object-cover"
+          />
         </div>
         <div>
           <h2 className="text-ink mb-4">
@@ -78,10 +82,12 @@ export default function About() {
             lot of care for both the history and the child holding the book.
           </p>
         </div>
-        <div className="bg-tint-sage rounded-card aspect-[4/3] flex items-center justify-center order-1 md:order-2">
-          <span className="text-6xl" role="img" aria-label="storybook">
-            📖
-          </span>
+        <div className="bg-tint-sage rounded-card aspect-[4/3] overflow-hidden order-1 md:order-2">
+          <img
+            src={whatWeMakeImg}
+            alt="An illustrated Hindu temple complex in a storybook, symbolizing Amar Granth's catalog of heritage titles"
+            className="w-full h-full object-cover"
+          />
         </div>
       </section>
 
