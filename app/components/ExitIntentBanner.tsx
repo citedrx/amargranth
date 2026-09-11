@@ -257,13 +257,13 @@ function ExitIntentBannerInner({
             <button
               type="button"
               onClick={() => void handleCopy()}
-              className="text-small font-semibold text-accent hover:text-accent-hover transition-colors px-2 py-2 -my-2 shrink-0"
+              className="min-h-11 flex items-center text-small font-semibold text-accent hover:text-accent-hover transition-colors px-2 shrink-0"
             >
               {copied ? 'Copied!' : 'Copy code'}
             </button>
           </div>
           <a
-            href="/collections/all"
+            href={`/discount/${DISCOUNT_CODE}?redirect=/collections/all`}
             onClick={() => setVisible(false)}
             className="block text-center w-full bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body h-[52px] leading-[52px] rounded-pill transition-colors"
           >
