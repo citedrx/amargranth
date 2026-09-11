@@ -3,6 +3,7 @@ import type {CartLayout} from '~/components/CartMain';
 import {CartForm, Money, type OptimisticCart} from '@shopify/hydrogen';
 import {useEffect, useId, useRef, useState} from 'react';
 import {useFetcher} from 'react-router';
+import {useAside} from '~/components/Aside';
 import {markCheckoutStarted} from '~/lib/exitBannerConfig';
 
 type CartSummaryProps = {
@@ -49,13 +50,27 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
 
 function CartCheckoutActions({cart}: {cart: CartSummaryProps['cart']}) {
   const checkoutUrl = cart?.checkoutUrl;
+  const {close} = useAside();
+  const [redirecting, setRedirecting] = useState(false);
   if (!checkoutUrl) return null;
 
   return (
     <a
       href={checkoutUrl}
       target="_self"
-      onClick={() => {
+      aria-disabled={redirecting}
+      onClick={(event) => {
+        if (redirecting) {
+          event.preventDefault();
+          return;
+        }
+        // Checkout is a real, full-page navigation to Shopify's own
+        // hosted checkout — a separate service this app doesn't control.
+        // Closing the drawer and showing a deliberate "Redirecting…"
+        // state gives visitors a clean, branded handoff instead of
+        // whatever raw transition the browser would otherwise show.
+        setRedirecting(true);
+        close();
         markCheckoutStarted();
         window.fbq?.('track', 'InitiateCheckout', {
           value: Number(cart?.cost?.subtotalAmount?.amount) || undefined,
@@ -67,9 +82,9 @@ function CartCheckoutActions({cart}: {cart: CartSummaryProps['cart']}) {
           currency: cart?.cost?.subtotalAmount?.currencyCode || 'INR',
         });
       }}
-      className="flex items-center justify-center w-full bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body h-[52px] rounded-pill no-underline hover:no-underline transition-colors"
+      className={`flex items-center justify-center w-full bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body h-[52px] rounded-pill no-underline hover:no-underline transition-colors ${redirecting ? 'opacity-70 pointer-events-none' : ''}`}
     >
-      Checkout
+      {redirecting ? 'Redirecting to checkout…' : 'Checkout'}
     </a>
   );
 }

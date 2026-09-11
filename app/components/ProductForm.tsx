@@ -135,7 +135,9 @@ export function ProductForm({
           }
           className="w-full bg-transparent border-2 border-accent hover:bg-tint-sage active:bg-tint-sand disabled:border-border disabled:text-ink-soft disabled:cursor-not-allowed text-accent font-semibold text-body h-[52px] rounded-pill transition-colors"
         >
-          Buy now
+          {(fetcher) =>
+            fetcher.state !== 'idle' ? 'Redirecting to checkout…' : 'Buy now'
+          }
         </AddToCartButton>
       </div>
     </div>
