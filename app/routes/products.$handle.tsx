@@ -1,7 +1,7 @@
 import {Link, useLoaderData} from 'react-router';
 import productFallbackImg from '~/assets/illustration-product-fallback.png';
 import type {Route} from './+types/products.$handle';
-import {useEffect, useRef, useState} from 'react';
+import {useState} from 'react';
 import {
   getSelectedProductOptions,
   Analytics,
@@ -18,9 +18,7 @@ import type {
 } from 'storefrontapi.generated';
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductForm} from '~/components/ProductForm';
-import {AddToCartButton} from '~/components/AddToCartButton';
 import {ProductCardActions} from '~/components/ProductCardActions';
-import {useAside} from '~/components/Aside';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {siteConfig} from '~/lib/site-config';
 import {breadcrumbJsonLd, canonicalLink, productJsonLd} from '~/lib/seo';
@@ -160,21 +158,6 @@ function getComboUpsell(
   };
 }
 
-function useScrolledPastEl(ref: React.RefObject<HTMLElement | null>) {
-  const [scrolledPast, setScrolledPast] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setScrolledPast(!entry.isIntersecting),
-      {rootMargin: '0px'},
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [ref]);
-  return scrolledPast;
-}
-
 function parseBullets(value: string | null | undefined): string[] {
   if (!value) return [];
   try {
@@ -210,9 +193,6 @@ export default function Product() {
     ...product.images.nodes.filter((img) => img.id !== selectedVariant?.image?.id),
   ].filter((img): img is NonNullable<typeof img> => Boolean(img));
 
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const showStickyBar = useScrolledPastEl(ctaRef);
-  const {open} = useAside();
   const [quantity, setQuantity] = useState(1);
 
   const related = getRelatedProducts(
@@ -291,7 +271,7 @@ export default function Product() {
               />
             </div>
 
-            <div ref={ctaRef}>
+            <div>
               <QuantitySelector quantity={quantity} onChange={setQuantity} />
               <ProductForm
                 productOptions={productOptions}
@@ -379,37 +359,6 @@ export default function Product() {
             </div>
           </section>
         ) : null}
-      </div>
-
-      {/* Sticky mobile add-to-cart bar, once the primary CTA scrolls out of view */}
-      <div
-        className={`fixed bottom-0 inset-x-0 z-20 lg:hidden bg-base border-t border-border px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-4 transition-transform duration-200 ${
-          showStickyBar ? 'translate-y-0' : 'translate-y-full'
-        }`}
-      >
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
-          size="small"
-        />
-        <AddToCartButton
-          disabled={!selectedVariant || !selectedVariant.availableForSale}
-          onClick={() => open('cart')}
-          lines={
-            selectedVariant
-              ? [
-                  {
-                    merchandiseId: selectedVariant.id,
-                    quantity,
-                    selectedVariant,
-                  },
-                ]
-              : []
-          }
-          className="shrink-0 bg-accent hover:bg-accent-hover active:bg-accent-active disabled:bg-border disabled:text-ink-soft disabled:cursor-not-allowed text-white font-semibold text-small px-6 h-11 rounded-pill transition-colors"
-        >
-          {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
-        </AddToCartButton>
       </div>
 
       <Analytics.ProductView
