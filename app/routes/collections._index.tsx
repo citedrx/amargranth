@@ -4,9 +4,13 @@ import type {Route} from './+types/collections._index';
 import {getPaginationVariables, Image} from '@shopify/hydrogen';
 import type {CollectionFragment} from 'storefrontapi.generated';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {canonicalLink} from '~/lib/seo';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: 'Shop by Collection | Amar Granth'}];
+  return [
+    {title: 'Shop by Collection | Amar Granth'},
+    canonicalLink('/collections'),
+  ];
 };
 
 export async function loader(args: Route.LoaderArgs) {

@@ -1,4 +1,5 @@
 import type {Route} from './+types/faq';
+import {canonicalLink} from '~/lib/seo';
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -7,6 +8,7 @@ export const meta: Route.MetaFunction = () => {
       name: 'description',
       content: 'Answers to common questions about Amar Granth books, orders, shipping, and returns.',
     },
+    canonicalLink('/faq'),
   ];
 };
 

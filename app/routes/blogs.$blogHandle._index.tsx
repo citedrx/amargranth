@@ -6,9 +6,15 @@ import type {BlogArticleItemFragment} from 'storefrontapi.generated';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {BLOG_CATEGORIES, categoryLabelForTags, isValidCategoryTag} from '~/lib/blogCategories';
+import {canonicalLink} from '~/lib/seo';
 
-export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `${data?.blog.title ?? 'Stories'} | Amar Granth`}];
+export const meta: Route.MetaFunction = ({data, params, location}) => {
+  return [
+    {title: `${data?.blog.title ?? 'Stories'} | Amar Granth`},
+    // Self-referencing (preserves ?tag=) since filtered category views are
+    // real, distinct, shareable content — not canonicalized away.
+    canonicalLink(`/blogs/${params.blogHandle}${location.search}`),
+  ];
 };
 
 export async function loader(args: Route.LoaderArgs) {

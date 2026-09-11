@@ -1,9 +1,13 @@
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/pages.$handle';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {canonicalLink} from '~/lib/seo';
 
-export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `${data?.page.title ?? ''} | Amar Granth`}];
+export const meta: Route.MetaFunction = ({data, params}) => {
+  return [
+    {title: `${data?.page.title ?? ''} | Amar Granth`},
+    canonicalLink(`/pages/${params.handle}`),
+  ];
 };
 
 export async function loader(args: Route.LoaderArgs) {

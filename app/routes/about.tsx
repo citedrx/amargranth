@@ -1,6 +1,7 @@
 import ourStoryImg from '~/assets/illustration-our-story.png';
 import whatWeMakeImg from '~/assets/illustration-what-we-make.png';
 import type {Route} from './+types/about';
+import {canonicalLink} from '~/lib/seo';
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -10,6 +11,7 @@ export const meta: Route.MetaFunction = () => {
       content:
         'Amar Granth brings Indian mythology and heritage to young readers through beautifully illustrated storybooks.',
     },
+    canonicalLink('/about'),
   ];
 };
 

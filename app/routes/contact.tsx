@@ -1,4 +1,5 @@
 import type {Route} from './+types/contact';
+import {canonicalLink} from '~/lib/seo';
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -7,6 +8,7 @@ export const meta: Route.MetaFunction = () => {
       name: 'description',
       content: 'Get in touch with the Amar Granth team.',
     },
+    canonicalLink('/contact'),
   ];
 };
 

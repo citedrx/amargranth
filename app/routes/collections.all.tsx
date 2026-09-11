@@ -2,9 +2,10 @@ import type {Route} from './+types/collections.all';
 import {Link, useLoaderData, useNavigate, useSearchParams} from 'react-router';
 import type {ProductSortKeys} from '@shopify/hydrogen/storefront-api-types';
 import {ProductItem} from '~/components/ProductItem';
+import {canonicalLink} from '~/lib/seo';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: 'All Books | Amar Granth'}];
+  return [{title: 'All Books | Amar Granth'}, canonicalLink('/collections/all')];
 };
 
 const SORT_OPTIONS: Record<

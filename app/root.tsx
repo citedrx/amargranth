@@ -12,11 +12,14 @@ import {
 } from 'react-router';
 import type {Route} from './+types/root';
 import favicon from '~/assets/favicon.svg';
+import logoUrl from '~/assets/logo.svg';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import {organizationJsonLd, websiteJsonLd} from '~/lib/seo';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {PageLayout} from './components/PageLayout';
+import {JsonLd} from './components/JsonLd';
 import {MetaPixelBaseScript, MetaPixelEvents} from './components/MetaPixel';
 import {
   GoogleAnalyticsBaseScript,
@@ -163,6 +166,8 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <link rel="stylesheet" href={appStyles}></link>
         <Meta />
         <Links />
+        <JsonLd data={organizationJsonLd({logoUrl})} />
+        <JsonLd data={websiteJsonLd()} />
         <MetaPixelBaseScript pixelId={data?.metaPixelId} />
         <GoogleAnalyticsBaseScript measurementId={data?.ga4MeasurementId} />
       </head>

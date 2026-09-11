@@ -1,9 +1,10 @@
 import {useLoaderData, Link} from 'react-router';
 import type {Route} from './+types/policies._index';
 import type {PoliciesQuery, PolicyItemFragment} from 'storefrontapi.generated';
+import {canonicalLink} from '~/lib/seo';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: 'Policies | Amar Granth'}];
+  return [{title: 'Policies | Amar Granth'}, canonicalLink('/policies')];
 };
 
 export async function loader({context}: Route.LoaderArgs) {

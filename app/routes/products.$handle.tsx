@@ -23,6 +23,8 @@ import {ProductCardActions} from '~/components/ProductCardActions';
 import {useAside} from '~/components/Aside';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {siteConfig} from '~/lib/site-config';
+import {breadcrumbJsonLd, canonicalLink, productJsonLd} from '~/lib/seo';
+import {JsonLd} from '~/components/JsonLd';
 
 export const meta: Route.MetaFunction = ({data}) => {
   return [
@@ -31,10 +33,7 @@ export const meta: Route.MetaFunction = ({data}) => {
       name: 'description',
       content: data?.product.seo.description ?? data?.product.description,
     },
-    {
-      rel: 'canonical',
-      href: `/products/${data?.product.handle}`,
-    },
+    canonicalLink(`/products/${data?.product.handle}`),
   ];
 };
 
@@ -232,6 +231,20 @@ export default function Product() {
 
   return (
     <div className="bg-base">
+      <JsonLd
+        data={productJsonLd({
+          product,
+          variant: selectedVariant,
+          path: `/products/${handle}`,
+        })}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          {name: 'Home', path: '/'},
+          {name: 'All books', path: '/collections/all'},
+          {name: title, path: `/products/${handle}`},
+        ])}
+      />
       <div className="px-5 md:px-12 lg:px-16 py-6 md:py-10 max-w-[1280px] mx-auto">
         <nav aria-label="Breadcrumb" className="text-small text-ink-soft mb-5">
           <Link to="/" className="hover:text-ink transition-colors">

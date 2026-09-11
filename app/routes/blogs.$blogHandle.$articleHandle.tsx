@@ -8,11 +8,14 @@ import {
   categoryLabelForTags,
   productHandleForTags,
 } from '~/lib/blogCategories';
+import {articleJsonLd, canonicalLink} from '~/lib/seo';
+import {JsonLd} from '~/components/JsonLd';
 
-export const meta: Route.MetaFunction = ({data}) => {
+export const meta: Route.MetaFunction = ({data, params}) => {
   return [
     {title: `${data?.article.title ?? ''} | Amar Granth`},
     {name: 'description', content: data?.article.seo?.description},
+    canonicalLink(`/blogs/${params.blogHandle}/${params.articleHandle}`),
   ];
 };
 
@@ -102,6 +105,12 @@ export default function Article() {
 
   return (
     <div className="bg-base">
+      <JsonLd
+        data={articleJsonLd({
+          article,
+          path: `/blogs/${blogHandle}/${article.handle}`,
+        })}
+      />
       {image ? (
         <div className="bg-tint-sand aspect-video max-w-[640px] mx-auto overflow-hidden md:rounded-card md:mt-6">
           <Image

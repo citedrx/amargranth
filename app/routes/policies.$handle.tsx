@@ -1,14 +1,18 @@
 import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/policies.$handle';
 import {type Shop} from '@shopify/hydrogen/storefront-api-types';
+import {canonicalLink} from '~/lib/seo';
 
 type SelectedPolicies = keyof Pick<
   Shop,
   'privacyPolicy' | 'shippingPolicy' | 'termsOfService' | 'refundPolicy'
 >;
 
-export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `${data?.policy.title ?? ''} | Amar Granth`}];
+export const meta: Route.MetaFunction = ({data, params}) => {
+  return [
+    {title: `${data?.policy.title ?? ''} | Amar Granth`},
+    canonicalLink(`/policies/${params.handle}`),
+  ];
 };
 
 export async function loader({params, context}: Route.LoaderArgs) {

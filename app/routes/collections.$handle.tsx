@@ -6,9 +6,13 @@ import type {
 } from '@shopify/hydrogen/storefront-api-types';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductItem} from '~/components/ProductItem';
+import {canonicalLink} from '~/lib/seo';
 
-export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `${data?.collection.title ?? ''} | Amar Granth`}];
+export const meta: Route.MetaFunction = ({data, params}) => {
+  return [
+    {title: `${data?.collection.title ?? ''} | Amar Granth`},
+    canonicalLink(`/collections/${params.handle}`),
+  ];
 };
 
 const SORT_OPTIONS: Record<

@@ -3,11 +3,12 @@ import type {Route} from './+types/blogs._index';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import type {BlogsQuery} from 'storefrontapi.generated';
+import {canonicalLink} from '~/lib/seo';
 
 type BlogNode = BlogsQuery['blogs']['nodes'][0];
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: 'Stories | Amar Granth'}];
+  return [{title: 'Stories | Amar Granth'}, canonicalLink('/blogs')];
 };
 
 export async function loader(args: Route.LoaderArgs) {
