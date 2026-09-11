@@ -19,12 +19,28 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
   const giftCardInputId = useId();
 
   const subtotal = cart?.cost?.subtotalAmount;
-  const total = cart?.cost?.totalAmount;
-  const hasSavings = Boolean(
-    subtotal?.amount &&
-      total?.amount &&
-      Number(total.amount) < Number(subtotal.amount),
-  );
+  // `cart.cost.totalAmount` doesn't reflect an applied order-level discount
+  // code until Shopify's own checkout recalculates it — confirmed against
+  // the live site (the code applies correctly at checkout, but the cart
+  // drawer's cost fields never update). Summing each line's own
+  // discountAllocations (which DOES include order-level allocations,
+  // Storefront API default) gives the real applied amount instead.
+  const discountTotal = (cart?.lines?.nodes ?? []).reduce((sum, line) => {
+    const lineDiscount = (line?.discountAllocations ?? []).reduce(
+      (lineSum, allocation) =>
+        lineSum + Number(allocation.discountedAmount?.amount || 0),
+      0,
+    );
+    return sum + lineDiscount;
+  }, 0);
+  const hasSavings = Boolean(subtotal?.amount) && discountTotal > 0;
+  const total =
+    hasSavings && subtotal
+      ? {
+          amount: String(Number(subtotal.amount) - discountTotal),
+          currencyCode: subtotal.currencyCode,
+        }
+      : cart?.cost?.totalAmount;
 
   return (
     <div
