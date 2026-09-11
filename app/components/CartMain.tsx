@@ -98,7 +98,7 @@ function CartEmpty({
         started!
       </p>
       <Link
-        to="/collections"
+        to="/collections/all"
         onClick={close}
         prefetch="viewport"
         className="inline-block bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body px-6 h-11 leading-[2.75rem] rounded-pill transition-colors"

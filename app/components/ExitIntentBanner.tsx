@@ -248,8 +248,7 @@ function ExitIntentBannerInner({
             Get extra 10% off on your order value
           </h3>
           <p className="text-ink-soft text-body mb-4">
-            Use EXTRA10 at checkout &mdash; good for one order, so make it
-            count.
+            Use code EXTRA10 at checkout. Applicable for limited time
           </p>
           <div className="flex items-center justify-between gap-3 border-2 border-dashed border-border rounded-pill px-4 py-3 mb-4 bg-tint-sand">
             <span className="font-heading text-h2 font-extrabold tracking-[0.06em] text-badge-sale">
