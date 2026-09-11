@@ -252,7 +252,7 @@ function ExitIntentBannerInner({
             Use code EXTRA10 at checkout. Applicable for limited time
           </p>
           <div className="flex items-center justify-between gap-3 border-2 border-dashed border-border rounded-pill px-4 py-3 mb-4 bg-tint-sand">
-            <span className="font-heading text-h2 font-extrabold tracking-[0.06em] text-badge-sale">
+            <span className="font-heading text-h2 font-bold lining-nums tracking-[0.06em] text-badge-sale">
               {DISCOUNT_CODE}
             </span>
             <button
