@@ -74,7 +74,7 @@ export default function Homepage() {
 
 function Hero({comboSet}: {comboSet?: HomepageProductItemFragment}) {
   return (
-    <section className="flex flex-col-reverse md:flex-row items-center gap-10 px-5 md:px-12 lg:px-16 py-16 lg:py-24 max-w-7xl mx-auto">
+    <section className="flex flex-col-reverse md:flex-row items-center gap-10 px-5 md:px-12 lg:px-16 pt-16 lg:pt-24 max-w-7xl mx-auto">
       <div className="flex-1">
         <p className="text-accent font-semibold text-body tracking-wide mb-3">
           Stories of Shiva, Shakti &amp; Indian Culture
@@ -100,7 +100,7 @@ function Hero({comboSet}: {comboSet?: HomepageProductItemFragment}) {
             to={`/products/${comboSet.handle}`}
             className="group block bg-tint-sage rounded-card overflow-hidden"
           >
-            <div className="aspect-[4/3] flex items-center justify-center overflow-hidden">
+            <div className="aspect-square flex items-center justify-center overflow-hidden">
               {comboSet.featuredImage ? (
                 <Image
                   data={comboSet.featuredImage}
@@ -129,7 +129,7 @@ function Hero({comboSet}: {comboSet?: HomepageProductItemFragment}) {
             </div>
           </Link>
         ) : (
-          <div className="bg-tint-sage rounded-card aspect-[4/3] flex items-center justify-center">
+          <div className="bg-tint-sage rounded-card aspect-square flex items-center justify-center">
             <span className="text-8xl" role="img" aria-label="storybook">
               📖
             </span>
@@ -157,8 +157,8 @@ function FeaturedProducts({
           Shop all →
         </Link>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-        {products.slice(0, 8).map((product, i) => (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {products.map((product, i) => (
           <ProductItem
             key={product.id}
             product={product}
@@ -167,8 +167,36 @@ function FeaturedProducts({
             badge={product.tags?.includes('bestseller') ? 'Bestseller' : undefined}
           />
         ))}
+        <SeeAllCard />
       </div>
     </section>
+  );
+}
+
+/**
+ * Rounds the featured-products grid out to an even card count (this
+ * catalog only has 7 real products — an odd count leaves a lone dangling
+ * card in the last row of the mobile 2-column grid, with a large empty gap
+ * beside it) while also giving mobile shoppers a clear next step after
+ * browsing the featured set.
+ */
+function SeeAllCard() {
+  return (
+    <Link to="/collections/all" className="card flex flex-col">
+      <div className="bg-tint-sand aspect-square flex items-center justify-center">
+        <span className="text-4xl" role="img" aria-label="books">
+          📚
+        </span>
+      </div>
+      <div className="p-4 md:p-6 flex-1 flex flex-col justify-center items-center text-center">
+        <p className="text-ink font-semibold text-body mb-1">
+          See all books
+        </p>
+        <p className="text-accent text-small font-semibold">
+          Shop the full collection →
+        </p>
+      </div>
+    </Link>
   );
 }
 
