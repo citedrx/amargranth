@@ -7,6 +7,7 @@ import type {
 import {AddToCartButton} from './AddToCartButton';
 import {useAside} from './Aside';
 import type {ProductFragment} from 'storefrontapi.generated';
+import {markCheckoutStarted} from '~/lib/exitBannerConfig';
 
 export function ProductForm({
   productOptions,
@@ -120,6 +121,7 @@ export function ProductForm({
         <AddToCartButton
           disabled={!selectedVariant || !selectedVariant.availableForSale}
           redirectTo="checkout"
+          onClick={() => markCheckoutStarted()}
           lines={
             selectedVariant
               ? [

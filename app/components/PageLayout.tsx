@@ -32,7 +32,7 @@ export function PageLayout({
     <Aside.Provider>
       <CartAside cart={cart} />
       <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
-      <ExitIntentBanner />
+      <ExitIntentBanner cart={cart} />
       <div className="min-h-screen flex flex-col">
         {header && (
           <Header

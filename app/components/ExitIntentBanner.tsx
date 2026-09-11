@@ -1,6 +1,12 @@
-import {useCallback, useEffect, useId, useRef, useState} from 'react';
-import {useLocation} from 'react-router';
+import {Suspense, useCallback, useEffect, useId, useRef, useState} from 'react';
+import {Await, useLocation} from 'react-router';
+import {useOptimisticCart} from '@shopify/hydrogen';
+import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
+import {
+  exitBannerConfig,
+  hasStartedCheckoutRecently,
+} from '~/lib/exitBannerConfig';
 
 /**
  * Exit-intent offer banner (EXTRA10, 10% off, real code live in Shopify).
@@ -13,6 +19,10 @@ import {useAside} from '~/components/Aside';
  * history.pushState/popstate back-button trap — that requires a second
  * back-press to actually leave, which is a real navigation anti-pattern
  * and a bad first impression for paid (Meta) traffic landing here.
+ *
+ * WHICH condition actually shows it (exit intent alone / abandoned cart /
+ * abandoned checkout / any combination) is controlled entirely from
+ * app/lib/exitBannerConfig.ts — nothing here needs to change to flip that.
  */
 
 const STORAGE_KEY = 'ag_exit_banner_last_shown_at';
@@ -44,7 +54,31 @@ function markShown() {
   }
 }
 
-export function ExitIntentBanner() {
+export function ExitIntentBanner({
+  cart,
+}: {
+  cart: Promise<CartApiQueryFragment | null>;
+}) {
+  const {exitIntent, abandonedCart, abandonedCheckout} =
+    exitBannerConfig.triggers;
+  if (!exitIntent && !abandonedCart && !abandonedCheckout) return null;
+
+  return (
+    <Suspense fallback={null}>
+      <Await resolve={cart}>
+        {(resolvedCart) => <ExitIntentBannerInner cart={resolvedCart} />}
+      </Await>
+    </Suspense>
+  );
+}
+
+function ExitIntentBannerInner({
+  cart,
+}: {
+  cart: CartApiQueryFragment | null;
+}) {
+  const optimisticCart = useOptimisticCart(cart);
+  const cartQuantity = optimisticCart?.totalQuantity ?? 0;
   const location = useLocation();
   const {type: asideType} = useAside();
   const headingId = useId();
@@ -52,6 +86,8 @@ export function ExitIntentBanner() {
   const [copied, setCopied] = useState(false);
   const shownRef = useRef(false);
   const maxScrollRef = useRef(0);
+  const cartQuantityRef = useRef(cartQuantity);
+  cartQuantityRef.current = cartQuantity;
 
   const excluded = EXCLUDED_PATH_PREFIXES.some((prefix) =>
     location.pathname.startsWith(prefix),
@@ -59,6 +95,14 @@ export function ExitIntentBanner() {
 
   const triggerBanner = useCallback(() => {
     if (shownRef.current || hasShownRecently()) return;
+    const {exitIntent, abandonedCart, abandonedCheckout} =
+      exitBannerConfig.triggers;
+    const cartHasItems = cartQuantityRef.current > 0;
+    const eligible =
+      exitIntent ||
+      (abandonedCart && cartHasItems) ||
+      (abandonedCheckout && cartHasItems && hasStartedCheckoutRecently());
+    if (!eligible) return;
     shownRef.current = true;
     markShown();
     setVisible(true);

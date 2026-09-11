@@ -3,6 +3,7 @@ import type {CartLayout} from '~/components/CartMain';
 import {CartForm, Money, type OptimisticCart} from '@shopify/hydrogen';
 import {useEffect, useId, useRef, useState} from 'react';
 import {useFetcher} from 'react-router';
+import {markCheckoutStarted} from '~/lib/exitBannerConfig';
 
 type CartSummaryProps = {
   cart: OptimisticCart<CartApiQueryFragment | null>;
@@ -55,6 +56,7 @@ function CartCheckoutActions({cart}: {cart: CartSummaryProps['cart']}) {
       href={checkoutUrl}
       target="_self"
       onClick={() => {
+        markCheckoutStarted();
         window.fbq?.('track', 'InitiateCheckout', {
           value: Number(cart?.cost?.subtotalAmount?.amount) || undefined,
           currency: cart?.cost?.subtotalAmount?.currencyCode || 'INR',
