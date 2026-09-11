@@ -267,7 +267,7 @@ function ExitIntentBannerInner({
           <a
             href={`/discount/${DISCOUNT_CODE}?redirect=/collections/all`}
             onClick={() => setVisible(false)}
-            className="block text-center w-full bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body h-[52px] leading-[52px] rounded-pill transition-colors"
+            className="block text-center w-full bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body h-[52px] leading-[52px] rounded-pill no-underline hover:no-underline transition-colors"
           >
             Order now &amp; save
           </a>

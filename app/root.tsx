@@ -232,7 +232,7 @@ function ErrorContent({errorStatus}: {errorStatus: number}) {
         </p>
         <a
           href="/"
-          className="inline-block bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body px-8 py-3.5 rounded-pill transition-colors"
+          className="inline-block bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body px-8 py-3.5 rounded-pill no-underline hover:no-underline transition-colors"
         >
           Back to home
         </a>

@@ -103,7 +103,7 @@ export default function About() {
           </p>
           <a
             href="/contact"
-            className="inline-block bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-sm px-7 py-3 rounded-pill transition-colors"
+            className="inline-block bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-sm px-7 py-3 rounded-pill no-underline hover:no-underline transition-colors"
           >
             Get in touch
           </a>
