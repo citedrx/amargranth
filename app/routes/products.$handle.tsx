@@ -383,7 +383,7 @@ export default function Product() {
 
       {/* Sticky mobile add-to-cart bar, once the primary CTA scrolls out of view */}
       <div
-        className={`fixed bottom-0 inset-x-0 z-20 lg:hidden bg-base border-t border-border px-5 py-3 flex items-center justify-between gap-4 transition-transform duration-200 ${
+        className={`fixed bottom-0 inset-x-0 z-20 lg:hidden bg-base border-t border-border px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-4 transition-transform duration-200 ${
           showStickyBar ? 'translate-y-0' : 'translate-y-full'
         }`}
       >

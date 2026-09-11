@@ -19,7 +19,7 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
   return (
     <div
       aria-labelledby={summaryId}
-      className="flex flex-col gap-3 border-t border-border p-6"
+      className="flex flex-col gap-3 border-t border-border p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
     >
       <dl role="group" className="flex items-center justify-between">
         <dt className="text-body text-ink-soft">Subtotal</dt>
