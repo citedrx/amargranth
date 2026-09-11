@@ -1,4 +1,5 @@
 import {Link, useLoaderData} from 'react-router';
+import articleFallbackImg from '~/assets/illustration-article-fallback.png';
 import type {Route} from './+types/blogs.$blogHandle.$articleHandle';
 import {Image, Money} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
@@ -193,9 +194,11 @@ export default function Article() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <span className="text-4xl opacity-60" role="img" aria-label="scroll">
-                      📜
-                    </span>
+                    <img
+                      src={articleFallbackImg}
+                      alt="Illustrated Hindu temple skyline by the river at dusk"
+                      className="w-full h-full object-cover"
+                    />
                   )}
                 </div>
                 <div className="p-4 md:p-6">

@@ -1,4 +1,5 @@
 import {Link, useLoaderData} from 'react-router';
+import productFallbackImg from '~/assets/illustration-product-fallback.png';
 import type {Route} from './+types/products.$handle';
 import {useEffect, useRef, useState} from 'react';
 import {
@@ -478,9 +479,11 @@ function ProductGallery({
             className="w-full h-full object-cover"
           />
         ) : (
-          <span className="text-7xl opacity-60" role="img" aria-label="book">
-            📖
-          </span>
+          <img
+            src={productFallbackImg}
+            alt="Illustrated Hindu temple book cover artwork"
+            className="w-full h-full object-cover"
+          />
         )}
       </div>
       {images.length > 1 ? (
@@ -537,9 +540,11 @@ function RelatedProductCard({
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-4xl opacity-60" role="img" aria-label="book">
-              📗
-            </span>
+            <img
+              src={productFallbackImg}
+              alt="Illustrated Hindu temple book cover artwork"
+              className="w-full h-full object-cover"
+            />
           )}
         </div>
       </Link>

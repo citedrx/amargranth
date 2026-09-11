@@ -1,5 +1,6 @@
 import {Await, useLoaderData, Link} from 'react-router';
 import ourStoryImg from '~/assets/illustration-our-story.png';
+import heroFallbackImg from '~/assets/illustration-hero-fallback.png';
 import type {Route} from './+types/_index';
 import {Suspense} from 'react';
 import {Image, Money} from '@shopify/hydrogen';
@@ -109,9 +110,11 @@ function Hero({comboSet}: {comboSet?: HomepageProductItemFragment}) {
                   className="w-full h-full object-cover transition-transform group-hover:scale-[1.02]"
                 />
               ) : (
-                <span className="text-8xl" role="img" aria-label="storybook">
-                  📖
-                </span>
+                <img
+                  src={heroFallbackImg}
+                  alt="Illustrated Hindu temple book cover artwork with a lotus"
+                  className="w-full h-full object-cover"
+                />
               )}
             </div>
             <div className="px-5 py-4 bg-white/70 flex items-center justify-between gap-3">
@@ -130,10 +133,12 @@ function Hero({comboSet}: {comboSet?: HomepageProductItemFragment}) {
             </div>
           </Link>
         ) : (
-          <div className="bg-tint-sage rounded-card aspect-square flex items-center justify-center">
-            <span className="text-8xl" role="img" aria-label="storybook">
-              📖
-            </span>
+          <div className="bg-tint-sage rounded-card aspect-square overflow-hidden">
+            <img
+              src={heroFallbackImg}
+              alt="Illustrated Hindu temple book cover artwork with a lotus"
+              className="w-full h-full object-cover"
+            />
           </div>
         )}
       </div>

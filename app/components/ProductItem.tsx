@@ -1,5 +1,6 @@
 import {Link} from 'react-router';
 import {Image, Money} from '@shopify/hydrogen';
+import productFallbackImg from '~/assets/illustration-product-fallback.png';
 import type {
   ProductItemFragment,
   CollectionItemFragment,
@@ -55,9 +56,11 @@ export function ProductItem({
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-4xl opacity-60" role="img" aria-label="book">
-              📗
-            </span>
+            <img
+              src={productFallbackImg}
+              alt="Illustrated Hindu temple book cover artwork"
+              className="w-full h-full object-cover"
+            />
           )}
         </div>
       </Link>

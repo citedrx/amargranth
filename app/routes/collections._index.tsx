@@ -1,4 +1,5 @@
 import {useLoaderData, Link} from 'react-router';
+import collectionFallbackImg from '~/assets/illustration-collection-fallback.png';
 import type {Route} from './+types/collections._index';
 import {getPaginationVariables, Image} from '@shopify/hydrogen';
 import type {CollectionFragment} from 'storefrontapi.generated';
@@ -108,9 +109,11 @@ function CollectionItem({
             className="w-full h-full object-cover"
           />
         ) : (
-          <span className="text-4xl opacity-60" role="img" aria-label="om">
-            🕉️
-          </span>
+          <img
+            src={collectionFallbackImg}
+            alt="Illustrated Hindu temple skyline by the river at dusk"
+            className="w-full h-full object-cover"
+          />
         )}
       </div>
       <p className="font-semibold text-small text-ink p-4 md:p-6">

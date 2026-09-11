@@ -1,5 +1,6 @@
 import {Link} from 'react-router';
 import {Image} from '@shopify/hydrogen';
+import articleFallbackImg from '~/assets/illustration-article-fallback.png';
 import type {HomepageArticleFragment} from 'storefrontapi.generated';
 
 const TINT_CLASSES = [
@@ -44,9 +45,11 @@ export function ArticleItem({
             className="w-full h-full object-cover"
           />
         ) : (
-          <span className="text-5xl opacity-60" role="img" aria-label="scroll">
-            📜
-          </span>
+          <img
+            src={articleFallbackImg}
+            alt="Illustrated Hindu temple skyline by the river at dusk"
+            className="w-full h-full object-cover"
+          />
         )}
       </div>
       <div className="p-4 md:p-6">
