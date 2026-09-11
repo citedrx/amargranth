@@ -225,13 +225,14 @@ function ExitIntentBannerInner({
         className="absolute inset-0 w-full h-full bg-ink/40 cursor-default"
         onClick={() => setVisible(false)}
       />
-      <div className="relative w-full sm:max-w-[420px] bg-base border border-border shadow-xl rounded-t-card sm:rounded-card overflow-hidden">
+      <div className="relative w-full sm:max-w-[420px] border border-border shadow-xl rounded-t-card sm:rounded-card overflow-hidden">
         <img
           src={exitBannerIllustration}
           alt=""
           aria-hidden="true"
-          className="w-full h-24 sm:h-28 object-cover"
+          className="absolute inset-0 w-full h-full object-cover"
         />
+        <div className="absolute inset-0 bg-base/55" />
         <button
           type="button"
           onClick={() => setVisible(false)}
@@ -240,7 +241,7 @@ function ExitIntentBannerInner({
         >
           &times;
         </button>
-        <div className="p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+        <div className="relative p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
           <p className="text-micro font-semibold uppercase tracking-wide text-badge-sale mb-2">
             A little something before you go
           </p>
