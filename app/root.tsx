@@ -11,8 +11,10 @@ import {
   useRouteLoaderData,
 } from 'react-router';
 import type {Route} from './+types/root';
-import favicon from '~/assets/favicon.svg';
 import logoUrl from '~/assets/logo.svg';
+import favicon32 from '~/assets/favicon-32.png';
+import favicon192 from '~/assets/favicon-192.png';
+import appleTouchIcon from '~/assets/apple-touch-icon.png';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import {organizationJsonLd, websiteJsonLd} from '~/lib/seo';
 import resetStyles from '~/styles/reset.css?url';
@@ -70,7 +72,13 @@ export function links() {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
-    {rel: 'icon', type: 'image/svg+xml', href: favicon},
+    // Real sun-mark favicon (the same asset used in Header/Footer), not the
+    // generic Hydrogen-skeleton icon this was shipping with before. PNGs at
+    // two sizes since browsers/search engines don't reliably support SVG
+    // favicons, plus the iOS home-screen icon size.
+    {rel: 'icon', type: 'image/png', sizes: '32x32', href: favicon32},
+    {rel: 'icon', type: 'image/png', sizes: '192x192', href: favicon192},
+    {rel: 'apple-touch-icon', sizes: '180x180', href: appleTouchIcon},
   ];
 }
 
