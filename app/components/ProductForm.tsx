@@ -121,7 +121,29 @@ export function ProductForm({
         <AddToCartButton
           disabled={!selectedVariant || !selectedVariant.availableForSale}
           redirectTo="checkout"
-          onClick={() => markCheckoutStarted()}
+          onClick={() => {
+            markCheckoutStarted();
+            // Buy Now skips the cart drawer entirely (adds the line, then
+            // redirects straight to Shopify checkout server-side), so it
+            // never passes through CartSummary's Checkout button — the
+            // only other place InitiateCheckout/begin_checkout fire. Without
+            // this, every Buy Now click (a real checkout initiation) was
+            // invisible to both pixels, inflating the apparent
+            // AddToCart-to-InitiateCheckout drop-off.
+            window.fbq?.('track', 'InitiateCheckout', {
+              value:
+                (Number(selectedVariant?.price?.amount) || 0) * quantity ||
+                undefined,
+              currency: selectedVariant?.price?.currencyCode || 'INR',
+              num_items: quantity,
+            });
+            window.gtag?.('event', 'begin_checkout', {
+              value:
+                (Number(selectedVariant?.price?.amount) || 0) * quantity ||
+                undefined,
+              currency: selectedVariant?.price?.currencyCode || 'INR',
+            });
+          }}
           lines={
             selectedVariant
               ? [
