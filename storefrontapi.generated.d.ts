@@ -407,6 +407,19 @@ export type FooterQuery = {
   >;
 };
 
+export type SitewidePromoQueryVariables = StorefrontAPI.Exact<{
+  comboHandle: StorefrontAPI.Scalars['String']['input'];
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type SitewidePromoQuery = {
+  product?: StorefrontAPI.Maybe<{
+    promoLabel?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+    promoEndDate?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+  }>;
+};
+
 export type HomepageProductItemFragment = Pick<
   StorefrontAPI.Product,
   'id' | 'title' | 'handle' | 'tags'
@@ -1560,6 +1573,10 @@ interface GeneratedQueryTypes {
   '#graphql\n  query Footer(\n    $country: CountryCode\n    $footerMenuHandle: String!\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    menu(handle: $footerMenuHandle) {\n      ...Menu\n    }\n  }\n  #graphql\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n': {
     return: FooterQuery;
     variables: FooterQueryVariables;
+  };
+  '#graphql\n  query SitewidePromo(\n    $comboHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $comboHandle) {\n      promoLabel: metafield(namespace: "custom", key: "promo_label") {\n        value\n      }\n      promoEndDate: metafield(namespace: "custom", key: "promo_end_date") {\n        value\n      }\n    }\n  }\n': {
+    return: SitewidePromoQuery;
+    variables: SitewidePromoQueryVariables;
   };
   '#graphql\n  fragment HomepageProductItem on Product {\n    id\n    title\n    handle\n    tags\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n      maxVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n    compareAtPriceRange {\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        availableForSale\n      }\n    }\n  }\n  query FeaturedProducts($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    products(first: 12, sortKey: TITLE) {\n      nodes {\n        ...HomepageProductItem\n      }\n    }\n  }\n': {
     return: FeaturedProductsQuery;

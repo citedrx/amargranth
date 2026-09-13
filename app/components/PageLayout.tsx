@@ -10,6 +10,7 @@ import {Footer} from '~/components/Footer';
 import {Header, HeaderMenu} from '~/components/Header';
 import {CartMain} from '~/components/CartMain';
 import {ExitIntentBanner} from '~/components/ExitIntentBanner';
+import {AnnouncementBar} from '~/components/AnnouncementBar';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -17,6 +18,10 @@ interface PageLayoutProps {
   header: HeaderQuery;
   isLoggedIn: Promise<boolean>;
   publicStoreDomain: string;
+  promoLabel: string | null;
+  promoEndDate: string | null;
+  promoActive: boolean;
+  promoDaysLeft: number | null;
   children?: React.ReactNode;
 }
 
@@ -27,6 +32,10 @@ export function PageLayout({
   header,
   isLoggedIn,
   publicStoreDomain,
+  promoLabel,
+  promoEndDate,
+  promoActive,
+  promoDaysLeft,
 }: PageLayoutProps) {
   return (
     <Aside.Provider>
@@ -34,14 +43,26 @@ export function PageLayout({
       <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
       <ExitIntentBanner cart={cart} />
       <div className="min-h-screen flex flex-col">
-        {header && (
-          <Header
-            header={header}
-            cart={cart}
-            isLoggedIn={isLoggedIn}
-            publicStoreDomain={publicStoreDomain}
-          />
-        )}
+        {/* AnnouncementBar + Header share one sticky wrapper so they scroll
+            together as a single unit — Header itself is no longer sticky on
+            its own (see Header.tsx). */}
+        <div className="sticky top-0 z-20">
+          {promoActive && promoLabel && promoEndDate ? (
+            <AnnouncementBar
+              label={promoLabel}
+              endDate={promoEndDate}
+              daysLeft={promoDaysLeft}
+            />
+          ) : null}
+          {header && (
+            <Header
+              header={header}
+              cart={cart}
+              isLoggedIn={isLoggedIn}
+              publicStoreDomain={publicStoreDomain}
+            />
+          )}
+        </div>
         <main className="flex-1">{children}</main>
         <Footer
           footer={footer}

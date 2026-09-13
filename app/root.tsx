@@ -17,6 +17,7 @@ import favicon192 from '~/assets/favicon-192.png';
 import appleTouchIcon from '~/assets/apple-touch-icon.png';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import {organizationJsonLd, websiteJsonLd} from '~/lib/seo';
+import {siteConfig} from '~/lib/site-config';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
@@ -119,18 +120,60 @@ export async function loader(args: Route.LoaderArgs) {
 async function loadCriticalData({context}: Route.LoaderArgs) {
   const {storefront} = context;
 
-  const [header] = await Promise.all([
+  const [header, sitewidePromo] = await Promise.all([
     storefront.query(HEADER_QUERY, {
       cache: storefront.CacheLong(),
       variables: {
         headerMenuHandle: 'main-menu', // Adjust to your header menu handle
       },
     }),
-    // Add other queries here, so that they are loaded in parallel
+    // Drives the sticky Ganpati sale announcement bar (AnnouncementBar.tsx) —
+    // reuses the SAME real promo metafields the PDP's own event banner reads
+    // (custom.promo_label/promo_end_date), off the Combo Set specifically,
+    // rather than inventing a new shop-wide metafield. Not cached long since
+    // it needs to stop appearing the moment promoEndDate passes.
+    storefront.query(SITEWIDE_PROMO_QUERY, {
+      variables: {comboHandle: siteConfig.catalogOrder.pinFirst},
+    }),
   ]);
 
-  return {header};
+  const promoEndDate = sitewidePromo.product?.promoEndDate?.value ?? null;
+  const promoLabel = sitewidePromo.product?.promoLabel?.value ?? null;
+  // Computed with the request's own clock (not a client Date()) so the bar
+  // silently stops appearing after the real end date with no redeploy, and
+  // so server/client render the same thing on first paint.
+  const promoActive = Boolean(
+    promoEndDate && new Date(promoEndDate) >= new Date(),
+  );
+  const promoDaysLeft = promoActive
+    ? Math.max(
+        1,
+        Math.ceil(
+          (new Date(promoEndDate as string).getTime() - Date.now()) /
+            86_400_000,
+        ),
+      )
+    : null;
+
+  return {header, promoLabel, promoEndDate, promoActive, promoDaysLeft};
 }
+
+const SITEWIDE_PROMO_QUERY = `#graphql
+  query SitewidePromo(
+    $comboHandle: String!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    product(handle: $comboHandle) {
+      promoLabel: metafield(namespace: "custom", key: "promo_label") {
+        value
+      }
+      promoEndDate: metafield(namespace: "custom", key: "promo_end_date") {
+        value
+      }
+    }
+  }
+` as const;
 
 /**
  * Load data for rendering content below the fold. This data is deferred and will be
