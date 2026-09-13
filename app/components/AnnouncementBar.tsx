@@ -12,12 +12,24 @@ import {Link} from 'react-router';
  */
 
 const STORAGE_KEY = 'ag_announcement_dismissed_at';
-const DAYS_LEFT_URGENCY_THRESHOLD = 10;
+
+/** "30" -> "30th", "1" -> "1st", "22" -> "22nd", etc. */
+function ordinal(day: number): string {
+  if (day >= 11 && day <= 13) return `${day}th`;
+  switch (day % 10) {
+    case 1:
+      return `${day}st`;
+    case 2:
+      return `${day}nd`;
+    case 3:
+      return `${day}rd`;
+    default:
+      return `${day}th`;
+  }
+}
 
 export function AnnouncementBar({
-  label,
   endDate,
-  daysLeft,
 }: {
   label: string;
   endDate: string;
@@ -38,12 +50,8 @@ export function AnnouncementBar({
 
   if (dismissed) return null;
 
-  const formattedDate = new Date(endDate).toLocaleDateString('en-IN', {
-    day: 'numeric',
-    month: 'short',
-  });
-  const showDaysLeft =
-    daysLeft !== null && daysLeft <= DAYS_LEFT_URGENCY_THRESHOLD;
+  const endDateObj = new Date(endDate);
+  const formattedDate = `${endDateObj.toLocaleDateString('en-IN', {month: 'short'})} ${ordinal(endDateObj.getDate())} ${endDateObj.getFullYear()}`;
 
   return (
     <div className="bg-badge-sale text-white">
@@ -52,16 +60,10 @@ export function AnnouncementBar({
           to="/collections/all"
           className="text-micro sm:text-small font-semibold text-white no-underline hover:no-underline hover:text-white/90 transition-colors"
         >
-          🪔 {label} — up to 30% off, ends{' '}
+          🪔 Limited Time Ganpati Sale on all Books. Sale ends{' '}
           <span className="font-extrabold underline decoration-2 underline-offset-2">
             {formattedDate}
           </span>
-          {showDaysLeft ? (
-            <span className="font-extrabold">
-              {' '}
-              ({daysLeft} day{daysLeft === 1 ? '' : 's'} left!)
-            </span>
-          ) : null}
         </Link>
         <button
           type="button"

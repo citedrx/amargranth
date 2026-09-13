@@ -242,7 +242,7 @@ export default function Product() {
 
           <div>
             {promoActive && product.promoLabel?.value ? (
-              <div className="flex items-center gap-2 bg-badge-sale text-white text-small font-semibold rounded-card px-4 py-2.5 mb-4">
+              <div className="bg-badge-sale text-white text-small font-semibold rounded-card px-4 py-2.5 mb-4">
                 🪔 {product.promoLabel.value}
                 {product.promoDiscount?.value
                   ? ` — ${product.promoDiscount.value}`
