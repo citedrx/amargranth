@@ -109,20 +109,34 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
           giftCardHeadingId={giftCardHeadingId}
           giftCardInputId={giftCardInputId}
         />
-        {layout === 'page' ? <CartCheckoutActions cart={cart} /> : null}
       </div>
-      {layout === 'aside' ? (
-        // Pinned to the bottom of the drawer's scrollable area so the
-        // Checkout button is always visible without scrolling, even on a
-        // cart with several lines. `position: sticky` (not a fixed-height
-        // flex split) deliberately, so a short cart doesn't reintroduce
-        // the dead-gap-above-the-footer bug this codebase already hit
-        // once — sticky sits in its normal flow position when content is
-        // short, and only pins once the drawer's content actually scrolls.
-        <div className="sticky bottom-0 bg-base border-t border-border px-6 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-          <CartCheckoutActions cart={cart} />
-        </div>
-      ) : null}
+      {
+        // Pinned to the bottom of the scroll container (the drawer's own
+        // scrollable area on `aside`, the whole page viewport on `page`)
+        // so Checkout is always visible without scrolling. `position:
+        // sticky` deliberately, not a fixed-height flex split, so a short
+        // cart doesn't reintroduce the dead-gap-above-the-footer bug this
+        // codebase already hit once — sticky sits in its normal flow
+        // position when content is short, and only pins once content
+        // actually scrolls.
+        //
+        // On the standalone page this is a genuine sibling of this div
+        // inside CartMain's own bounded, max-width section — CSS sticky
+        // only pins while its containing block is still in the scrollport,
+        // so once a visitor scrolls far enough to reach the site's real
+        // Footer (rendered after CartMain in PageLayout.tsx), this button
+        // naturally releases and scrolls away with the rest of the cart
+        // content instead of ever floating on top of the footer's nav/
+        // policy links. z-10 keeps it above ordinary page content while
+        // staying below the sitewide sticky announcement bar/header
+        // (z-20) and the drawer's own elevated stacking context (z-40),
+        // in the unlikely event both are visible on a very short viewport.
+      }
+      <div
+        className={`sticky bottom-0 z-10 bg-base border-t border-border px-6 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]`}
+      >
+        <CartCheckoutActions cart={cart} />
+      </div>
     </>
   );
 }

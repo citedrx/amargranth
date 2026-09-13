@@ -70,7 +70,15 @@
 }
 
 html {
-  overflow-x: hidden;
+  /* overflow-x: clip, not hidden — the CSS Overflow spec force-computes
+     overflow-y to `auto` whenever overflow-x is anything but `visible`,
+     which makes html/body register as a "scroll container" even though
+     they never actually scroll internally (only grow taller). That
+     silently breaks every `position: sticky` element on the page, since
+     sticky resolves against this non-functional container instead of the
+     real viewport scroll. `clip` prevents horizontal overflow the same
+     way `hidden` does, without triggering that pairing. */
+  overflow-x: clip;
 }
 
 body {
@@ -79,7 +87,7 @@ body {
   font-family: var(--font-sans);
   font-size: var(--text-body);
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 h1,
