@@ -429,7 +429,7 @@ function ProductGallery({
   const active = images[activeIndex];
 
   return (
-    <div>
+    <div className="min-w-0">
       <div className="bg-tint-sand rounded-card aspect-square flex items-center justify-center overflow-hidden">
         {active ? (
           <Image
