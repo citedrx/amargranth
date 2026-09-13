@@ -90,6 +90,18 @@ export const siteConfig = {
     returns: 'Damaged on arrival? Email us within 24hrs for a replacement',
   },
 
+  // Pins these two products to fixed positions in the catalog — ASM's
+  // explicit request (Sept 2026) — regardless of whatever algorithmic sort
+  // (best-selling, title A-Z) would otherwise place them. Applied to the
+  // homepage's Featured Products and the "All books" listing's default
+  // view only; never overrides a shopper's explicit sort choice (price,
+  // newest) on that listing. See sortCatalogProducts below.
+  catalogOrder: {
+    pinFirst: '12-jyotirlings-51-shaktipeeths-book-set-hardcover', // Combo Set
+    pinLast:
+      'a-childrens-guide-to-the-12-shiva-jyotirlings-hindi-paperback', // Hindi edition
+  },
+
   // Date-gated promotional banners (PDP, Section 7.3 step 2) are NOT driven
   // from this array in this codebase — they're driven by real Shopify
   // metafields (custom.promo_label/promo_discount/promo_end_date on each
@@ -111,3 +123,17 @@ export const siteConfig = {
 } as const;
 
 export type SiteConfig = typeof siteConfig;
+
+/** Moves catalogOrder.pinFirst to the front and pinLast to the end,
+ * preserving the relative order of everything else. */
+export function sortCatalogProducts<T extends {handle: string}>(
+  products: T[],
+): T[] {
+  const {pinFirst, pinLast} = siteConfig.catalogOrder;
+  const first = products.find((p) => p.handle === pinFirst);
+  const last = products.find((p) => p.handle === pinLast);
+  const rest = products.filter(
+    (p) => p.handle !== pinFirst && p.handle !== pinLast,
+  );
+  return [...(first ? [first] : []), ...rest, ...(last ? [last] : [])];
+}

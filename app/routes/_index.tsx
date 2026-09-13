@@ -13,6 +13,7 @@ import {ArticleItem} from '~/components/ArticleItem';
 import {ProductItem} from '~/components/ProductItem';
 import {BLOG_CATEGORIES} from '~/lib/blogCategories';
 import {canonicalLink} from '~/lib/seo';
+import {sortCatalogProducts} from '~/lib/site-config';
 
 const COMBO_SET_HANDLE = '12-jyotirlings-51-shaktipeeths-book-set-hardcover';
 
@@ -39,7 +40,7 @@ async function loadCriticalData({context}: Route.LoaderArgs) {
 
   return {
     isShopLinked: Boolean(context.env.PUBLIC_STORE_DOMAIN),
-    products: products.nodes,
+    products: sortCatalogProducts(products.nodes),
   };
 }
 

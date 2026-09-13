@@ -3,6 +3,7 @@ import {Link, useLoaderData, useNavigate, useSearchParams} from 'react-router';
 import type {ProductSortKeys} from '@shopify/hydrogen/storefront-api-types';
 import {ProductItem} from '~/components/ProductItem';
 import {canonicalLink} from '~/lib/seo';
+import {sortCatalogProducts} from '~/lib/site-config';
 
 export const meta: Route.MetaFunction = () => {
   return [{title: 'All Books | Amar Granth'}, canonicalLink('/collections/all')];
@@ -31,7 +32,12 @@ export async function loader({context, request}: Route.LoaderArgs) {
       variables: {first: 24, sortKey, reverse},
     }),
   ]);
-  return {products, sort};
+  // Only the default "Featured" view gets the pinned combo-first/Hindi-last
+  // order — an explicit price/newest sort choice should do exactly what it
+  // says, not get silently overridden.
+  const nodes =
+    sort === 'featured' ? sortCatalogProducts(products.nodes) : products.nodes;
+  return {products: {...products, nodes}, sort};
 }
 
 export default function Collection() {
