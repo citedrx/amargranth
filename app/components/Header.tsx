@@ -153,7 +153,7 @@ function HeaderMenuMobileToggle() {
   const {open} = useAside();
   return (
     <button
-      className="reset p-2 -m-2 lg:hidden"
+      className="reset flex items-center justify-center w-11 h-11 -mx-2 lg:hidden"
       onClick={() => open('mobile')}
       aria-label="Open menu"
     >

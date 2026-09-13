@@ -46,7 +46,7 @@ function SocialLinks() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={social.name}
-          className="flex items-center justify-center w-9 h-9 rounded-pill border border-border text-ink-soft hover:border-accent hover:text-accent transition-colors"
+          className="flex items-center justify-center w-11 h-11 rounded-pill border border-border text-ink-soft hover:border-accent hover:text-accent transition-colors"
         >
           {social.icon}
         </a>
@@ -89,8 +89,9 @@ export function Footer({
             </div>
             <div className="border-t border-border px-5 md:px-12 lg:px-16 py-5 max-w-7xl mx-auto text-center md:text-left">
               <p className="text-ink-soft text-micro">
-                &copy; {new Date().getFullYear()} {header.shop.name}. All
-                rights reserved.
+                Amar Granth Owned and Operated by
+                <br />
+                &copy; 2023 Amar Shiv Media Private Limited
               </p>
             </div>
           </footer>
