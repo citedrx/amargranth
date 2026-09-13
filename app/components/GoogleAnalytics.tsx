@@ -1,5 +1,6 @@
 import {useEffect} from 'react';
 import {AnalyticsEvent, useAnalytics, useNonce} from '@shopify/hydrogen';
+import {consumeGenuineAddToCart} from '~/lib/analyticsIntent';
 
 declare global {
   interface Window {
@@ -92,6 +93,11 @@ export function GoogleAnalyticsEvents({
       const line = payload.currentLine;
       const product = line?.merchandise?.product;
       if (!line || !product) return;
+      // Hydrogen fires this for ANY cart-line quantity increase, including
+      // the cart drawer's own quantity stepper — not just a genuine "Add to
+      // Cart"/"Buy Now"/quick-add click. Only forward the ones AddToCartButton
+      // actually marked as a real add. See analyticsIntent.ts.
+      if (!consumeGenuineAddToCart('ga4', line.merchandise.id)) return;
       window.gtag?.('event', 'add_to_cart', {
         currency: line.cost?.totalAmount?.currencyCode || 'INR',
         value: Number(line.cost?.totalAmount?.amount) || undefined,

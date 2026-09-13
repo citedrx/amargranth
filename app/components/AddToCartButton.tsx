@@ -1,5 +1,6 @@
 import {type FetcherWithComponents} from 'react-router';
 import {CartForm, type OptimisticCartLineInput} from '@shopify/hydrogen';
+import {markGenuineAddToCart} from '~/lib/analyticsIntent';
 
 export function AddToCartButton({
   analytics,
@@ -37,7 +38,18 @@ export function AddToCartButton({
           ) : null}
           <button
             type="submit"
-            onClick={onClick}
+            onClick={() => {
+              // This is the one place in the codebase that ever submits a
+              // LinesAdd mutation, so this is the one place that can mark a
+              // quantity increase as a genuine add — see analyticsIntent.ts
+              // for why that distinction matters.
+              for (const line of lines) {
+                if (line.merchandiseId) {
+                  markGenuineAddToCart(line.merchandiseId);
+                }
+              }
+              onClick?.();
+            }}
             disabled={disabled ?? fetcher.state !== 'idle'}
             className={className}
           >

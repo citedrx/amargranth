@@ -1,5 +1,6 @@
 import {useEffect, useRef} from 'react';
 import {AnalyticsEvent, useAnalytics, useNonce} from '@shopify/hydrogen';
+import {consumeGenuineAddToCart} from '~/lib/analyticsIntent';
 
 declare global {
   interface Window {
@@ -89,6 +90,11 @@ export function MetaPixelEvents({pixelId}: {pixelId?: string}) {
       const line = payload.currentLine;
       const product = line?.merchandise?.product;
       if (!line || !product) return;
+      // Hydrogen fires this for ANY cart-line quantity increase, including
+      // the cart drawer's own quantity stepper — not just a genuine "Add to
+      // Cart"/"Buy Now"/quick-add click. Only forward the ones AddToCartButton
+      // actually marked as a real add. See analyticsIntent.ts.
+      if (!consumeGenuineAddToCart('meta', line.merchandise.id)) return;
       window.fbq?.('track', 'AddToCart', {
         content_ids: [product.id],
         content_name: product.title,
