@@ -449,8 +449,8 @@ function ProductGallery({
         )}
       </div>
       {images.length > 1 ? (
-        <div className="flex gap-3 mt-4">
-          {images.slice(0, 4).map((img, index) => (
+        <div className="flex gap-3 mt-4 overflow-x-auto pb-1">
+          {images.map((img, index) => (
             <button
               key={img.id}
               type="button"
@@ -578,7 +578,7 @@ const PRODUCT_FRAGMENT = `#graphql
     tags
     encodedVariantExistence
     encodedVariantAvailability
-    images(first: 6) {
+    images(first: 20) {
       nodes {
         __typename
         id
