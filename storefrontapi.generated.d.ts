@@ -408,16 +408,15 @@ export type FooterQuery = {
 };
 
 export type SitewidePromoQueryVariables = StorefrontAPI.Exact<{
-  comboHandle: StorefrontAPI.Scalars['String']['input'];
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
 }>;
 
 export type SitewidePromoQuery = {
-  product?: StorefrontAPI.Maybe<{
+  shop: {
     promoLabel?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
     promoEndDate?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
-  }>;
+  };
 };
 
 export type HomepageProductItemFragment = Pick<
@@ -1574,7 +1573,7 @@ interface GeneratedQueryTypes {
     return: FooterQuery;
     variables: FooterQueryVariables;
   };
-  '#graphql\n  query SitewidePromo(\n    $comboHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $comboHandle) {\n      promoLabel: metafield(namespace: "custom", key: "promo_label") {\n        value\n      }\n      promoEndDate: metafield(namespace: "custom", key: "promo_end_date") {\n        value\n      }\n    }\n  }\n': {
+  '#graphql\n  query SitewidePromo($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    shop {\n      promoLabel: metafield(namespace: "custom", key: "sitewide_promo_label") {\n        value\n      }\n      promoEndDate: metafield(\n        namespace: "custom"\n        key: "sitewide_promo_end_date"\n      ) {\n        value\n      }\n    }\n  }\n': {
     return: SitewidePromoQuery;
     variables: SitewidePromoQueryVariables;
   };

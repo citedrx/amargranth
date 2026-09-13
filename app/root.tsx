@@ -17,7 +17,6 @@ import favicon192 from '~/assets/favicon-192.png';
 import appleTouchIcon from '~/assets/apple-touch-icon.png';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import {organizationJsonLd, websiteJsonLd} from '~/lib/seo';
-import {siteConfig} from '~/lib/site-config';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
@@ -128,17 +127,16 @@ async function loadCriticalData({context}: Route.LoaderArgs) {
       },
     }),
     // Drives the sticky Ganpati sale announcement bar (AnnouncementBar.tsx) —
-    // reuses the SAME real promo metafields the PDP's own event banner reads
-    // (custom.promo_label/promo_end_date), off the Combo Set specifically,
-    // rather than inventing a new shop-wide metafield. Not cached long since
+    // reads real custom.sitewide_promo_label/sitewide_promo_end_date
+    // metafields on the Shop resource itself (values match the PDP event
+    // banner's own product-level metafields, set from the same real
+    // "Ganpati Festive Sale" / 30 Sept 2026 data). Not cached long since
     // it needs to stop appearing the moment promoEndDate passes.
-    storefront.query(SITEWIDE_PROMO_QUERY, {
-      variables: {comboHandle: siteConfig.catalogOrder.pinFirst},
-    }),
+    storefront.query(SITEWIDE_PROMO_QUERY),
   ]);
 
-  const promoEndDate = sitewidePromo.product?.promoEndDate?.value ?? null;
-  const promoLabel = sitewidePromo.product?.promoLabel?.value ?? null;
+  const promoEndDate = sitewidePromo.shop.promoEndDate?.value ?? null;
+  const promoLabel = sitewidePromo.shop.promoLabel?.value ?? null;
   // Computed with the request's own clock (not a client Date()) so the bar
   // silently stops appearing after the real end date with no redeploy, and
   // so server/client render the same thing on first paint.
@@ -159,16 +157,16 @@ async function loadCriticalData({context}: Route.LoaderArgs) {
 }
 
 const SITEWIDE_PROMO_QUERY = `#graphql
-  query SitewidePromo(
-    $comboHandle: String!
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(country: $country, language: $language) {
-    product(handle: $comboHandle) {
-      promoLabel: metafield(namespace: "custom", key: "promo_label") {
+  query SitewidePromo($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    shop {
+      promoLabel: metafield(namespace: "custom", key: "sitewide_promo_label") {
         value
       }
-      promoEndDate: metafield(namespace: "custom", key: "promo_end_date") {
+      promoEndDate: metafield(
+        namespace: "custom"
+        key: "sitewide_promo_end_date"
+      ) {
         value
       }
     }
