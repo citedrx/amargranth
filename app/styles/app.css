@@ -176,7 +176,17 @@ aside li {
   transition: opacity 400ms ease-in-out;
   transition: opacity 400ms;
   visibility: hidden;
-  z-index: 10;
+  /* Must beat PageLayout's sticky announcement-bar + header wrapper
+     (z-20) — otherwise that sticky stack paints over the drawer's own
+     header (title + close button) and the top of its content, since both
+     are `position: fixed`/`sticky` at the same screen region. This was a
+     real regression from adding the sticky announcement bar: the cart
+     drawer (and the mobile hamburger menu, which shares this same Aside/
+     .overlay component) lost their own visible close button and had their
+     top content clipped behind the sticky bar. Stays below
+     ExitIntentBanner's z-[70], which is meant to sit above everything
+     including an open drawer. */
+  z-index: 40;
 }
 
 .overlay .close-outside {

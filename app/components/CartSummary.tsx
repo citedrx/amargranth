@@ -41,6 +41,9 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
           currencyCode: subtotal.currencyCode,
         }
       : cart?.cost?.totalAmount;
+  const appliedCodes = (cart?.discountCodes ?? [])
+    .filter((discount) => discount.applicable)
+    .map(({code}) => code);
 
   return (
     <div
@@ -56,12 +59,25 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
         </dd>
       </dl>
       {hasSavings && total ? (
-        <dl role="group" className="flex items-center justify-between -mt-2">
-          <dt className="text-body text-ink-soft">Total</dt>
-          <dd className="text-h3 font-semibold text-badge-sale">
-            <Money data={total} />
-          </dd>
-        </dl>
+        <div className="-mt-2">
+          <dl role="group" className="flex items-center justify-between">
+            <dt className="text-body text-ink-soft">Total</dt>
+            <dd className="text-h3 font-semibold text-badge-sale">
+              <Money data={total} />
+            </dd>
+          </dl>
+          <p className="text-micro font-semibold text-badge-sale text-right mt-0.5">
+            You&rsquo;re saving{' '}
+            <Money
+              data={{
+                amount: String(discountTotal),
+                currencyCode: subtotal?.currencyCode || 'INR',
+              }}
+              as="span"
+            />
+            {appliedCodes.length ? ` with ${appliedCodes.join(', ')}` : ''}
+          </p>
+        </div>
       ) : null}
       <CartDiscounts
         discountCodes={cart?.discountCodes}
@@ -164,15 +180,18 @@ function CartDiscounts({
 
       {/* Show an input to apply a discount */}
       <UpdateDiscountForm discountCodes={codes}>
+        <label
+          htmlFor={discountCodeInputId}
+          className="block text-small font-semibold text-ink mb-1.5"
+        >
+          Have a promo code?
+        </label>
         <div className="flex gap-2">
-          <label htmlFor={discountCodeInputId} className="sr-only">
-            Discount code
-          </label>
           <input
             id={discountCodeInputId}
             type="text"
             name="discountCode"
-            placeholder="Discount code"
+            placeholder="Enter code"
             className="flex-1 min-w-0 h-11 px-4 rounded-pill border border-border bg-white text-small focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button
@@ -298,15 +317,18 @@ function CartGiftCard({
       )}
 
       <AddGiftCardForm fetcherKey="gift-card-add">
+        <label
+          htmlFor={giftCardInputId}
+          className="block text-small font-semibold text-ink mb-1.5"
+        >
+          Have a gift card?
+        </label>
         <div className="flex gap-2">
-          <label htmlFor={giftCardInputId} className="sr-only">
-            Gift card code
-          </label>
           <input
             id={giftCardInputId}
             type="text"
             name="giftCardCode"
-            placeholder="Gift card code"
+            placeholder="Enter code"
             ref={giftCardCodeInput}
             className="flex-1 min-w-0 h-11 px-4 rounded-pill border border-border bg-white text-small focus:outline-none focus:ring-2 focus:ring-accent"
           />
