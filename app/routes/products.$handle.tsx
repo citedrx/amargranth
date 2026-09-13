@@ -449,7 +449,7 @@ function ProductGallery({
         )}
       </div>
       {images.length > 1 ? (
-        <div className="flex gap-3 mt-4 overflow-x-auto py-1">
+        <div className="flex gap-3 mt-4 overflow-x-auto p-1">
           {images.map((img, index) => (
             <button
               key={img.id}
