@@ -51,7 +51,7 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
 
   return (
     <section
-      className={`${className} ${layout === 'page' ? 'px-5 md:px-12 lg:px-16 pt-6 pb-14 max-w-3xl mx-auto' : 'px-5 py-4'}`}
+      className={`${className} ${layout === 'page' ? 'px-5 md:px-12 lg:px-16 pt-6 pb-14 max-w-3xl mx-auto' : 'px-5 pt-4 pb-0'}`}
       aria-label={layout === 'page' ? 'Cart page' : 'Cart drawer'}
     >
       <CartEmpty hidden={linesCount} layout={layout} />

@@ -61,51 +61,69 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
     .map(({code}) => code);
 
   return (
-    <div
-      aria-labelledby={summaryId}
-      className="flex flex-col gap-3 border-t border-border p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
-    >
-      <dl role="group" className="flex items-center justify-between">
-        <dt className="text-body text-ink-soft">Subtotal</dt>
-        <dd
-          className={`text-h3 font-semibold ${hasSavings ? 'text-ink-soft line-through' : 'text-ink'}`}
-        >
-          {subtotal?.amount ? <Money data={subtotal} /> : '-'}
-        </dd>
-      </dl>
-      {hasSavings && total ? (
-        <div className="-mt-2">
-          <dl role="group" className="flex items-center justify-between">
-            <dt className="text-body text-ink-soft">Total</dt>
-            <dd className="text-h3 font-semibold text-badge-sale">
-              <Money data={total} />
-            </dd>
-          </dl>
-          <p className="text-micro font-semibold text-badge-sale text-right mt-0.5">
-            You&rsquo;re saving{' '}
-            <Money
-              data={{
-                amount: String(discountTotal),
-                currencyCode: subtotal?.currencyCode || 'INR',
-              }}
-              as="span"
-            />
-            {appliedCodes.length ? ` with ${appliedCodes.join(', ')}` : ''}
-          </p>
+    <>
+      <div
+        aria-labelledby={summaryId}
+        className={`flex flex-col gap-3 border-t border-border p-6 ${
+          layout === 'aside'
+            ? 'pb-4'
+            : 'pb-[max(1.5rem,env(safe-area-inset-bottom))]'
+        }`}
+      >
+        <dl role="group" className="flex items-center justify-between">
+          <dt className="text-body text-ink-soft">Subtotal</dt>
+          <dd
+            className={`text-h3 font-semibold ${hasSavings ? 'text-ink-soft line-through' : 'text-ink'}`}
+          >
+            {subtotal?.amount ? <Money data={subtotal} /> : '-'}
+          </dd>
+        </dl>
+        {hasSavings && total ? (
+          <div className="-mt-2">
+            <dl role="group" className="flex items-center justify-between">
+              <dt className="text-body text-ink-soft">Total</dt>
+              <dd className="text-h3 font-semibold text-badge-sale">
+                <Money data={total} />
+              </dd>
+            </dl>
+            <p className="text-micro font-semibold text-badge-sale text-right mt-0.5">
+              You&rsquo;re saving{' '}
+              <Money
+                data={{
+                  amount: String(discountTotal),
+                  currencyCode: subtotal?.currencyCode || 'INR',
+                }}
+                as="span"
+              />
+              {appliedCodes.length ? ` with ${appliedCodes.join(', ')}` : ''}
+            </p>
+          </div>
+        ) : null}
+        <CartDiscounts
+          discountCodes={cart?.discountCodes}
+          discountsHeadingId={discountsHeadingId}
+          discountCodeInputId={discountCodeInputId}
+        />
+        <CartGiftCard
+          giftCardCodes={cart?.appliedGiftCards}
+          giftCardHeadingId={giftCardHeadingId}
+          giftCardInputId={giftCardInputId}
+        />
+        {layout === 'page' ? <CartCheckoutActions cart={cart} /> : null}
+      </div>
+      {layout === 'aside' ? (
+        // Pinned to the bottom of the drawer's scrollable area so the
+        // Checkout button is always visible without scrolling, even on a
+        // cart with several lines. `position: sticky` (not a fixed-height
+        // flex split) deliberately, so a short cart doesn't reintroduce
+        // the dead-gap-above-the-footer bug this codebase already hit
+        // once — sticky sits in its normal flow position when content is
+        // short, and only pins once the drawer's content actually scrolls.
+        <div className="sticky bottom-0 bg-base border-t border-border px-6 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+          <CartCheckoutActions cart={cart} />
         </div>
       ) : null}
-      <CartDiscounts
-        discountCodes={cart?.discountCodes}
-        discountsHeadingId={discountsHeadingId}
-        discountCodeInputId={discountCodeInputId}
-      />
-      <CartGiftCard
-        giftCardCodes={cart?.appliedGiftCards}
-        giftCardHeadingId={giftCardHeadingId}
-        giftCardInputId={giftCardInputId}
-      />
-      <CartCheckoutActions cart={cart} />
-    </div>
+    </>
   );
 }
 
