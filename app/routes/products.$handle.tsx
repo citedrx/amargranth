@@ -449,7 +449,7 @@ function ProductGallery({
         )}
       </div>
       {images.length > 1 ? (
-        <div className="flex gap-3 mt-4 overflow-x-auto pb-1">
+        <div className="flex gap-3 mt-4 overflow-x-auto py-1">
           {images.map((img, index) => (
             <button
               key={img.id}
@@ -457,17 +457,19 @@ function ProductGallery({
               onClick={() => setActiveIndex(index)}
               aria-label={`Show image ${index + 1} of ${title}`}
               aria-pressed={index === activeIndex}
-              className={`w-16 h-16 rounded-[0.5rem] overflow-hidden bg-tint-sand shrink-0 ring-2 transition-colors ${
+              className={`w-16 h-16 rounded-[0.5rem] shrink-0 ring-2 transition-colors ${
                 index === activeIndex ? 'ring-accent' : 'ring-transparent'
               }`}
             >
-              <Image
-                alt={img.altText || `${title} thumbnail ${index + 1}`}
-                aspectRatio="1/1"
-                data={img}
-                sizes="64px"
-                className="w-full h-full object-cover"
-              />
+              <div className="w-full h-full rounded-[0.5rem] overflow-hidden bg-tint-sand">
+                <Image
+                  alt={img.altText || `${title} thumbnail ${index + 1}`}
+                  aspectRatio="1/1"
+                  data={img}
+                  sizes="64px"
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </button>
           ))}
         </div>
