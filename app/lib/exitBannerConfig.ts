@@ -29,7 +29,10 @@
  */
 export const exitBannerConfig = {
   triggers: {
-    exitIntent: true,
+    // EXTRA10 turned off per ASM's explicit "remove for now" request (Sept
+    // 2026) — flip back to true to bring it back. abandonedCheckout (the
+    // Amazon/COD fallback) is untouched and still live.
+    exitIntent: false,
     abandonedCart: false,
     abandonedCheckout: true,
   },
