@@ -178,6 +178,22 @@ export const CART_QUERY_FRAGMENT = `#graphql
       code
       applicable
     }
+    # Order-level discount allocations (e.g. a cart-wide % off code like
+    # EXTRA10) live HERE, on the Cart itself, not on CartLine.
+    # CartLine.discountAllocations only covers discounts scoped to that
+    # specific line (verified against this project's actual pinned
+    # Storefront API schema — its discountAllocations field takes no
+    # arguments and its description says "applied to the cart line" only;
+    # there's no lineLevelOnly toggle in this API version to widen it).
+    # A prior fix assumed CartLine.discountAllocations included order-level
+    # allocations by default — it doesn't, in this schema version — which
+    # is why an applied EXTRA10 code never showed a discounted total in
+    # the drawer despite the code chip appearing.
+    discountAllocations {
+      discountedAmount {
+        ...Money
+      }
+    }
   }
 ` as const;
 

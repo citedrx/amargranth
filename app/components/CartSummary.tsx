@@ -22,17 +22,32 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
   // `cart.cost.totalAmount` doesn't reflect an applied order-level discount
   // code until Shopify's own checkout recalculates it — confirmed against
   // the live site (the code applies correctly at checkout, but the cart
-  // drawer's cost fields never update). Summing each line's own
-  // discountAllocations (which DOES include order-level allocations,
-  // Storefront API default) gives the real applied amount instead.
-  const discountTotal = (cart?.lines?.nodes ?? []).reduce((sum, line) => {
-    const lineDiscount = (line?.discountAllocations ?? []).reduce(
-      (lineSum, allocation) =>
-        lineSum + Number(allocation.discountedAmount?.amount || 0),
+  // drawer's cost fields never update).
+  //
+  // An earlier fix tried summing each line's own `discountAllocations`
+  // instead, on the (wrong) assumption that it includes order-level
+  // allocations by default — it never did in this project's actual
+  // Storefront API schema version, which is why an applied EXTRA10 still
+  // showed no discount. `CartLine.discountAllocations` only ever covers
+  // discounts scoped to that specific line; a cart-wide code like EXTRA10
+  // lives on `cart.discountAllocations` instead (see fragments.ts). Sum
+  // both sources — cart-level covers order/automatic-wide discounts,
+  // line-level covers per-product discounts — so this stays correct
+  // regardless of what kind of discount ASM sets up in Admin later.
+  const discountTotal =
+    (cart?.discountAllocations ?? []).reduce(
+      (sum, allocation) =>
+        sum + Number(allocation.discountedAmount?.amount || 0),
       0,
-    );
-    return sum + lineDiscount;
-  }, 0);
+    ) +
+    (cart?.lines?.nodes ?? []).reduce((sum, line) => {
+      const lineDiscount = (line?.discountAllocations ?? []).reduce(
+        (lineSum, allocation) =>
+          lineSum + Number(allocation.discountedAmount?.amount || 0),
+        0,
+      );
+      return sum + lineDiscount;
+    }, 0);
   const hasSavings = Boolean(subtotal?.amount) && discountTotal > 0;
   const total =
     hasSavings && subtotal
