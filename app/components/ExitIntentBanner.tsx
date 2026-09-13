@@ -10,7 +10,14 @@ import {
 } from '~/lib/exitBannerConfig';
 
 /**
- * Exit-intent offer banner (EXTRA10, 10% off, real code live in Shopify).
+ * Exit-intent offer banner. Two content variants, same visual shell:
+ * - 'discount': EXTRA10, 10% off, real code live in Shopify. Shown for
+ *   plain exit intent or an abandoned cart (visitor never reached checkout).
+ * - 'cod': Cash-on-Delivery fallback pointing at the Amar Granth Amazon
+ *   listing. Shown specifically when the visitor started Shopify's hosted
+ *   checkout and came back without completing it — a discount doesn't fix
+ *   what's actually stopping a COD-only shopper, so this offers the one
+ *   real alternative purchase path instead.
  *
  * Desktop uses the standard mouseleave-toward-top-of-viewport signal.
  * Mobile has no cursor, so it uses the two signals real exit-intent tools
@@ -28,6 +35,7 @@ import {
 
 const STORAGE_KEY = 'ag_exit_banner_last_shown_at';
 const DISCOUNT_CODE = 'EXTRA10';
+const AMAZON_COD_URL = 'https://link.amazon/B0aQtoD4d';
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 const ARM_DELAY_MS = 8000;
 const MIN_SCROLL_DEPTH_PX = 150;
@@ -84,6 +92,7 @@ function ExitIntentBannerInner({
   const {type: asideType} = useAside();
   const headingId = useId();
   const [visible, setVisible] = useState(false);
+  const [variant, setVariant] = useState<'discount' | 'cod'>('discount');
   const [copied, setCopied] = useState(false);
   const shownRef = useRef(false);
   const maxScrollRef = useRef(0);
@@ -99,13 +108,14 @@ function ExitIntentBannerInner({
     const {exitIntent, abandonedCart, abandonedCheckout} =
       exitBannerConfig.triggers;
     const cartHasItems = cartQuantityRef.current > 0;
+    const checkoutAbandoned =
+      abandonedCheckout && cartHasItems && hasStartedCheckoutRecently();
     const eligible =
-      exitIntent ||
-      (abandonedCart && cartHasItems) ||
-      (abandonedCheckout && cartHasItems && hasStartedCheckoutRecently());
+      checkoutAbandoned || (abandonedCart && cartHasItems) || exitIntent;
     if (!eligible) return;
     shownRef.current = true;
     markShown();
+    setVariant(checkoutAbandoned ? 'cod' : 'discount');
     setVisible(true);
   }, []);
 
@@ -243,34 +253,60 @@ function ExitIntentBannerInner({
           &times;
         </button>
         <div className="relative p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-          <p className="text-micro font-semibold uppercase tracking-wide text-badge-sale mb-2">
-            A little something before you go
-          </p>
-          <h3 id={headingId} className="text-ink mb-2">
-            Get extra 10% off on your order value
-          </h3>
-          <p className="text-ink-soft text-body mb-4">
-            Use code EXTRA10 at checkout. Applicable for limited time
-          </p>
-          <div className="flex items-center justify-between gap-3 border-2 border-dashed border-border rounded-pill px-4 py-3 mb-4 bg-tint-sand">
-            <span className="font-heading text-h2 font-bold lining-nums tracking-[0.06em] text-badge-sale">
-              {DISCOUNT_CODE}
-            </span>
-            <button
-              type="button"
-              onClick={() => void handleCopy()}
-              className="min-h-11 flex items-center text-small font-semibold text-accent hover:text-accent-hover transition-colors px-2 shrink-0"
-            >
-              {copied ? 'Copied!' : 'Copy code'}
-            </button>
-          </div>
-          <a
-            href={`/discount/${DISCOUNT_CODE}?redirect=/collections/all`}
-            onClick={() => setVisible(false)}
-            className="block text-center w-full bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body h-[52px] leading-[52px] rounded-pill no-underline hover:no-underline transition-colors"
-          >
-            Order now &amp; save
-          </a>
+          {variant === 'cod' ? (
+            <>
+              <p className="text-micro font-semibold uppercase tracking-wide text-badge-sale mb-2">
+                Prefer Cash on Delivery?
+              </p>
+              <h3 id={headingId} className="text-ink mb-2">
+                Get it with COD — on Amazon
+              </h3>
+              <p className="text-ink-soft text-body mb-4">
+                We don&rsquo;t support Cash on Delivery here yet, but our
+                books are also available on Amazon with COD.
+              </p>
+              <a
+                href={AMAZON_COD_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setVisible(false)}
+                className="block text-center w-full bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body h-[52px] leading-[52px] rounded-pill no-underline hover:no-underline transition-colors"
+              >
+                Shop on Amazon (COD available)
+              </a>
+            </>
+          ) : (
+            <>
+              <p className="text-micro font-semibold uppercase tracking-wide text-badge-sale mb-2">
+                A little something before you go
+              </p>
+              <h3 id={headingId} className="text-ink mb-2">
+                Get extra 10% off on your order value
+              </h3>
+              <p className="text-ink-soft text-body mb-4">
+                Use code EXTRA10 at checkout. Applicable for limited time
+              </p>
+              <div className="flex items-center justify-between gap-3 border-2 border-dashed border-border rounded-pill px-4 py-3 mb-4 bg-tint-sand">
+                <span className="font-heading text-h2 font-bold lining-nums tracking-[0.06em] text-badge-sale">
+                  {DISCOUNT_CODE}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => void handleCopy()}
+                  className="min-h-11 flex items-center text-small font-semibold text-accent hover:text-accent-hover transition-colors px-2 shrink-0"
+                >
+                  {copied ? 'Copied!' : 'Copy code'}
+                </button>
+              </div>
+              <a
+                href={`/discount/${DISCOUNT_CODE}?redirect=/collections/all`}
+                onClick={() => setVisible(false)}
+                className="block text-center w-full bg-accent hover:bg-accent-hover active:bg-accent-active text-white font-semibold text-body h-[52px] leading-[52px] rounded-pill no-underline hover:no-underline transition-colors"
+              >
+                Order now &amp; save
+              </a>
+            </>
+          )}
         </div>
       </div>
     </div>

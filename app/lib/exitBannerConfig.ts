@@ -1,7 +1,7 @@
 /**
  * Single control point for what triggers the exit-intent offer banner
- * (ExitIntentBanner.tsx, EXTRA10 code). Flip these booleans to change
- * which real-world signal(s) show it — no other file needs touching.
+ * (ExitIntentBanner.tsx). Flip these booleans to change which real-world
+ * signal(s) show it — no other file needs touching.
  *
  * All three share the same underlying "visitor looks like they're about
  * to leave" detection (desktop mouseleave-to-top; mobile fast-scroll-up
@@ -19,12 +19,19 @@
  *   the storefront without completing it (cart still has items). Relies
  *   on markCheckoutStarted() being called at those two click sites
  *   (CartSummary.tsx, ProductForm.tsx) — see below.
+ *
+ * Content, not just eligibility, differs by reason: when abandonedCheckout
+ * is what actually fired (not just enabled — the visitor genuinely started
+ * and dropped out of checkout), the banner shows the Amazon/COD fallback
+ * instead of the EXTRA10 discount, since a discount doesn't solve a
+ * COD-only shopper's actual problem. Plain exitIntent/abandonedCart still
+ * show EXTRA10. See ExitIntentBannerInner's `variant` logic.
  */
 export const exitBannerConfig = {
   triggers: {
     exitIntent: true,
     abandonedCart: false,
-    abandonedCheckout: false,
+    abandonedCheckout: true,
   },
 };
 
