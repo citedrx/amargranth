@@ -50,7 +50,16 @@ export function AddToCartButton({
               }
               onClick?.();
             }}
-            disabled={disabled ?? fetcher.state !== 'idle'}
+            // `||`, not `??` — every call site always passes an explicit
+            // boolean `disabled` (never null/undefined), so `??` never
+            // actually fell through to the fetcher-busy check. That left
+            // the button clickable while its own LinesAdd submission was
+            // still in flight: a fast double-click/double-tap re-fired
+            // this onClick (re-marking the add and, on Buy Now,
+            // duplicating the InitiateCheckout/begin_checkout calls below)
+            // and could submit the mutation a second time, genuinely
+            // adding the line twice — not just an analytics miscount.
+            disabled={disabled || fetcher.state !== 'idle'}
             className={className}
           >
             {typeof children === 'function' ? children(fetcher) : children}
