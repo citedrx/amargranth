@@ -8,14 +8,24 @@ import {
   categoryLabelForTags,
   productHandleForTags,
 } from '~/lib/blogCategories';
-import {articleJsonLd, canonicalLink} from '~/lib/seo';
+import {articleJsonLd, canonicalLink, socialMetaTags} from '~/lib/seo';
 import {JsonLd} from '~/components/JsonLd';
 
 export const meta: Route.MetaFunction = ({data, params}) => {
+  const title = `${data?.article.title ?? ''} | Amar Granth`;
+  const description = data?.article.seo?.description;
+  const path = `/blogs/${params.blogHandle}/${params.articleHandle}`;
   return [
-    {title: `${data?.article.title ?? ''} | Amar Granth`},
-    {name: 'description', content: data?.article.seo?.description},
-    canonicalLink(`/blogs/${params.blogHandle}/${params.articleHandle}`),
+    {title},
+    {name: 'description', content: description},
+    canonicalLink(path),
+    ...socialMetaTags({
+      title,
+      description,
+      path,
+      image: data?.article.image?.url,
+      type: 'article',
+    }),
   ];
 };
 

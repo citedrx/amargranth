@@ -21,17 +21,30 @@ import {ProductForm} from '~/components/ProductForm';
 import {ProductCardActions} from '~/components/ProductCardActions';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {siteConfig} from '~/lib/site-config';
-import {breadcrumbJsonLd, canonicalLink, productJsonLd} from '~/lib/seo';
+import {
+  breadcrumbJsonLd,
+  canonicalLink,
+  productJsonLd,
+  socialMetaTags,
+} from '~/lib/seo';
 import {JsonLd} from '~/components/JsonLd';
 
 export const meta: Route.MetaFunction = ({data}) => {
+  const title = `${data?.product.title ?? ''} | Amar Granth`;
+  const description =
+    data?.product.seo.description ?? data?.product.description;
+  const path = `/products/${data?.product.handle}`;
   return [
-    {title: `${data?.product.title ?? ''} | Amar Granth`},
-    {
-      name: 'description',
-      content: data?.product.seo.description ?? data?.product.description,
-    },
-    canonicalLink(`/products/${data?.product.handle}`),
+    {title},
+    {name: 'description', content: description},
+    canonicalLink(path),
+    ...socialMetaTags({
+      title,
+      description,
+      path,
+      image: data?.product.images.nodes[0]?.url,
+      type: 'product',
+    }),
   ];
 };
 

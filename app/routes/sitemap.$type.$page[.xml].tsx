@@ -10,7 +10,12 @@ export async function loader({
     storefront,
     request,
     params,
-    locales: ['EN-US', 'EN-CA', 'FR-CA'],
+    // Leftover Hydrogen-skeleton demo locales (US/CA/FR) — this is a
+    // single-market, English-only India storefront with no locale-prefixed
+    // routes at all, so every real sitemap entry was carrying 3 fake
+    // hreflang alternate URLs (e.g. /EN-US/products/<handle>) that 404.
+    // Empty locales means no alternate <xhtml:link> tags get emitted.
+    locales: [],
     getLink: ({type, baseUrl, handle, locale}) => {
       if (!locale) return `${baseUrl}/${type}/${handle}`;
       return `${baseUrl}/${locale}/${type}/${handle}`;

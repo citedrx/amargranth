@@ -12,20 +12,26 @@ import {MockShopNotice} from '~/components/MockShopNotice';
 import {ArticleItem} from '~/components/ArticleItem';
 import {ProductItem} from '~/components/ProductItem';
 import {BLOG_CATEGORIES} from '~/lib/blogCategories';
-import {canonicalLink} from '~/lib/seo';
+import {canonicalLink, socialMetaTags} from '~/lib/seo';
 import {sortCatalogProducts} from '~/lib/site-config';
 
 const COMBO_SET_HANDLE = '12-jyotirlings-51-shaktipeeths-book-set-hardcover';
 
-export const meta: Route.MetaFunction = () => {
+export const meta: Route.MetaFunction = ({data}) => {
+  const title = 'Amar Granth | Timeless Gifts of Indian Heritage';
+  const description =
+    'Illustrated storybooks on the 12 Jyotirlings, 51 Shaktipeeths, Rivers of Bharat and more — bringing Indian mythology and heritage to young readers.';
+  const comboSet = data?.products.find((p) => p.handle === COMBO_SET_HANDLE);
   return [
-    {title: 'Amar Granth | Timeless Gifts of Indian Heritage'},
-    {
-      name: 'description',
-      content:
-        'Illustrated storybooks on the 12 Jyotirlings, 51 Shaktipeeths, Rivers of Bharat and more — bringing Indian mythology and heritage to young readers.',
-    },
+    {title},
+    {name: 'description', content: description},
     canonicalLink('/'),
+    ...socialMetaTags({
+      title,
+      description,
+      path: '/',
+      image: comboSet?.featuredImage?.url,
+    }),
   ];
 };
 

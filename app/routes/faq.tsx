@@ -1,5 +1,6 @@
 import type {Route} from './+types/faq';
-import {canonicalLink} from '~/lib/seo';
+import {canonicalLink, faqPageJsonLd} from '~/lib/seo';
+import {JsonLd} from '~/components/JsonLd';
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -84,6 +85,7 @@ const FAQ_SECTIONS: FaqSection[] = [
 export default function Faq() {
   return (
     <div className="bg-base">
+      <JsonLd data={faqPageJsonLd(FAQ_SECTIONS)} />
       <section className="px-5 md:px-12 lg:px-16 py-14 md:py-20 max-w-3xl mx-auto">
         <p className="text-accent font-semibold text-body tracking-wide mb-3 text-center">
           Frequently Asked Questions

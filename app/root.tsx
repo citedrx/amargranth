@@ -116,8 +116,9 @@ export async function loader(args: Route.LoaderArgs) {
  * Load data necessary for rendering content above the fold. This is the critical data
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
-async function loadCriticalData({context}: Route.LoaderArgs) {
+async function loadCriticalData({context, request}: Route.LoaderArgs) {
   const {storefront} = context;
+  const origin = new URL(request.url).origin;
 
   const [header, sitewidePromo] = await Promise.all([
     storefront.query(HEADER_QUERY, {
@@ -153,7 +154,7 @@ async function loadCriticalData({context}: Route.LoaderArgs) {
       )
     : null;
 
-  return {header, promoLabel, promoEndDate, promoActive, promoDaysLeft};
+  return {header, promoLabel, promoEndDate, promoActive, promoDaysLeft, origin};
 }
 
 const SITEWIDE_PROMO_QUERY = `#graphql
@@ -218,8 +219,8 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <link rel="stylesheet" href={appStyles}></link>
         <Meta />
         <Links />
-        <JsonLd data={organizationJsonLd({logoUrl})} />
-        <JsonLd data={websiteJsonLd()} />
+        <JsonLd data={organizationJsonLd({logoUrl, url: data?.origin ?? '/'})} />
+        <JsonLd data={websiteJsonLd({url: data?.origin ?? '/'})} />
         <MetaPixelBaseScript pixelId={data?.metaPixelId} />
         <GoogleAnalyticsBaseScript measurementId={data?.ga4MeasurementId} />
       </head>
