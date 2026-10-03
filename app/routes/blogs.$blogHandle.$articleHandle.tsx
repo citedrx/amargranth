@@ -6,9 +6,15 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {
   BLOG_CATEGORIES,
   categoryLabelForTags,
+  hasCategoryWithNoProductMatch,
   productHandleForTags,
 } from '~/lib/blogCategories';
-import {articleJsonLd, canonicalLink, socialMetaTags} from '~/lib/seo';
+import {
+  articleJsonLd,
+  canonicalLink,
+  faqPageJsonLd,
+  socialMetaTags,
+} from '~/lib/seo';
 import {JsonLd} from '~/components/JsonLd';
 
 export const meta: Route.MetaFunction = ({data, params}) => {
@@ -97,12 +103,39 @@ async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
     blogHandle,
     relatedArticles,
     crossLinkProduct: crossLinkResult?.product ?? null,
+    showGenericBookCallout: !crossLinkHandle && hasCategoryWithNoProductMatch(tags),
+    faqItems: parseFaqItems(article.faqItems?.value),
   };
 }
 
+type FaqItem = {question: string; answer: string};
+
+/** custom.faq_items is real, curated Q&A derived from the article's own
+ * body content (see PROJECT_CONTEXT.md) — parsed defensively since it's
+ * merchant-editable in Admin with no schema enforcement. */
+function parseFaqItems(rawValue: string | undefined): FaqItem[] {
+  if (!rawValue) return [];
+  try {
+    const parsed: unknown = JSON.parse(rawValue);
+    if (!Array.isArray(parsed)) return [];
+    return (parsed as Array<Record<string, unknown>>).filter(
+      (item): item is FaqItem =>
+        typeof item?.question === 'string' && typeof item?.answer === 'string',
+    );
+  } catch {
+    return [];
+  }
+}
+
 export default function Article() {
-  const {article, blogHandle, relatedArticles, crossLinkProduct} =
-    useLoaderData<typeof loader>();
+  const {
+    article,
+    blogHandle,
+    relatedArticles,
+    crossLinkProduct,
+    showGenericBookCallout,
+    faqItems,
+  } = useLoaderData<typeof loader>();
   const {title, image, contentHtml, author} = article;
 
   const publishedDate = new Intl.DateTimeFormat('en-US', {
@@ -121,6 +154,9 @@ export default function Article() {
           path: `/blogs/${blogHandle}/${article.handle}`,
         })}
       />
+      {faqItems.length > 0 ? (
+        <JsonLd data={faqPageJsonLd([{items: faqItems}])} />
+      ) : null}
       {image ? (
         <div className="bg-tint-sand aspect-video max-w-[640px] mx-auto overflow-hidden md:rounded-card md:mt-6">
           <Image
@@ -159,6 +195,30 @@ export default function Article() {
           className="text-ink text-body-lg leading-relaxed [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ul]:space-y-1 [&_a]:text-accent [&_a]:underline [&_img]:rounded-card [&_img]:my-6"
         />
 
+        {faqItems.length > 0 ? (
+          <div className="mt-10">
+            <h2 className="text-ink mb-3">Quick answers</h2>
+            <div className="space-y-2">
+              {faqItems.map((item) => (
+                <details
+                  key={item.question}
+                  className="group bg-white border border-border rounded-card px-5 py-4"
+                >
+                  <summary className="cursor-pointer list-none flex items-start justify-between gap-3 font-semibold text-sm text-ink">
+                    <span>{item.question}</span>
+                    <span className="shrink-0 text-ink-soft group-open:rotate-45 transition-transform text-lg leading-none">
+                      +
+                    </span>
+                  </summary>
+                  <p className="text-ink-soft text-sm leading-relaxed mt-3">
+                    {item.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
         {crossLinkProduct ? (
           <Link
             to={`/products/${crossLinkProduct.handle}`}
@@ -188,6 +248,26 @@ export default function Article() {
             </div>
             <span className="shrink-0 bg-accent group-hover:bg-accent-hover group-active:bg-accent-active text-white font-semibold text-small px-5 h-11 rounded-pill transition-colors flex items-center">
               Shop this book
+            </span>
+          </Link>
+        ) : showGenericBookCallout ? (
+          <Link
+            to="/collections/all"
+            className="group mt-10 flex items-center gap-4 bg-tint-sand rounded-card p-4 hover:scale-[1.01] transition-transform"
+          >
+            <div className="flex-1 min-w-0">
+              <p className="text-micro text-ink-soft uppercase tracking-wide mb-1">
+                Enjoyed this story?
+              </p>
+              <p className="text-h3 text-ink mb-1">
+                Explore our full collection
+              </p>
+              <p className="text-small text-ink-soft">
+                Illustrated mythology books for kids, ages 3+
+              </p>
+            </div>
+            <span className="shrink-0 bg-accent group-hover:bg-accent-hover group-active:bg-accent-active text-white font-semibold text-small px-5 h-11 rounded-pill transition-colors flex items-center">
+              Browse books
             </span>
           </Link>
         ) : null}
@@ -266,6 +346,9 @@ const ARTICLE_QUERY = `#graphql
         seo {
           description
           title
+        }
+        faqItems: metafield(namespace: "custom", key: "faq_items") {
+          value
         }
       }
     }

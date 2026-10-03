@@ -26,7 +26,8 @@ export function categoryLabelForTags(tags: readonly string[]): string | null {
  * for the PDP-style "Shop this book" cross-link on article pages. Only
  * categories with a clear single-product match are included — Rishis &
  * Sages and Temples don't map to one specific title, so they're
- * intentionally omitted rather than forced.
+ * intentionally omitted rather than forced into a false "this is the book
+ * for this article" claim.
  */
 export const CATEGORY_PRODUCT_HANDLE: Partial<Record<BlogCategoryTag, string>> = {
   jyotirlinga: 'a-childrens-guide-to-the-12-shiva-jyotirlings-best-seller-hard-cover',
@@ -43,4 +44,20 @@ export function productHandleForTags(tags: readonly string[]): string | null {
     }
   }
   return null;
+}
+
+/**
+ * True when an article carries a known category tag (Rishis & Sages,
+ * Temples) that has no single-product match above. These were previously a
+ * dead end — real, meaningful search traffic (e.g. Agastya, Murudeshwar)
+ * landing on an article with no path to a sale at all. Rather than forcing
+ * a false specific-product claim, the article page shows a generic
+ * "browse the full catalog" callout instead of nothing for these.
+ */
+export function hasCategoryWithNoProductMatch(tags: readonly string[]): boolean {
+  const lower = tags.map((t) => t.toLowerCase());
+  return BLOG_CATEGORIES.some(
+    (category) =>
+      lower.includes(category.tag) && !CATEGORY_PRODUCT_HANDLE[category.tag],
+  );
 }
