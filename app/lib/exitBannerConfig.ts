@@ -20,20 +20,19 @@
  *   on markCheckoutStarted() being called at those two click sites
  *   (CartSummary.tsx, ProductForm.tsx) — see below.
  *
- * All three show the same content — the real EXTRA10 discount code — since
+ * All three show the same content — the real DIWALI10 discount code — since
  * ASM asked to stop showing the Amazon Cash-on-Delivery fallback that
  * abandonedCheckout used to show (a separate marketplace loses the sale
  * to this store entirely; the discount aims to close it here instead).
  */
 export const exitBannerConfig = {
   triggers: {
-    // EXTRA10 itself was turned off as an exit-intent offer per ASM's
-    // earlier "remove for now" request (Sept 2026) — exitIntent/
-    // abandonedCart stay false from that. abandonedCheckout is live and,
-    // per ASM's follow-up, now shows the EXTRA10 offer too (previously
-    // showed an Amazon COD fallback instead) to try to close the sale
-    // before the visitor leaves for good.
-    exitIntent: false,
+    // DIWALI10 (real, ends 30 Nov 2026) replaced EXTRA10 for the Diwali
+    // 2026 season, and ASM asked to turn exitIntent back on for it
+    // (Oct 2026) — it had been off since EXTRA10 was paused. abandonedCart
+    // stays off; abandonedCheckout was already on and picks up the same
+    // new DIWALI10 content automatically.
+    exitIntent: true,
     abandonedCart: false,
     abandonedCheckout: true,
   },

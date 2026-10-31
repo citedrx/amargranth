@@ -10,15 +10,15 @@ import {
 } from '~/lib/exitBannerConfig';
 
 /**
- * Exit-intent offer banner. Single content: the real, live EXTRA10 (10%
- * off) Shopify discount code, shown for any enabled trigger — plain exit
- * intent, an abandoned cart, or an abandoned checkout (visitor started
- * Shopify's hosted checkout and came back without completing it). Used to
- * show an Amazon Cash-on-Delivery fallback specifically for the abandoned-
- * checkout case instead, on the theory that COD-only shoppers needed a
- * different purchase path — ASM asked to replace that with the EXTRA10
- * offer instead, to keep the sale (and the discount cost) on this store
- * rather than sending checkout-abandoners to a different marketplace.
+ * Exit-intent offer banner. Single content: the real, live DIWALI10 (10%
+ * off, ends 30 Nov 2026 — confirmed via the Admin API) Shopify discount
+ * code, shown for any enabled trigger — plain exit intent, an abandoned
+ * cart, or an abandoned checkout (visitor started Shopify's hosted
+ * checkout and came back without completing it). DIWALI10 replaced the
+ * earlier EXTRA10 code (paused by ASM) for the Diwali 2026 season — unlike
+ * EXTRA10, DIWALI10 has a real expiry, so the body copy can finally state
+ * an honest deadline instead of the vague "limited time" wording EXTRA10
+ * was stuck with (it never had a real one).
  *
  * Desktop uses the standard mouseleave-toward-top-of-viewport signal.
  * Mobile has no cursor, so it uses the two signals real exit-intent tools
@@ -35,7 +35,8 @@ import {
  */
 
 const STORAGE_KEY = 'ag_exit_banner_last_shown_at';
-const DISCOUNT_CODE = 'EXTRA10';
+const DISCOUNT_CODE = 'DIWALI10';
+const DISCOUNT_END_DATE_LABEL = '30 Nov 2026';
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 const ARM_DELAY_MS = 8000;
 const MIN_SCROLL_DEPTH_PX = 150;
@@ -252,13 +253,13 @@ function ExitIntentBannerInner({
         </button>
         <div className="relative p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
           <p className="text-micro font-semibold uppercase tracking-wide text-badge-sale mb-2">
-            A little something before you go
+            A Diwali gift from us to you 🪔
           </p>
           <h3 id={headingId} className="text-ink mb-2">
-            Get extra 10% off on your order value
+            Get 10% off this Diwali
           </h3>
           <p className="text-ink-soft text-body mb-4">
-            Use code EXTRA10 at checkout. Applicable for limited time
+            Use code DIWALI10 at checkout — valid through {DISCOUNT_END_DATE_LABEL}
           </p>
           <div className="flex items-center justify-between gap-3 border-2 border-dashed border-border rounded-pill px-4 py-3 mb-4 bg-tint-sand">
             <span className="font-heading text-h2 font-bold lining-nums tracking-[0.06em] text-badge-sale">

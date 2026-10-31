@@ -2,13 +2,16 @@ import {useEffect, useState} from 'react';
 import {Link} from 'react-router';
 
 /**
- * Sticky, high-contrast Ganpati sale announcement bar. Sits above the
+ * Sticky, high-contrast seasonal sale announcement bar. Sits above the
  * Header inside PageLayout's shared sticky wrapper (not sticky on its own),
  * so it scrolls away together with the header as one unit. Date-gated
- * server-side (see root.tsx's promoActive) off the same real
- * custom.promo_label/promo_end_date metafields the PDP's own event banner
- * reads — it silently stops appearing after the real end date with no
- * further code changes needed.
+ * server-side (see root.tsx's promoActive) off the real
+ * custom.sitewide_promo_end_date Shop metafield — it silently stops
+ * appearing after the real end date with no further code changes needed.
+ * Currently showing the real DIWALI10 discount (10% off, ends 30 Nov 2026,
+ * confirmed via the Admin API) — update the copy below and the
+ * sitewide_promo_end_date metafield together when the next promotion
+ * replaces this one.
  */
 
 const STORAGE_KEY = 'ag_announcement_dismissed_at';
@@ -60,7 +63,8 @@ export function AnnouncementBar({
           to="/collections/all"
           className="text-micro sm:text-small font-semibold text-white no-underline hover:no-underline hover:text-white/90 transition-colors"
         >
-          🪔 Limited Time Ganpati Sale on all Books. Sale ends{' '}
+          🪔 Diwali Sale on all Books — use code DIWALI10 for 10% off. Sale
+          ends{' '}
           <span className="font-extrabold underline decoration-2 underline-offset-2">
             {formattedDate}
           </span>
